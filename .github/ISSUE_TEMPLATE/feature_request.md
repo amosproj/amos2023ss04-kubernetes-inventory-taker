@@ -13,7 +13,15 @@ assignees: ''
 3. So that {}
 
 ## Acceptance criteria
-- [ ] Criterion 1
+- [ ] 
+
+## Linked Issues
+- **Blocked by:**
+- **Related to:**
+- **Implements**
+
+## Additional information
+- none
 
 ## Definition of done (DoD)
 * Colours match with [color scheme](https://amos-p4.atlassian.net/l/cp/g5VzjL88)
