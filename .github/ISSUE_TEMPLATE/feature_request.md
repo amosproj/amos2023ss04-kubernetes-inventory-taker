@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest new feature (using user story)
 title: ''
-labels: ''
+labels: ['feature','needs approval']
 assignees: ''
 
 ---
@@ -13,14 +13,18 @@ assignees: ''
 3. So that {}
 
 ## Acceptance criteria
-* Criterion 1
-* Criterion 2
-* ...
+- [ ] 
+
+## Linked Issues
+- **Blocked by:**
+- **Related to:**
+- **Implements**
+
+## Additional information
+- none
 
 ## Definition of done (DoD)
-* Added only after week 5
-* The same for all features
-* Here goes the project specific part
+* Colours match with [color scheme](https://amos-p4.atlassian.net/l/cp/g5VzjL88)
 
 ## DoD general criteria
 * Feature has been fully implemented
