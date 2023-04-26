@@ -1,0 +1,9 @@
+services:
+  explorer:
+    build: ./Explorer
+  proxy:
+    build: ./Proxy
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: example
