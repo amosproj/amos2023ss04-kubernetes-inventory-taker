@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	proxy "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/internal"
+	data "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -17,7 +17,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, proxy.TestData())
+		return c.HTML(http.StatusOK, data.TestData())
 	})
 
 	e.GET("/health", func(c echo.Context) error {

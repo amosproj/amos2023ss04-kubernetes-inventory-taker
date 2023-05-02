@@ -1,4 +1,4 @@
-module github.com/amosproj/amos2023ss04-kubernetes-inventory-taker
+module github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy
 
 go 1.20
 
