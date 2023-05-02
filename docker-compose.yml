@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   explorer:
     build: ./Explorer
@@ -7,3 +8,16 @@ services:
     image: postgres:15
     environment:
       POSTGRES_PASSWORD: example
+      
+  # starts the app in development mode
+  app:
+    build:
+      context: ./
+      target: runner
+    volumes:
+      - .:/app
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
