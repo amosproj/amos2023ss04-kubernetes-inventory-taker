@@ -14,6 +14,7 @@ services:
     build:
       context: ./
       target: runner
+      dockerfile: App-Dockerfile
     volumes:
       - .:/app
     command: npm run dev
