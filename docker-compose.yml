@@ -1,7 +1,5 @@
 version: '3.8'
 services:
-  explorer:
-    build: ./Explorer
   proxy:
     build: ./Proxy
   db:
@@ -10,13 +8,11 @@ services:
       POSTGRES_PASSWORD: example
       
   # starts the app in development mode
-  app:
+  explorer:
     build:
-      context: ./
-      target: runner
-      dockerfile: App-Dockerfile
+      context: ./Explorer
     volumes:
-      - .:/app
+      - ./Explorer:/app
     command: npm run dev
     ports:
       - "3000:3000"
