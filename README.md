@@ -1,2 +1,3 @@
-# Fabulous Project (AMOS SS 20xx)
+# Kubernetes Inventory Taker (AMOS SS 2023)
+
 Something something something
