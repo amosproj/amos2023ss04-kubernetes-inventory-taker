@@ -1,9 +1,20 @@
+version: '3.8'
 services:
-  explorer:
-    build: ./Explorer
   proxy:
     build: ./Proxy
   db:
     image: postgres:15
     environment:
       POSTGRES_PASSWORD: example
+      
+  # starts the app in development mode
+  explorer:
+    build:
+      context: ./Explorer
+    volumes:
+      - ./Explorer:/app
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
