@@ -1,0 +1,25 @@
+{
+    "name": "kit_utils",
+    "author": "KIT Contributors",
+    "description": "OpenWPM NodeJS Utilities",
+    "scripts": {
+        "preinstall": "npx npm-force-resolutions",
+        "info": "npm-scripts-info",
+        "jsonschema2md": "jsonschema2md || true",
+        "render_schema_docs": "jsonschema2md --input=schemas --out=docs/schemas --schema-out=-",
+        "validate_markdown_links": "find . -name \\*.md  -not -path '*/node_modules/*' -exec markdown-link-check -q {} \\;",
+        "lint_markdown": "find . -name \\*.md  -not -path '*/node_modules/*' -exec markdownlint {} \\;"
+    },
+    "license": "MIT",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/amosproj/amos2023ss04-kubernetes-inventory-taker.git"
+    },
+    "homepage": "",
+    "devDependencies": {
+        "@commitlint/cli": "^17.6.3",
+        "@commitlint/config-conventional": "^17.6.3",
+        "commitlint": "^17.6.0"
+    }
+}
