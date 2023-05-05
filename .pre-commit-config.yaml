@@ -13,3 +13,9 @@ repos:
     hooks:
     -   id: commitlint
         stages: [commit-msg]
+-   repo: https://github.com/tekwizely/pre-commit-golang
+    rev: v1.0.0-rc.1
+    hooks:
+    -   id: golangci-lint-mod
+    -   id: go-build-mod
+    -   id: go-test-mod
