@@ -15,13 +15,9 @@ services:
   explorer:
     build:
       context: ./Explorer
-    volumes:
-      - ./Explorer:/app
-    command: npm run dev
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: development
       DB_URI: db/postgres
       DB_USER: postgres
       DB_PASSWORD: example
