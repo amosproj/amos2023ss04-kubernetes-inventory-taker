@@ -13,9 +13,25 @@ repos:
     hooks:
     -   id: commitlint
         stages: [commit-msg]
+        additional_dependencies: ["@commitlint/config-conventional"]
 -   repo: https://github.com/tekwizely/pre-commit-golang
     rev: v1.0.0-rc.1
     hooks:
     -   id: golangci-lint-mod
+        args:
+          - --fix
     -   id: go-build-mod
     -   id: go-test-mod
+
+
+-   repo: https://github.com/pre-commit/mirrors-eslint
+    rev: "v8.39.0"
+    hooks:
+      - id: eslint
+        files: \.tsx?$
+        types: [file]
+        additional_dependencies:
+          - eslint@8.39.0
+          - eslint-config-next@v13.3.4
+        args:
+          - --fix
