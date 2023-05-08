@@ -19,3 +19,11 @@ CREATE TABLE "Pod" (
   "name" varchar(255),
   "status" varchar(50)
 );
+
+CREATE TABLE "Container" (
+  "container_id" int PRIMARY KEY,
+  "pod_id" int,
+  "name" varchar(255),
+  "image" varchar(255),
+  "status" varchar(50)
+);
