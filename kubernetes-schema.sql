@@ -27,3 +27,11 @@ CREATE TABLE "Container" (
   "image" varchar(255),
   "status" varchar(50)
 );
+
+CREATE TABLE "Service" (
+  "service_id" int PRIMARY KEY,
+  "cluster_id" int,
+  "name" varchar(255),
+  "type" varchar(50),
+  "port" int
+);
