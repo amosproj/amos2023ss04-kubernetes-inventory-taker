@@ -35,3 +35,13 @@ CREATE TABLE "Service" (
   "type" varchar(50),
   "port" int
 );
+
+ALTER TABLE "Node" ADD FOREIGN KEY ("cluster_id") REFERENCES "Cluster" ("cluster_id");
+
+ALTER TABLE "Pod" ADD FOREIGN KEY ("cluster_id") REFERENCES "Cluster" ("cluster_id");
+
+ALTER TABLE "Pod" ADD FOREIGN KEY ("node_id") REFERENCES "Node" ("node_id");
+
+ALTER TABLE "Container" ADD FOREIGN KEY ("pod_id") REFERENCES "Pod" ("pod_id");
+
+ALTER TABLE "Service" ADD FOREIGN KEY ("cluster_id") REFERENCES "Cluster" ("cluster_id");
