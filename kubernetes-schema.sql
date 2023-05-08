@@ -11,3 +11,11 @@ CREATE TABLE "Node" (
   "ip_address_external" varchar(255),
   "status" varchar(50)
 );
+
+CREATE TABLE "Pod" (
+  "pod_id" int PRIMARY KEY,
+  "cluster_id" int,
+  "node_id" int,
+  "name" varchar(255),
+  "status" varchar(50)
+);
