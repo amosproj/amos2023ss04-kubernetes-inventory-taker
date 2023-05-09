@@ -3,6 +3,7 @@ CREATE TABLE "Cluster" (
   "name" varchar(255)
 );
 
+-- https://kubernetes.io/docs/concepts/architecture/nodes/
 CREATE TABLE "Node" (
   "node_id" int PRIMARY KEY,
   "cluster_id" int,
@@ -12,6 +13,7 @@ CREATE TABLE "Node" (
   "status" varchar(50)
 );
 
+-- https://kubernetes.io/docs/concepts/workloads/pods/
 CREATE TABLE "Pod" (
   "pod_id" int PRIMARY KEY,
   "cluster_id" int,
@@ -20,6 +22,7 @@ CREATE TABLE "Pod" (
   "status" varchar(50)
 );
 
+-- https://kubernetes.io/docs/concepts/containers/
 CREATE TABLE "Container" (
   "container_id" int PRIMARY KEY,
   "pod_id" int,
@@ -28,6 +31,7 @@ CREATE TABLE "Container" (
   "status" varchar(50)
 );
 
+-- https://kubernetes.io/docs/concepts/services-networking/service/
 CREATE TABLE "Service" (
   "service_id" int PRIMARY KEY,
   "cluster_id" int,
