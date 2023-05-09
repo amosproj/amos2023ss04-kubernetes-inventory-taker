@@ -6,7 +6,7 @@ services:
     image: postgres:15
     environment:
       POSTGRES_PASSWORD: example
-      
+
   # starts the app in development mode
   explorer:
     build:

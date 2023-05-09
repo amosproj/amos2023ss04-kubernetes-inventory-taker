@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -10,18 +11,17 @@ import (
 )
 
 func main() {
+	echoServer := echo.New()
 
-	e := echo.New()
+	echoServer.Use(middleware.Logger())
+	echoServer.Use(middleware.Recover())
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
-	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, data.TestData())
+	echoServer.GET("/", func(c echo.Context) error {
+		return fmt.Errorf("internal server error: %w", c.HTML(http.StatusOK, data.TestData()))
 	})
 
-	e.GET("/health", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
+	echoServer.GET("/health", func(c echo.Context) error {
+		return fmt.Errorf("internal server error: %w", c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"}))
 	})
 
 	httpPort := os.Getenv("PORT")
@@ -29,5 +29,5 @@ func main() {
 		httpPort = "8080"
 	}
 
-	e.Logger.Fatal(e.Start(":" + httpPort))
+	echoServer.Logger.Fatal(echoServer.Start(":" + httpPort))
 }
