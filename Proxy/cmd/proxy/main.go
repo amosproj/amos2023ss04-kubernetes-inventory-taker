@@ -1,33 +1,38 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"os"
+	"log"
 
 	data "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
-	echoServer := echo.New()
-
-	echoServer.Use(middleware.Logger())
-	echoServer.Use(middleware.Recover())
-
-	echoServer.GET("/", func(c echo.Context) error {
-		return fmt.Errorf("internal server error: %w", c.HTML(http.StatusOK, data.TestData()))
-	})
-
-	echoServer.GET("/health", func(c echo.Context) error {
-		return fmt.Errorf("internal server error: %w", c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"}))
-	})
-
-	httpPort := os.Getenv("PORT")
-	if httpPort == "" {
-		httpPort = "8080"
+	clientset, err := data.Clientset()
+	if err != nil {
+		panic(err.Error())
 	}
 
-	echoServer.Logger.Fatal(echoServer.Start(":" + httpPort))
+	pods, err := data.Pods(clientset)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	log.Printf("There are %d pods in the cluster\n", len(pods.Items))
+
+	for _, pod := range pods.Items {
+		log.Printf("\tPod %s: %s\n", pod.GetUID(), pod.GetName())
+	}
+
+	nodes, err := data.Nodes(clientset)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	log.Printf("There are %d nodes in the cluster\n", len(nodes.Items))
+
+	for _, node := range nodes.Items {
+		log.Printf("\tNode %s: %s\n", node.GetUID(), node.GetName())
+	}
+
+	log.Printf("Exiting proxy ...\n")
 }
