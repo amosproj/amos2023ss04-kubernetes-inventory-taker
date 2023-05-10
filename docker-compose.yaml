@@ -2,19 +2,25 @@ version: '3.8'
 services:
   proxy:
     build: ./Proxy
+    environment:
+      DB_URI: db/postgres
+      DB_USER: postgres
+      DB_PASSWORD: example
   db:
     image: postgres:15
     environment:
       POSTGRES_PASSWORD: example
+    volumes:
+      - ./kubernetes-schema.sql:/docker-entrypoint-initdb.d/kubernetes-schema.sql
+
       
   # starts the app in development mode
   explorer:
     build:
       context: ./Explorer
-    volumes:
-      - ./Explorer:/app
-    command: npm run dev
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: development
+      DB_URI: db/postgres
+      DB_USER: postgres
+      DB_PASSWORD: example

@@ -13,7 +13,7 @@ assignees: ''
 3. So that {}
 
 ## Acceptance criteria
-- [ ] 
+- [ ]
 
 ## Linked Issues
 - **Blocked by:**
