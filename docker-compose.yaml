@@ -13,7 +13,7 @@ services:
     volumes:
       - ./kubernetes-schema.sql:/docker-entrypoint-initdb.d/kubernetes-schema.sql
 
-      
+
   # starts the app in development mode
   explorer:
     build:
