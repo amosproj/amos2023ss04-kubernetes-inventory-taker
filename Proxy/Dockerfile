@@ -10,6 +10,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /proxy
 
 FROM scratch as runner
 COPY --from=builder /proxy /proxy
+COPY .kube /.kube
 EXPOSE 8080
 
 CMD ["/proxy"]
