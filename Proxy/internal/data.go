@@ -60,6 +60,15 @@ func Nodes(clientset *kubernetes.Clientset) (*v1.NodeList, error) {
 	return nodes, nil
 }
 
+func Services(clientset *kubernetes.Clientset) (*v1.ServiceList, error) {
+	services, err := clientset.CoreV1().Services("").List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve Services: %w", err)
+	}
+
+	return services, nil
+}
+
 func ClusterInfo(clientset *kubernetes.Clientset) (*version.Info, error) {
 	clusterInfo, err := clientset.Discovery().ServerVersion()
 	if err != nil {

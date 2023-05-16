@@ -25,17 +25,20 @@ func main() {
 	}
 
 	log.Printf("Cluster Version: %s\n", clusterInfo.GitVersion)
-	log.Printf("Cluster Major Version: %s\n\n", clusterInfo.Major)
+	log.Printf("Cluster Major Version: %s\n", clusterInfo.Major)
 
-	log.Printf("There are %d pods in the cluster\n", len(pods.Items))
-
-	for _, pod := range pods.Items {
-		log.Printf("\tPod %s: %s\n", pod.GetUID(), pod.GetName())
-
-		for _, container := range pod.Spec.Containers {
-			log.Printf("\t|> Container %s\n", container.Name)
-		}
+	services, err := data.Services(clientset)
+	if err != nil {
+		panic(err.Error())
 	}
+
+	log.Printf("There are %d Services in the cluster\n", len(services.Items))
+
+	for _, service := range services.Items {
+		log.Printf("\tService %s @ %s\n", service.Name, service.Spec.ClusterIP)
+	}
+
+	log.Printf("---------------------------\n")
 
 	nodes, err := data.Nodes(clientset)
 	if err != nil {
@@ -46,6 +49,16 @@ func main() {
 
 	for _, node := range nodes.Items {
 		log.Printf("\tNode %s: %s\n", node.GetUID(), node.GetName())
+	}
+
+	log.Printf("There are %d pods in the cluster\n", len(pods.Items))
+
+	for _, pod := range pods.Items {
+		log.Printf("\tPod %s: %s\n", pod.GetUID(), pod.GetName())
+
+		for _, container := range pod.Spec.Containers {
+			log.Printf("\t|> Container %s\n", container.Name)
+		}
 	}
 
 	log.Printf("Exiting proxy ...\n")
