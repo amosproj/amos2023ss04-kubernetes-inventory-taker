@@ -21,6 +21,10 @@ func main() {
 
 	for _, pod := range pods.Items {
 		log.Printf("\tPod %s: %s\n", pod.GetUID(), pod.GetName())
+
+		for _, container := range pod.Spec.Containers {
+			log.Printf("\t|> Container %s\n", container.Name)
+		}
 	}
 
 	nodes, err := data.Nodes(clientset)
