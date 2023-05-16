@@ -8,6 +8,7 @@ import (
 
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/version"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
@@ -57,4 +58,13 @@ func Nodes(clientset *kubernetes.Clientset) (*v1.NodeList, error) {
 	}
 
 	return nodes, nil
+}
+
+func ClusterInfo(clientset *kubernetes.Clientset) (*version.Info, error) {
+	clusterInfo, err := clientset.Discovery().ServerVersion()
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve server version: %w", err)
+	}
+
+	return clusterInfo, nil
 }

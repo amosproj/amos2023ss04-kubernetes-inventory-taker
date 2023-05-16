@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+	log.Printf("Starting Proxy...")
+
 	clientset, err := data.Clientset()
 	if err != nil {
 		panic(err.Error())
@@ -16,6 +18,14 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+
+	clusterInfo, err := data.ClusterInfo(clientset)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	log.Printf("Cluster Version: %s\n", clusterInfo.GitVersion)
+	log.Printf("Cluster Major Version: %s\n\n", clusterInfo.Major)
 
 	log.Printf("There are %d pods in the cluster\n", len(pods.Items))
 
