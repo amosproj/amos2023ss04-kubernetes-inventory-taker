@@ -58,7 +58,3 @@ func Nodes(clientset *kubernetes.Clientset) (*v1.NodeList, error) {
 
 	return nodes, nil
 }
-
-func TestData() string {
-	return "Hello"
-}
