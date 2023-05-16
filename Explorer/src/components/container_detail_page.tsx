@@ -61,7 +61,7 @@ const changelog_data = [
     { status: "running", name: "nginx-earthlt", port:'8000', started:'15 minutes ago' },
     { status: "running", name: "kind bouman", port:'3000', started:'10 minutes ago' },
     { status: "disabled", name: "radis-stack", port:'8000', started:'' },
-    
+
 ];
 
 function ContainerDetailPage(): JSX.Element {
@@ -110,7 +110,7 @@ function ContainerWorkLoad(): JSX.Element {
             <div className="pr-4">
                 <header>
                         <h3 className="mt-2 mb-3 text-2xl font-bold">
-                            CPU Work Load 
+                            CPU Work Load
                         </h3>
                 </header>
                 <div>
@@ -119,13 +119,13 @@ function ContainerWorkLoad(): JSX.Element {
                             <p className="font-normal text-gray-700 text-center dark:text-gray-400">15.0%</p>
                         </a>
                 </div>
-        
+
             </div>
 
             <div className="pl-4">
                 <header>
                         <h4 className="mt-2 mb-3 text-2xl font-bold">
-                            Memory Work Load   
+                            Memory Work Load
                         </h4>
                 </header>
                 <div>
@@ -134,7 +134,7 @@ function ContainerWorkLoad(): JSX.Element {
                             <p className="font-normal text-gray-700 text-center dark:text-gray-400">60.08%</p>
                         </a>
                 </div>
-                
+
             </div>
 
         </div>
@@ -160,16 +160,16 @@ function ContainerChangelogWidget(): JSX.Element {
                                 </Table.Head>
                                 <Table.Body className="divide-y">
                                     {changelog_data.map((entry, index) => (
-                                        <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                                            <Table.Cell className="!py-1  whitespace-nowrap font-medium bg-gray-50 dark:bg-gray-800">{ entry.status=="running"?<span className="flex w-3 h-3 bg-green-500 rounded-full"></span>:<span className="flex w-3 h-3 bg-red-500 rounded-full"></span> }</Table.Cell>
+                                        <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                                            <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-50 dark:bg-gray-800">{ entry.status=="running"?<span className="flex w-3 h-3 bg-green-500 rounded-full"></span>:<span className="flex w-3 h-3 bg-red-500 rounded-full"></span> }</Table.Cell>
                                             <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-30 dark:bg-gray-600">{ entry.name }</Table.Cell>
                                             <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-30 dark:bg-gray-600">{ entry.port }</Table.Cell>
                                             <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-30 dark:bg-gray-600">{ entry.started }</Table.Cell>
                                         </Table.Row>
                                     ))}
                                 </Table.Body>
-                            </Table> 
-                        
+                            </Table>
+
                     </div>
             </section>
         </div>
@@ -190,7 +190,7 @@ function ContainerDetailsWidget(): JSX.Element {
                 </Table.Head>
                 <Table.Body className="divide-y">
                     {container_data.map((entry, index) => (
-                        <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                        <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                             <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-50 dark:bg-gray-800">{ entry.field }</Table.Cell>
                             <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-30 dark:bg-gray-600">{ entry.content }</Table.Cell>
                         </Table.Row>
