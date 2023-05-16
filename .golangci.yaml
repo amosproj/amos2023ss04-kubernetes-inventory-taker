@@ -11,3 +11,4 @@ linters:
     - golint
     - exhaustivestruct
     - structcheck
+    - exhaustruct
