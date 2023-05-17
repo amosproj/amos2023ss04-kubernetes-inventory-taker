@@ -4,7 +4,7 @@
 
 To run the project please execute `docker-compose up` in the root directory of the project.
 
-If you also want to contribute please install [pre-commit](https://pre-commit.com/) and execute
+If you also want to contribute please install [pre-commit](https://pre-commit.com/) as well as [golangci-lint](https://golangci-lint.run/usage/install/#local-installation) and execute
 the following commands
 
 ```bash
