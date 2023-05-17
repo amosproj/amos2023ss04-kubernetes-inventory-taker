@@ -6,6 +6,8 @@ services:
       DB_URI: db/postgres
       DB_USER: postgres
       DB_PASSWORD: example
+    volumes:
+      - ./Proxy/.kube/:/.kube
   db:
     image: postgres:15
     environment:
@@ -13,7 +15,7 @@ services:
     volumes:
       - ./kubernetes-schema.sql:/docker-entrypoint-initdb.d/kubernetes-schema.sql
 
-      
+
   # starts the app in development mode
   explorer:
     build:
