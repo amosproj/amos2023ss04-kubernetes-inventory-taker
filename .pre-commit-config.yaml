@@ -23,15 +23,11 @@ repos:
     -   id: go-build-mod
     -   id: go-test-mod
 
-
--   repo: https://github.com/pre-commit/mirrors-eslint
-    rev: "v8.39.0"
+-   repo: local
     hooks:
       - id: eslint
-        files: \.tsx?$
+        name: eslint
+        language: system
+        files: 'Explorer/.*\.(js|jsx|ts|tsx)$'
+        entry: bash -c 'cd Explorer && npm run precommit-lint "$@"'
         types: [file]
-        additional_dependencies:
-          - eslint@8.39.0
-          - eslint-config-next@v13.3.4
-        args:
-          - --fix
