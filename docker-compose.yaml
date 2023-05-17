@@ -2,6 +2,7 @@ version: '3.8'
 services:
   proxy:
     build: ./Proxy
+    network_mode: "host"
     environment:
       DB_URI: db/postgres
       DB_USER: postgres
