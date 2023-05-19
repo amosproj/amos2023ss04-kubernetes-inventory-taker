@@ -7,6 +7,7 @@ Simplifying Kubernetes Management and Monitoring for DevOps Teams
 At KIT (Kubernetes Inventory Taker), our mission is to simplify Kubernetes management and monitoring for DevOps teams. We want to provide a user-friendly tool that gives you a clear, real-time view of your Kubernetes resources, from deployments and pods to containers, so you can easily manage and optimize your infrastructure.
 
 Here's what we're all about:
+
 - Inventory Visibility: We'll provide you with a comprehensive view of your Kubernetes inventory, showing you the state, health, and configuration of your deployments, pods, and containers in a single, easy-to-navigate interface. No more complex logs or guesswork - we'll make it simple and intuitive for you to understand your resources.
 - Insights and Analysis: We'll help you gain deep insights into your Kubernetes resources with powerful analytics and analysis. Get real-time information on resource utilization, health status, and configuration changes, so you can quickly identify and resolve issues, track changes over time, and optimize your resources for better performance.
 - User-friendly Web Frontend: We believe in making KIT easy to use and visually appealing. Our web frontend is designed to be user-friendly and responsive, with clear representations of your inventory, including status indicators and configuration details. Find what you need, when you need it, with a clean and intuitive interface that fits seamlessly into your workflow.
