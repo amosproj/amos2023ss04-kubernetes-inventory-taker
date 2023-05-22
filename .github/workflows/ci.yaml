@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - develop
-      - feat/CICD
   pull_request:
 
 env:
@@ -43,13 +42,13 @@ jobs:
       matrix:
         include:
           - dockerfile: ./Proxy/Dockerfile
-            image: ghcr.io/amosproj/amos2023ss04-kubernetes-inventory-taker/proxy
+            image: proxy
             context: ./Proxy
           - dockerfile: ./Explorer/Dockerfile
-            image: ghcr.io/amosproj/amos2023ss04-kubernetes-inventory-taker/explorer
+            image: explorer
             context: ./Explorer
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -67,7 +66,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ matrix.image }}
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.image }}
 
       - name: Build and push Docker Images
         uses: docker/build-push-action@v4
