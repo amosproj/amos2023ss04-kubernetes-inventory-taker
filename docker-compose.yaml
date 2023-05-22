@@ -1,21 +1,23 @@
-version: '3.8'
+version: "3.8"
 services:
   proxy:
     build: ./Proxy
-    network_mode: "host"
     environment:
-      DB_URI: db/postgres
+      DB_URI: localhost
       DB_USER: postgres
       DB_PASSWORD: example
     volumes:
       - ./Proxy/.kube/:/.kube
+    network_mode: host
+
   db:
     image: postgres:15
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: example
     volumes:
       - ./kubernetes-schema.sql:/docker-entrypoint-initdb.d/kubernetes-schema.sql
-
 
   # starts the app in development mode
   explorer:
