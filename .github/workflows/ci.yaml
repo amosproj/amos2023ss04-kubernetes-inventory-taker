@@ -44,8 +44,10 @@ jobs:
         include:
           - dockerfile: ./Proxy/Dockerfile
             image: ghcr.io/proxy
+            context: ./Proxy
           - dockerfile: ./Explorer/Dockerfile
             image: ghcr.io/explorer
+            context: ./Explorer
     permissions:
       contents: read
       packages: write
@@ -70,7 +72,7 @@ jobs:
       - name: Build and push Docker Images
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
