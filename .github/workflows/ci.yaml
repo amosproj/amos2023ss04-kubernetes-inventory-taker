@@ -7,6 +7,10 @@ on:
       - develop
   pull_request:
 
+env:
+  REGISTRY: ghcr.io
+  IMAGES: '[{"image_name": "Explorer", "context": "./Explorer"}, {"image_name": "Proxy", "context": "./Proxy"}]'
+
 jobs:
   pre-commit:
     runs-on: "ubuntu-latest"
