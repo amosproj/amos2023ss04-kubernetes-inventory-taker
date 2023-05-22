@@ -37,6 +37,33 @@ jobs:
 
   build-and-push-images:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Loop over images and build/push
+        id: build-and-push
+        run: |
+          IMAGES="${{ env.IMAGES }}"
+          while IFS= read -r line; do
+            image_name=$(jq -r '.image_name' <<< "$line")
+            context=$(jq -r '.context' <<< "$line")
+            echo "Building and pushing image: $image_name"
+
+            docker build -t ${{ env.REGISTRY }}/$image_name $context
+            docker push ${{ env.REGISTRY }}/$image_name
+          done <<< "$IMAGES"
 
   unit-test:
     runs-on: "ubuntu-latest"
