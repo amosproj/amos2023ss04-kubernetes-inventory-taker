@@ -47,3 +47,4 @@ jobs:
         uses: AbsaOSS/k3d-action@v2.4.0
         with:
           cluster-name: "Kubernetes Inventory Test Cluster"
+          args: --agents 1
