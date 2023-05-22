@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - develop
+      - feat/CICD
   pull_request:
 
 env:
