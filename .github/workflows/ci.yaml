@@ -51,3 +51,6 @@ jobs:
         with:
           cluster-name: "Kubernetes Inventory Test Cluster"
           args: --agents 1
+
+  proxy-integration-test:
+    runs-on: "ubuntu-latest"
