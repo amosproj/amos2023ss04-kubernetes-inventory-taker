@@ -41,3 +41,7 @@ jobs:
         uses: docker/bake-action@v3
 
   setup-kubernetes-cluster:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: AbsaOSS/k3d-action
+        uses: AbsaOSS/k3d-action@v2.4.0
