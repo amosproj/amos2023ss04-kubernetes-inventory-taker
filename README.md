@@ -17,11 +17,15 @@ With these goals in mind, our product mission is to simplify Kubernetes manageme
 
 ## Setup
 
-To run the project please execute `docker-compose up` in the root directory of the project.
+To run the project please install [Docker and Docker compose](https://docs.docker.com/get-docker/) and execute `docker-compose up` in the root directory of the project.
 
-If you also want to contribute please install [pre-commit](https://pre-commit.com/) as well as [golangci-lint](https://golangci-lint.run/usage/install/#local-installation) and execute
-the following commands
+If you also want to contribute please install the following:
+
+- [golang](https://go.dev/doc/install)
+- [NodeJS/npm](https://nodejs.org/en/download)
+- [pre-commit](https://pre-commit.com/)
+- [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
 
 ```bash
-pre-commit install && pre-commit install -t commit-msg
+cd Explorer && npm install && cd .. && pre-commit install && pre-commit install -t commit-msg
 ```
