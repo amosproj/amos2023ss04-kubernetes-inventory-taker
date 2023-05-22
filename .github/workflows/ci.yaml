@@ -34,15 +34,9 @@ jobs:
           # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or `latest` to use the latest version
           version: v1.52
           working-directory: Proxy
-  build-images:
-    runs-on: "ubuntu-latest"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build images
-        uses: docker/bake-action@v3
+
+  build-and-push-images:
+    runs-on: ubuntu-latest
 
   unit-test:
     runs-on: "ubuntu-latest"
