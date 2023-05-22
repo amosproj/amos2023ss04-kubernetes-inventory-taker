@@ -75,7 +75,7 @@ jobs:
       - name: AbsaOSS/k3d-action
         uses: AbsaOSS/k3d-action@v2.4.0
         with:
-          cluster-name: "Kubernetes-Inventory-Test-Cluster"
+          cluster-name: "Test-Cluster"
           args: --agents 1
 
   #proxy-integration-test:
