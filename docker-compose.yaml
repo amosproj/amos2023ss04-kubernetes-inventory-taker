@@ -3,13 +3,17 @@ services:
   proxy:
     build: ./Proxy
     environment:
-      DB_URI: db/postgres
+      DB_URI: localhost
       DB_USER: postgres
       DB_PASSWORD: example
     volumes:
       - ./Proxy/.kube/:/.kube
+    network_mode: host
+
   db:
     image: postgres:15
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: example
     volumes:
