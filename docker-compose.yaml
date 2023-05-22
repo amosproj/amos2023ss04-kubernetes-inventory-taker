@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   proxy:
     build: ./Proxy
@@ -14,7 +14,6 @@ services:
       POSTGRES_PASSWORD: example
     volumes:
       - ./kubernetes-schema.sql:/docker-entrypoint-initdb.d/kubernetes-schema.sql
-
 
   # starts the app in development mode
   explorer:
