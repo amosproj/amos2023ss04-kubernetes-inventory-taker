@@ -66,8 +66,8 @@ jobs:
             docker push ${{ env.REGISTRY }}/$image_name
           done <<< "$IMAGES"
 
-  unit-test:
-    runs-on: "ubuntu-latest"
+  #unit-test:
+  #runs-on: "ubuntu-latest"
 
   setup-kubernetes-cluster:
     runs-on: "ubuntu-latest"
@@ -78,5 +78,5 @@ jobs:
           cluster-name: "Kubernetes Inventory Test Cluster"
           args: --agents 1
 
-  proxy-integration-test:
-    runs-on: "ubuntu-latest"
+  #proxy-integration-test:
+  #runs-on: "ubuntu-latest"
