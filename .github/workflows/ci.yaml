@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGES: '[{"image_name": "Explorer", "context": "./Explorer"}, {"image_name": "Proxy", "context": "./Proxy"}]'
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   pre-commit:
@@ -38,6 +38,14 @@ jobs:
 
   build-and-push-images:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./Proxy/Dockerfile
+            image: ghcr.io/proxy
+          - dockerfile: ./Explorer/Dockerfile
+            image: ghcr.io/explorer
     permissions:
       contents: read
       packages: write
@@ -53,18 +61,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Loop over images and build/push
-        id: build-and-push
-        run: |
-          IMAGES="${{ env.IMAGES }}"
-          while IFS= read -r line; do
-            image_name=$(jq -r '.image_name' <<< "$line")
-            context=$(jq -r '.context' <<< "$line")
-            echo "Building and pushing image: $image_name"
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ matrix.image }}
 
-            docker build -t ${{ env.REGISTRY }}/$image_name $context
-            docker push ${{ env.REGISTRY }}/$image_name
-          done <<< "$IMAGES"
+      - name: Build and push Docker Images
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   #unit-test:
   #runs-on: "ubuntu-latest"
