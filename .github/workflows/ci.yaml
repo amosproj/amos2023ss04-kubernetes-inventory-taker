@@ -40,6 +40,9 @@ jobs:
       - name: Build images
         uses: docker/bake-action@v3
 
+  unit-test:
+    runs-on: "ubuntu-latest"
+
   setup-kubernetes-cluster:
     runs-on: "ubuntu-latest"
     steps:
