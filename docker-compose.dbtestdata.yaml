@@ -8,7 +8,6 @@ services:
       POSTGRES_PASSWORD: example
     volumes:
       - ./DB/:/docker-entrypoint-initdb.d/
-      
 #Uncomment the following services if needed
 #  proxy:
 #    build: ./Proxy
@@ -20,7 +19,7 @@ services:
 #      - ./Proxy/.kube/:/.kube
 #    network_mode: host
 
-  # starts the app in development mode
+# starts the app in development mode
 #  explorer:
 #    build:
 #      context: ./Explorer
