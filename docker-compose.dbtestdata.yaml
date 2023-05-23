@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  db:
+  dbTestData:
     image: postgres:15
     ports:
       - "5432:5432"
