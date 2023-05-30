@@ -1,23 +1,9 @@
 "use client";
 
 import { DarkThemeToggle } from "flowbite-react";
-import { Table, Badge } from "flowbite-react";
-
-export default function Index(): JSX.Element {
-  return (
-    <div className="p-6">
-      <ContainerDetailPage />
-    </div>
-  );
-}
-
-function H1({ content }: any): JSX.Element {
-  return (
-    <h1 className="mb-4 my-2 text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">
-      {content}
-    </h1>
-  );
-}
+import { Table } from "flowbite-react";
+import { H1 } from "./style_elements";
+import { HealthIndicatorBadge } from "./health_indicators";
 
 // Magic Number Definitions for Container Data Structure
 const CONTAINER_ID = 0;
@@ -40,7 +26,7 @@ const CONTAINER_RESTART_OPTIONES = 14;
 const container_data = [
   { field: "ID", content: "235480394" },
   { field: "Name", content: "Company Mail" },
-  { field: "Status", content: "Running" },
+  { field: "Status", content: "Error" },
   { field: "Image", content: "postfix:v1.0.3" },
   { field: "Service", content: "Mailserver" },
   { field: "Cluster", content: "DMZ-Cluster" },
@@ -72,32 +58,14 @@ const changelog_data = [
   { status: "disabled", name: "radis-stack", port: "8000", started: "" },
 ];
 
-function ContainerDetailPage(): JSX.Element {
-  function get_container_status_color() {
-    switch (container_data[CONTAINER_STATUS].content) {
-      case "Running":
-        return "success";
-      case "Stopped":
-        return "gray";
-      case "Error":
-        return "failure";
-      case "Warning":
-        return "warning";
-    }
-
-    return "";
-  }
-
+export default function ContainerDetailPage(): JSX.Element {
   return (
     <div>
       <div className="flex">
         <H1 content={"Container ID " + container_data[CONTAINER_ID].content} />
-        <Badge
-          color={get_container_status_color()}
-          className="!text-2xl ml-2 mt-1"
-        >
-          {container_data[CONTAINER_STATUS].content}
-        </Badge>
+        <HealthIndicatorBadge
+          status={container_data[CONTAINER_STATUS].content}
+        />
       </div>
       <div className="flex">
         <div className="w-1/4 w-max">
