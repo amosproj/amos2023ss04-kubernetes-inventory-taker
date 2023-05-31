@@ -1,15 +1,19 @@
 package cluster
 
 import (
-	"context"
+	"crypto/tls"
+	"database/sql"
 	"flag"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"reflect"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/driver/pgdriver"
 	"gopkg.in/yaml.v2"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -40,12 +44,11 @@ type Event struct {
 	Type      EventType
 	OldObj    interface{}
 	Object    interface{}
-	timestamp string
+	timestamp time.Time
 }
 
 // SetupDBConnection setup database connection.
-func SetupDBConnection() *pgxpool.Pool {
-	// example config string: user=jack password=secret host=pg.example.com port=5432 dbname=mydb sslmode=verify-ca pool_max_conns=10
+func SetupDBConnection() *bun.DB {
 	dbUser, exists := os.LookupEnv("DB_USER")
 	if !exists {
 		log.Println("DB_USER environment variable is not set. Trying dbUser = postgres")
@@ -58,15 +61,22 @@ func SetupDBConnection() *pgxpool.Pool {
 		dbPassword = "example"
 	}
 
-	configDB, err := pgxpool.ParseConfig(fmt.Sprintf("user=%s password=%s host=localhost port=5432 dbname=postgres pool_max_conns=10", dbUser, dbPassword))
-	if err != nil {
-		log.Fatal(err)
-	}
-	pool, err := pgxpool.NewWithConfig(context.Background(), configDB)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return pool
+	pgconn := pgdriver.NewConnector(
+		pgdriver.WithNetwork("tcp"),
+		pgdriver.WithAddr("localhost:5432"),
+		pgdriver.WithTLSConfig(&tls.Config{InsecureSkipVerify: true}),
+		pgdriver.WithUser(dbUser),
+		pgdriver.WithPassword(dbPassword),
+		pgdriver.WithDatabase("postgres"),
+		pgdriver.WithInsecure(true),
+		pgdriver.WithTimeout(5*time.Second),
+		pgdriver.WithDialTimeout(5*time.Second),
+	)
+
+	sqldb := sql.OpenDB(pgconn)
+
+	db := bun.NewDB(sqldb, pgdialect.New())
+	return db
 }
 
 func ReadExternalConfig() Config {
@@ -74,7 +84,7 @@ func ReadExternalConfig() Config {
 
 	// parse proxy config file name from cmd flags
 	// defaults to same directory
-	proxyConfigFile := flag.String("config", "config.yaml",
+	proxyConfigFile := flag.String("config", "../../config.yaml",
 		"(optional) proxy configuration, overwrites kubeconfig flag")
 
 	yamlFile, err := os.ReadFile(*proxyConfigFile)
@@ -123,13 +133,13 @@ func CreateClientSet(kubeconfigPath string) *kubernetes.Clientset {
 func SetupEventHandlerFuncs(workqueue workqueue.RateLimitingInterface) cache.ResourceEventHandlerFuncs {
 	return cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-			workqueue.Add(Event{Type: Add, Object: obj, timestamp: time.Now().Format("2006-01-02 15:04:05.000")})
+			workqueue.Add(Event{Type: Add, Object: obj, timestamp: time.Now()})
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
-			workqueue.Add(Event{Type: Update, OldObj: oldObj, Object: newObj, timestamp: time.Now().Format("2006-01-02 15:04:05.000")})
+			workqueue.Add(Event{Type: Update, OldObj: oldObj, Object: newObj, timestamp: time.Now()})
 		},
 		DeleteFunc: func(obj interface{}) {
-			workqueue.Add(Event{Type: Delete, Object: obj, timestamp: time.Now().Format("2006-01-02 15:04:05.000")})
+			workqueue.Add(Event{Type: Delete, Object: obj, timestamp: time.Now()})
 		},
 	}
 }
@@ -166,25 +176,26 @@ func RegisterEventHandlers(resourceTypes []string, informerFactory informers.Sha
 	}
 }
 
-func ProcessWorkqueue(DBpool *pgxpool.Pool, workqueue workqueue.RateLimitingInterface, deploymentLister, namespaceLister, podLister, serviceLister cache.Indexer) {
+func ProcessWorkqueue(db *bun.DB, workqueue workqueue.RateLimitingInterface, deploymentLister, namespaceLister, podLister, serviceLister cache.Indexer) {
 	for {
 		item, shutdown := workqueue.Get()
 		if shutdown {
 			return
 		}
 		event := item.(Event)
+		log.Println(reflect.TypeOf(event.Object))
 
 		switch event.Object.(type) {
 		case *appsv1.Deployment:
-
 		case *corev1.Namespace:
 		case *corev1.Node:
-			ProcessNode(event, DBpool)
+			ProcessNode(event, db)
 
 		case *corev1.Pod:
-			ProcessPod(event, DBpool)
+			ProcessPod(event, db)
 
 		case *corev1.Service:
+			ProcessService(event, db)
 		}
 
 		workqueue.Forget(item)

@@ -1,9 +1,7 @@
-kubeconfigPath: 
+kubeconfigPath:
 resourceTypes:
-#  - cluster
-#  - container
-  - deployment
-  - namespace
+#  - deployment
+#  - namespace
   - node
-  - pod
+#  - pod
   - service
