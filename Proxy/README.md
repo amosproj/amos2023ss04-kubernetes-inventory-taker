@@ -14,18 +14,18 @@ The following is an excerpt from my modified minikube config:
 ```yaml
 apiVersion: v1
 clusters:
-- cluster:
-    certificate-authority: /.kube/ca.crt
-...
+  - cluster:
+      certificate-authority: /.kube/ca.crt
+---
 contexts:
-- context:
-    cluster: minikube
-...
+  - context:
+      cluster: minikube
+---
 users:
-- name: minikube
-  user:
-    client-certificate: /.kube/client.crt
-    client-key: /.kube/client.key
+  - name: minikube
+    user:
+      client-certificate: /.kube/client.crt
+      client-key: /.kube/client.key
 ```
 
 ## Running

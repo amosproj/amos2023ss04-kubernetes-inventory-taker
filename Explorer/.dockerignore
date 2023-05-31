@@ -6,3 +6,6 @@ README.md
 .next
 .git
 Dockerfile
+cypress.config.ts
+cypress/
+**/*cy.js
