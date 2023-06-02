@@ -1,4 +1,14 @@
 {
-  "plugins": ["prettier", "cypress"],
-  "extends": ["next/core-web-vitals"]
+  "plugins": [
+    "cypress",
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "root": true
 }

@@ -37,3 +37,5 @@ bin/
 
 # kubernetes config
 .kube/
+# local config files
+*.local
