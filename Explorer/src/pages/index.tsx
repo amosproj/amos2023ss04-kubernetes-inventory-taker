@@ -1,7 +1,7 @@
 // pages/index.tsx
 import React from "react";
-import StripedTable from "../components/containerTable";
-import containers from "../components/containerTestData";
+import StripedTable from "@/components/containerTable";
+import containers from "@/components/containerTestData";
 
 const ContainerPage: React.FC = () => {
   return (
