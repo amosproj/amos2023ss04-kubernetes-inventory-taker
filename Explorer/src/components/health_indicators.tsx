@@ -1,10 +1,15 @@
 "use client";
 
 import { Badge } from "flowbite-react";
-import { H2 } from "./style_elements";
 
 // Widget for component health
-export function HealthIndicatorWidget({ name, status }: any): JSX.Element {
+export function HealthIndicatorWidget({
+  name,
+  status,
+}: {
+  status: string;
+  name: string;
+}): JSX.Element {
   function get_status_color() {
     switch (status) {
       case "Running":
@@ -16,7 +21,7 @@ export function HealthIndicatorWidget({ name, status }: any): JSX.Element {
       case "Warning":
         return "#FDF6B2";
     }
-    return "";
+    throw "Unexpected Status";
   }
 
   function get_status_text_color() {
@@ -30,7 +35,7 @@ export function HealthIndicatorWidget({ name, status }: any): JSX.Element {
       case "Warning":
         return "#713B13";
     }
-    return "";
+    throw "Unexpected Status";
   }
 
   return (
@@ -57,7 +62,11 @@ export function HealthIndicatorWidget({ name, status }: any): JSX.Element {
 }
 
 // Badge for component health
-export function HealthIndicatorBadge({ status }: any): JSX.Element {
+export function HealthIndicatorBadge({
+  status,
+}: {
+  status: string;
+}): JSX.Element {
   function get_status_color_label() {
     switch (status) {
       case "Running":

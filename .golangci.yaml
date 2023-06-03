@@ -12,3 +12,4 @@ linters:
     - exhaustivestruct
     - structcheck
     - exhaustruct
+    - depguard

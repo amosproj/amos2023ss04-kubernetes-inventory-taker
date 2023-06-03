@@ -16,13 +16,14 @@ export enum ContainerIndex {
   CREATED_ON,
   RESTART_OPTIONS,
 }
+export type ChangeLogEntry = {
+  status: string;
+  name: string;
+  port: string;
+  started: string;
+};
 
 export type ContainerDetails = {
   fields: Array<{ field: string; content: string }>;
-  changelog: Array<{
-    status: string;
-    name: string;
-    port: string;
-    started: string;
-  }>;
+  changelog: Array<ChangeLogEntry>;
 };

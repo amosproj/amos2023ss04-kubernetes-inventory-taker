@@ -1,6 +1,6 @@
 import "server-only";
-import { Client } from "pg";
-import { ContainerDetails } from "./types/ContainerDetails";
+import { ContainerDetails, ContainerIndex } from "./types/ContainerDetails";
+import { Pool } from "pg";
 
 // Example for Container Data Structure to generate page
 const container_data = [
@@ -38,13 +38,28 @@ const changelog_data = [
   { status: "disabled", name: "radis-stack", port: "8000", started: "" },
 ];
 
-export async function getData(): Promise<ContainerDetails> {
-  const client = new Client();
-  await client.connect();
+const pool = new Pool({
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || "5432"),
+  database: process.env.PGSQL_DATABASE,
+});
 
-  const res = await client.query("SELECT $1::text as message", [
-    "Hello world!",
-  ]);
-  await client.end();
-  return { fields: container_data, changelog: changelog_data };
+export async function getContainerDetails(
+  container_id: number
+): Promise<ContainerDetails> {
+  const res = (
+    await pool.query(
+      "SELECT * FROM containers c WHERE container_id = $1 order by container_event_id DESC limit 1",
+      [container_id]
+    )
+  ).rows[0];
+  const adjusted_container_data = structuredClone(container_data);
+  adjusted_container_data[ContainerIndex.ID].content = res.container_id;
+  adjusted_container_data[ContainerIndex.NAME].content = res.name;
+  adjusted_container_data[ContainerIndex.STATUS].content = res.status;
+  adjusted_container_data[ContainerIndex.IMAGE].content = res.image;
+  adjusted_container_data[ContainerIndex.POD].content = res.pod_id;
+  return { fields: adjusted_container_data, changelog: changelog_data };
 }

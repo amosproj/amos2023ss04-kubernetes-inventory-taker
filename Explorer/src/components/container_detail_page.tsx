@@ -1,17 +1,19 @@
 "use client";
 
-import { DarkThemeToggle } from "flowbite-react";
 import { Table } from "flowbite-react";
 import { H1 } from "./style_elements";
 import { HealthIndicatorBadge } from "./health_indicators";
-import { ContainerDetails, ContainerIndex } from "@/lib/types/ContainerDetails";
+import {
+  ChangeLogEntry,
+  ContainerDetails,
+  ContainerIndex,
+} from "@/lib/types/ContainerDetails";
 
-interface ContainerDetailsWrapper {
+export default function ContainerDetailPage({
+  container,
+}: {
   container: ContainerDetails;
-}
-export default function ContainerDetailPage(
-  {container}: ContainerDetailsWrapper
-): JSX.Element {
+}): JSX.Element {
   return (
     <div>
       <div className="flex">
@@ -26,11 +28,11 @@ export default function ContainerDetailPage(
       </div>
       <div className="flex">
         <div className="w-1/4 w-max">
-          <ContainerDetailsWidget />
+          <ContainerDetailsWidget container_data={container.fields} />
         </div>
         <div className="w-1/2 w-max px-8">
           <ContainerWorkLoad />
-          <ContainerChangelogWidget />
+          <ContainerChangelogWidget changelog_data={container.changelog} />
         </div>
       </div>
     </div>
@@ -81,7 +83,11 @@ function ContainerWorkLoad(): JSX.Element {
   );
 }
 
-function ContainerChangelogWidget(): JSX.Element {
+function ContainerChangelogWidget({
+  changelog_data,
+}: {
+  changelog_data: Array<ChangeLogEntry>;
+}): JSX.Element {
   return (
     <div className="p-0">
       <section>
@@ -136,7 +142,11 @@ function ContainerChangelogWidget(): JSX.Element {
   );
 }
 
-function ContainerDetailsWidget(): JSX.Element {
+function ContainerDetailsWidget({
+  container_data,
+}: {
+  container_data: Array<{ field: string; content: string }>;
+}): JSX.Element {
   return (
     <div className="p-0 w-max">
       <h2 className="mt-2 mb-3 text-2xl font-bold">Details</h2>
