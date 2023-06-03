@@ -1,7 +1,6 @@
 "use client";
 
 import { Badge } from "flowbite-react";
-import { H2 } from "./style_elements";
 
 // Widget for component health
 export function HealthIndicatorWidget({ name, status }: any): JSX.Element {

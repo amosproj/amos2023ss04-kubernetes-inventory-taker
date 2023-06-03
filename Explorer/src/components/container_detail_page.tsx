@@ -1,9 +1,8 @@
 "use client";
 
-import { DarkThemeToggle } from "flowbite-react";
 import { Table } from "flowbite-react";
-import { H1 } from "./style_elements";
-import { HealthIndicatorBadge } from "./health_indicators";
+import { H1 } from "@/components/style_elements";
+import { HealthIndicatorBadge } from "@/components/health_indicators";
 
 // Magic Number Definitions for Container Data Structure
 const CONTAINER_ID = 0;

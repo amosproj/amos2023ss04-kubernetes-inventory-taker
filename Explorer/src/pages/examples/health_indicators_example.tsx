@@ -1,7 +1,7 @@
 import {
   HealthIndicatorWidget,
   HealthIndicatorBadge,
-} from "../../components/health_indicators";
+} from "@/components/health_indicators";
 
 export default function Index(): JSX.Element {
   return (
