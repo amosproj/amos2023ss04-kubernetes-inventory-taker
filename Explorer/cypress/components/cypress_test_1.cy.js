@@ -1,4 +1,4 @@
-import CypressTest1 from "./../../src/pages/cypress_test/cypress_test_1.tsx";
+import CypressTest1 from "./../../src/app/cypress_test/cypress_test_1/page.tsx";
 
 describe("<CypressTest1 />", () => {
   it("should render and display expected content", () => {
