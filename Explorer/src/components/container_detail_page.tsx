@@ -2,24 +2,26 @@
 
 import { Table } from "flowbite-react";
 import { H1 } from "@/components/style_elements";
-import { HealthIndicatorBadge } from "@/components/health_indicators";
+import { Health, HealthIndicatorBadge } from "@/components/health_indicators";
 
 // Magic Number Definitions for Container Data Structure
-const CONTAINER_ID = 0;
-const CONTAINER_NAME = 1;
-const CONTAINER_STATUS = 2;
-const CONTAINER_IMAGE = 3;
-const CONTAINER_SERVICE = 4;
-const CONTAINER_CLUSTER = 5;
-const CONTAINER_NODE = 6;
-const CONTAINER_POD = 7;
-const CONTAINER_PORTS = 8;
-const CONTAINER_VOLUMES = 9;
-const CONTAINER_AGE = 10;
-const CONTAINER_CPU_USAGE = 11;
-const CONTAINER_SPACE_USAGE = 12;
-const CONTAINER_CREATED_ON = 13;
-const CONTAINER_RESTART_OPTIONES = 14;
+enum ContainerIndex {
+  ID = 0,
+  NAME,
+  STATUS,
+  IMAGE,
+  SERVICE,
+  CLUSTER,
+  NODE,
+  POD,
+  PORTS,
+  VOLUMES,
+  AGE,
+  CPU_USAGE,
+  SPACE_USAGE,
+  CREATED_ON,
+  RESTART_OPTIONS,
+}
 
 // Example for Container Data Structure to generate page
 const container_data = [
@@ -61,9 +63,11 @@ export default function ContainerDetailPage(): JSX.Element {
   return (
     <div>
       <div className="flex">
-        <H1 content={"Container ID " + container_data[CONTAINER_ID].content} />
+        <H1
+          content={"Container ID " + container_data[ContainerIndex.ID].content}
+        />
         <HealthIndicatorBadge
-          status={container_data[CONTAINER_STATUS].content}
+          status={container_data[ContainerIndex.STATUS].content as Health}
         />
       </div>
       <div className="flex">
