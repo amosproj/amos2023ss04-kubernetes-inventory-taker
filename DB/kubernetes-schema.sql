@@ -1,8 +1,8 @@
 CREATE TABLE "Cluster" (
   "cluster_event_id" int PRIMARY KEY,
-  "cluster_id" int,
-  "timestamp" timestamp NOT NULL,
-  "name" text
+  "cluster_id" int NOT NULL,
+  "timestamp" timestamp NOT NULL DEFAULT NOW(),
+  "name" text NOT NULL
 );
 
 -- https://kubernetes.io/docs/concepts/architecture/nodes/

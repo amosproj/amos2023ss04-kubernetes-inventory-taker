@@ -1,8 +1,6 @@
 package cluster
 
 import (
-	"crypto/tls"
-	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -11,9 +9,7 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	"github.com/uptrace/bun/driver/pgdriver"
+	database "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/persistent"
 	"gopkg.in/yaml.v2"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -23,7 +19,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 	"k8s.io/client-go/util/workqueue"
-	"k8s.io/klog"
+	"k8s.io/klog/v2"
 	"k8s.io/utils/strings/slices"
 )
 
@@ -45,38 +41,6 @@ type Event struct {
 	OldObj    interface{}
 	Object    interface{}
 	timestamp time.Time
-}
-
-// SetupDBConnection setup database connection.
-func SetupDBConnection() *bun.DB {
-	dbUser, exists := os.LookupEnv("DB_USER")
-	if !exists {
-		log.Println("DB_USER environment variable is not set. Trying dbUser = postgres")
-		dbUser = "postgres"
-	}
-
-	dbPassword, exists := os.LookupEnv("DB_PASSWORD")
-	if !exists {
-		log.Println("DB_PASSWORD environment variable is not set. Trying dbPassword = example")
-		dbPassword = "example"
-	}
-
-	pgconn := pgdriver.NewConnector(
-		pgdriver.WithNetwork("tcp"),
-		pgdriver.WithAddr("localhost:5432"),
-		pgdriver.WithTLSConfig(&tls.Config{InsecureSkipVerify: true}),
-		pgdriver.WithUser(dbUser),
-		pgdriver.WithPassword(dbPassword),
-		pgdriver.WithDatabase("postgres"),
-		pgdriver.WithInsecure(true),
-		pgdriver.WithTimeout(5*time.Second),
-		pgdriver.WithDialTimeout(5*time.Second),
-	)
-
-	sqldb := sql.OpenDB(pgconn)
-
-	db := bun.NewDB(sqldb, pgdialect.New())
-	return db
 }
 
 func ReadExternalConfig() Config {
@@ -176,7 +140,7 @@ func RegisterEventHandlers(resourceTypes []string, informerFactory informers.Sha
 	}
 }
 
-func ProcessWorkqueue(db *bun.DB, workqueue workqueue.RateLimitingInterface, deploymentLister, namespaceLister, podLister, serviceLister cache.Indexer) {
+func ProcessWorkqueue(db *database.Queries, workqueue workqueue.RateLimitingInterface, deploymentLister, namespaceLister, podLister, serviceLister cache.Indexer) {
 	for {
 		item, shutdown := workqueue.Get()
 		if shutdown {

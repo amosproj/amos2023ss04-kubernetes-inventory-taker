@@ -2,14 +2,12 @@ package cluster
 
 import (
 	"context"
-	"log"
 	"math/rand"
-	"time"
 
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/schema"
+	database "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/persistent"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
+	"k8s.io/klog/v2"
 )
 
 type NodeConditions struct {
@@ -32,77 +30,62 @@ type Allocatable struct {
 	Pods   resource.Quantity
 }
 
-type Node struct {
-	bun.BaseModel           `bun:"table:Node"`
-	NodeEventID             int       `bun:"node_event_id,type:integer,notnull"`
-	NodeID                  string    `bun:"node_id,type:uuid"`
-	Timestamp               time.Time `bun:"timestamp,type:timestamp,notnull"`
-	CreationTime            time.Time `bun:"creation_time,type:timestamp"`
-	Name                    string    `bun:"name,type:text"`
-	IPAddressInternal       []string  `bun:"ip_address_internal,type:varchar[],array"`
-	IPAddressExternal       []string  `bun:"ip_address_external,type:varchar[],array"`
-	Hostname                string    `bun:"hostname,type:text"`
-	StatusCapacityCPU       string    `bun:"status_capacity_cpu,type:text"`
-	StatusCapacityMemory    string    `bun:"status_capacity_memory,type:text"`
-	StatusCapacityPods      string    `bun:"status_capacity_pods,type:text"`
-	StatusAllocatableCPU    string    `bun:"status_allocatable_cpu,type:text"`
-	StatusAllocatableMemory string    `bun:"status_allocatable_memory,type:text"`
-	StatusAllocatablePods   string    `bun:"status_allocatable_pods,type:text"`
-	KubeletVersion          string    `bun:"kubelet_version,type:text"`
-	Ready                   string    `bun:"node_conditions_ready,type:text"`
-	DiskPressure            string    `bun:"node_conditions_disk_pressure,type:text"`
-	MemoryPressure          string    `bun:"node_conditions_memory_pressure,type:text"`
-	PIDPressure             string    `bun:"node_conditions_pid_Pressure,type:text"`
-	NetworkUnavailable      string    `bun:"node_conditions_network_unavailable,type:text"`
-}
+func ProcessNode(event Event, dbQueries *database.Queries) {
+	nodeNew, assertOk := event.Object.(*corev1.Node)
+	if !assertOk {
+		klog.Error(nil)
+	}
 
-func ProcessNode(event Event, db *bun.DB) {
-	node := event.Object.(*corev1.Node)
+	nodeOld, assertOk := event.OldObj.(*corev1.Node)
+	if !assertOk {
+		klog.Error(nil)
+	}
 
-	//ignore update event with unchanged resource version
-	if event.Type == Update && event.OldObj.(*corev1.Node).ResourceVersion == node.ResourceVersion {
+	if event.Type == Update && nodeOld.ResourceVersion == nodeNew.ResourceVersion {
 		return
 	}
 
-	//get some "more complicated to obtain" fields
-	conditions := GetNodeConditions(node)
-	capacity, allocatable := GetStatus(node)
-	internalIPs, externalIPs, hostname := GetNodeAddresses(node)
+	conditions := GetNodeConditions(nodeNew)
+	capacity, allocatable := GetStatus(nodeNew)
+	internalIPs, externalIPs, hostname := GetNodeAddresses(nodeNew)
 
 	// Create a new Node
-	nodeDB := Node{
-		BaseModel:               schema.BaseModel{},
-		NodeEventID:             int(rand.Int31()),
-		NodeID:                  string(node.UID),
-		Timestamp:               event.timestamp,
-		CreationTime:            node.CreationTimestamp.Time,
-		Name:                    node.Name,
-		IPAddressInternal:       internalIPs,
-		IPAddressExternal:       externalIPs,
-		Hostname:                hostname,
-		StatusCapacityCPU:       capacity.CPU.String(),
-		StatusCapacityMemory:    capacity.Memory.String(),
-		StatusCapacityPods:      capacity.Pods.String(),
-		StatusAllocatableCPU:    allocatable.CPU.String(),
-		StatusAllocatableMemory: allocatable.Memory.String(),
-		StatusAllocatablePods:   allocatable.Pods.String(),
-		KubeletVersion:          node.Status.NodeInfo.KubeletVersion,
-		Ready:                   conditions.Ready,
-		DiskPressure:            conditions.DiskPressure,
-		MemoryPressure:          conditions.MemoryPressure,
-		PIDPressure:             conditions.PIDPressure,
-		NetworkUnavailable:      conditions.NetworkUnavailable,
-	}
+	var nodeDB database.UpdateNodeParams
+
+	nodeDB.NodeEventID = int32(rand.Int31())
+	nodeDB.NodeID.Scan(nodeNew.UID)
+	nodeDB.Timestamp.Scan(event.timestamp)
+	nodeDB.CreationTime.Scan(nodeNew.CreationTimestamp.Time)
+	nodeDB.Name.Scan(nodeNew.Name)
+	nodeDB.IpAddressInternal = internalIPs
+	nodeDB.IpAddressExternal = externalIPs
+	nodeDB.Hostname.Scan(hostname)
+	nodeDB.StatusCapacityCpu.Scan(capacity.CPU.String())
+	nodeDB.StatusCapacityMemory.Scan(capacity.Memory.String())
+	nodeDB.StatusCapacityPods.Scan(capacity.Pods.String())
+	nodeDB.StatusAllocatableCpu.Scan(allocatable.CPU.String())
+	nodeDB.StatusAllocatableMemory.Scan(allocatable.Memory.String())
+	nodeDB.StatusAllocatablePods.Scan(allocatable.Pods.String())
+	nodeDB.KubeletVersion.Scan(nodeNew.Status.NodeInfo.KubeletVersion)
+	nodeDB.NodeConditionsReady.Scan(conditions.Ready)
+	nodeDB.NodeConditionsDiskPressure.Scan(conditions.DiskPressure)
+	nodeDB.NodeConditionsMemoryPressure.Scan(conditions.MemoryPressure)
+	nodeDB.NodeConditionsPidPressure.Scan(conditions.PIDPressure)
+	nodeDB.NodeConditionsNetworkUnavailable.Scan(conditions.NetworkUnavailable)
 
 	// Insert the new Node into the database
-	_, err := db.NewInsert().Model(&nodeDB).Exec(context.Background())
+	err := dbQueries.UpdateNode(context.Background(), nodeDB)
 	if err != nil {
-		log.Fatal(err)
+		klog.Fatal(err)
 	}
 }
 
 // GetNodeAddresses separates the internal and external IP addresses and the hostname from a node's status.
-func GetNodeAddresses(node *corev1.Node) (internalIPs []string, externalIPs []string, hostname string) {
+func GetNodeAddresses(node *corev1.Node) ([]string, []string, string) {
+	var internalIPs, externalIPs []string
+
+	var hostname string
+
 	for _, address := range node.Status.Addresses {
 		switch address.Type {
 		case corev1.NodeInternalIP:
@@ -111,8 +94,12 @@ func GetNodeAddresses(node *corev1.Node) (internalIPs []string, externalIPs []st
 			externalIPs = append(externalIPs, address.Address)
 		case corev1.NodeHostName:
 			hostname = address.Address
+		case corev1.NodeInternalDNS:
+		case corev1.NodeExternalDNS:
+			klog.Info("Nodes external DNS", "IP", address.Address)
 		}
 	}
+
 	return internalIPs, externalIPs, hostname
 }
 
@@ -145,8 +132,8 @@ func GetNodeConditions(node *corev1.Node) NodeConditions {
 	return conditions
 }
 
-// Does return status of cpu, memory and pods; allocatable are resources of a node that are available for scheduling
-func GetStatus(node *corev1.Node) (capacity Capacity, allocatable Allocatable) {
+// Does return status of cpu, memory and pods; allocatable are resources of a node that are available for scheduling.
+func GetStatus(node *corev1.Node) (Capacity, Allocatable) {
 	return Capacity{
 			CPU:    node.Status.Capacity[corev1.ResourceCPU],
 			Memory: node.Status.Capacity[corev1.ResourceMemory],

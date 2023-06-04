@@ -4,6 +4,11 @@
 
 Since the proxy Interacts with the kubernetes api of a cluster, you need to have one up and running (like [minikube](https://minikube.sigs.k8s.io/docs/start/)).
 
+## sql
+
+I am using [sqlc](https://docs.sqlc.dev/en/stable/overview/install.html) to prepare code for interacting with the postgres database which should be installed locally for now. If there were changes to the schema just run `sqlc generate` inside the Proxy folder.
+For adding new functions to interact with the database please append them to `DB/proxy-query.sql`. More details can be found in the [sqlc docs](https://docs.sqlc.dev/en/stable/howto/insert.html).
+
 ## Building
 
 To be able to build the proxy docker image, you have to supply a kubernetes config file with all the required authentication files to be able to access the api.

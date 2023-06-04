@@ -1,15 +1,15 @@
 version: "3.8"
 services:
-#  proxy:
-#    build: ./Proxy
-#    environment:
-#      DB_URI: localhost
-#      DB_USER: postgres
-#      DB_PASSWORD: example
-#    volumes:
-#      - ./Proxy/.kube/:/.kube
-#      - ./Proxy/config.yaml:/config.yaml
-#    network_mode: host
+  proxy:
+    build: ./Proxy
+    environment:
+      DB_URI: localhost
+      DB_USER: postgres
+      DB_PASSWORD: example
+    volumes:
+      - ./Proxy/.kube/:/.kube
+      - ./Proxy/config.yaml:/config.yaml
+    network_mode: host
 
   db:
     image: postgres:15

@@ -7,8 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/schema"
+	database "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/persistent"
 	"gopkg.in/yaml.v2"
 )
 
@@ -16,15 +15,7 @@ type KubeConfig struct {
 	CurrentContext string `yaml:"current-context"`
 }
 
-type Cluster struct {
-	bun.BaseModel `bun:"table:Cluster"`
-	NodeEventID   int       `bun:"cluster_event_id,type:integer,pk"`
-	ClusterID     int       `bun:"cluster_id,type:integer"`
-	Timestamp     time.Time `bun:"timestamp,type:timestamp,notnull"`
-	name          string    `bun:"name,type:text"`
-}
-
-func WriteCluster(kubeconfigPath string, db *bun.DB) {
+func WriteCluster(kubeconfigPath string, db *database.Queries) {
 	// Read the kubeconfig file
 	data, err := os.ReadFile(kubeconfigPath)
 	if err != nil {
@@ -40,17 +31,14 @@ func WriteCluster(kubeconfigPath string, db *bun.DB) {
 
 	// Print the current context
 	fmt.Println("Current context:", config.CurrentContext)
-
-	clusterDB := Cluster{
-		BaseModel:   schema.BaseModel{},
-		NodeEventID: 0,
-		ClusterID:   0,
-		Timestamp:   time.Now(),
-		name:        config.CurrentContext,
-	}
+	var clusterParams database.UpdateClusterParams
+	clusterParams.ClusterEventID = 0
+	clusterParams.ClusterID = 0
+	clusterParams.Timestamp.Scan(time.Now())
+	clusterParams.Name = config.CurrentContext
 
 	// Insert the Cluster into the database
-	_, err = db.NewInsert().Model(&clusterDB).Exec(context.Background())
+	err = db.UpdateCluster(context.Background(), clusterParams)
 	if err != nil {
 		log.Println(err)
 	}

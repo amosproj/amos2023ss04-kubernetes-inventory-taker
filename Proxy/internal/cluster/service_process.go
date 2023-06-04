@@ -3,29 +3,16 @@ package cluster
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
-	"github.com/uptrace/bun"
+	database "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/persistent"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/klog/v2"
 )
 
-type Service struct {
-	bun.BaseModel     `bun:"Service"`
-	Name              string    `bun:"name,type:text,notnull,pk"`
-	Namespace         string    `bun:"namespace,type:text,notnull,pk"`
-	Timestamp         time.Time `bun:"timestamp,type:timestamp,notnull"`
-	Labels            []string  `bun:"labels,type:varchar[],array,notnull"`
-	CreationTimestamp time.Time `bun:"creation_timestamp,type:timestamp,notnull"`
-	Ports             []string  `bun:"ports,type:varchar[],array,notnull"`
-	ExternalIPs       []string  `bun:"external_ips,type:varchar[],array"`
-	ClusterIP         string    `bun:"cluster_ip,type:text,notnull"`
-}
-
-func ProcessService(event Event, db *bun.DB) {
+func ProcessService(event Event, db *database.Queries) {
 	service := event.Object.(*corev1.Service)
 
-	//ignore update event with unchanged resource version
 	if event.Type == Update && event.OldObj.(*corev1.Service).ResourceVersion == service.ResourceVersion {
 		return
 	}
@@ -43,20 +30,20 @@ func ProcessService(event Event, db *bun.DB) {
 	}
 
 	// Create a Service struct from the corev1.Service
-	s := &Service{
-		Name:              service.Name,
-		Namespace:         service.Namespace,
-		Labels:            labels,
-		CreationTimestamp: service.CreationTimestamp.Time,
-		Timestamp:         time.Now(), // replace with the actual value
-		Ports:             ports,
-		ExternalIPs:       service.Spec.ExternalIPs,
-		ClusterIP:         service.Spec.ClusterIP,
-	}
+	var serviceParams database.UpdateServiceParams
+
+	serviceParams.Name = service.Name
+	serviceParams.Namespace = service.Namespace
+	serviceParams.Labels = labels
+	serviceParams.CreationTimestamp.Scan(service.CreationTimestamp.Time)
+	serviceParams.Timestamp.Scan(time.Now())
+	serviceParams.Ports = ports
+	serviceParams.ExternalIps = service.Spec.ExternalIPs
+	serviceParams.ClusterIp = service.Spec.ClusterIP
 
 	// Insert the Service into the database
-	_, err := db.NewInsert().Model(s).Exec(context.Background())
+	err := db.UpdateService(context.Background(), serviceParams)
 	if err != nil {
-		log.Println(err)
+		klog.Fatal(err)
 	}
 }

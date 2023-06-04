@@ -1,0 +1,15 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "../DB/proxy-query.sql"
+    schema: "../DB/kubernetes-schema.sql"
+    gen:
+      go:
+        package: "database"
+        out: "internal/persistent"
+        sql_package: "pgx/v5"
+        # emit_methods_with_db_argument: true
+        output_querier_file_name: "querier.go"
+        emit_json_tags: true # add json tags to structs
+        emit_db_tags: true # add db tags
+        json_tags_case_style: camel # use camle camel case fot json tags
