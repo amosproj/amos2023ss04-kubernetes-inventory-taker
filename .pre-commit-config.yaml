@@ -30,8 +30,3 @@ repos:
         files: 'Explorer/.*\.(js|jsx|ts|tsx)$'
         entry: bash -c 'cd Explorer && npm run precommit-lint "$@"'
         types: [file]
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v3.0.0-alpha.9-for-vscode" # Use the sha or tag you want to point at
-    hooks:
-      - id: prettier
-        stages: [commit]
