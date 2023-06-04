@@ -2,7 +2,6 @@ package cluster
 
 import (
 	"context"
-	"math/rand"
 
 	database "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/persistent"
 	corev1 "k8s.io/api/core/v1"
@@ -52,7 +51,6 @@ func ProcessNode(event Event, dbQueries *database.Queries) {
 	// Create a new Node
 	var nodeDB database.UpdateNodeParams
 
-	nodeDB.NodeEventID = int32(rand.Int31())
 	nodeDB.NodeID.Scan(nodeNew.UID)
 	nodeDB.Timestamp.Scan(event.timestamp)
 	nodeDB.CreationTime.Scan(nodeNew.CreationTimestamp.Time)

@@ -50,6 +50,7 @@ type Node struct {
 }
 
 type Pod struct {
+	PodEventID         int32            `db:"pod_event_id" json:"podEventID"`
 	PodResourceVersion int32            `db:"pod_resource_version" json:"podResourceVersion"`
 	PodID              pgtype.UUID      `db:"pod_id" json:"podID"`
 	Timestamp          pgtype.Timestamp `db:"timestamp" json:"timestamp"`
@@ -62,6 +63,7 @@ type Pod struct {
 }
 
 type Service struct {
+	ServiceEventID    int32            `db:"service_event_id" json:"serviceEventID"`
 	Name              string           `db:"name" json:"name"`
 	Namespace         string           `db:"namespace" json:"namespace"`
 	Timestamp         pgtype.Timestamp `db:"timestamp" json:"timestamp"`

@@ -32,7 +32,6 @@ func WriteCluster(kubeconfigPath string, db *database.Queries) {
 	// Print the current context
 	fmt.Println("Current context:", config.CurrentContext)
 	var clusterParams database.UpdateClusterParams
-	clusterParams.ClusterEventID = 0
 	clusterParams.ClusterID = 0
 	clusterParams.Timestamp.Scan(time.Now())
 	clusterParams.Name = config.CurrentContext

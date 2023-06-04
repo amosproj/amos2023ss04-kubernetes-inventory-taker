@@ -1,13 +1,12 @@
 CREATE TABLE "Cluster" (
-  "cluster_event_id" int PRIMARY KEY,
+  "cluster_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "cluster_id" int NOT NULL,
   "timestamp" timestamp NOT NULL DEFAULT NOW(),
   "name" text NOT NULL
 );
-
 -- https://kubernetes.io/docs/concepts/architecture/nodes/
 CREATE TABLE "Node" (
-  "node_event_id" int PRIMARY KEY,
+  "node_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "node_id" uuid,
   "timestamp" timestamp NOT NULL,
   "creation_time" timestamp,
@@ -28,9 +27,9 @@ CREATE TABLE "Node" (
   "node_conditions_pid_Pressure" text,
   "node_conditions_network_unavailable" text
 );
-
 -- https://kubernetes.io/docs/concepts/workloads/pods/
 CREATE TABLE "Pod" (
+  "pod_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "pod_resource_version" int NOT NULL,
   "pod_id" uuid NOT NULL,
   "timestamp" timestamp NOT NULL,
@@ -39,13 +38,11 @@ CREATE TABLE "Pod" (
   "name" varchar(255),
   "namespace" varchar(50),
   "status" varchar(50),
-  "stamp2" timestamp,
-  PRIMARY KEY ("pod_resource_version", "pod_id")
+  "stamp2" timestamp
 );
-
 -- https://kubernetes.io/docs/concepts/containers/
 CREATE TABLE "Container" (
-  "container_event_id" int PRIMARY KEY,
+  "container_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "container_id" int,
   "timestamp" timestamp NOT NULL,
   "pod_id" uuid,
@@ -54,18 +51,15 @@ CREATE TABLE "Container" (
   "status" text,
   "ports" varchar(255)
 );
-
 -- https://kubernetes.io/docs/concepts/services-networking/service/
 CREATE TABLE "Service" (
+  "service_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "name" TEXT NOT NULL,
   "namespace" TEXT NOT NULL,
   "timestamp" TIMESTAMP NOT NULL,
-  "labels" TEXT[] NOT NULL,
+  "labels" TEXT [] NOT NULL,
   "creation_timestamp" TIMESTAMP NOT NULL,
   "ports" TEXT ARRAY NOT NULL,
-  "external_ips" TEXT[],
-  "cluster_ip" TEXT NOT NULL,
-  PRIMARY KEY ("name", "namespace")
+  "external_ips" TEXT [],
+  "cluster_ip" TEXT NOT NULL
 );
-
--- ALTER TABLE "Service" ADD FOREIGN KEY ("cluster_id") REFERENCES "Cluster" ("cluster_id");

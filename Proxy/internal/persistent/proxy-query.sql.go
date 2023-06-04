@@ -13,62 +13,70 @@ import (
 
 const updateCluster = `-- name: UpdateCluster :exec
 INSERT INTO "Cluster" (
-  "cluster_event_id",
-  "cluster_id",
-  "timestamp",
-  "name"
-) VALUES (
-  $1, $2, $3, $4
-)
+    "cluster_id",
+    "timestamp",
+    "name"
+  )
+VALUES ($1, $2, $3)
 `
 
 type UpdateClusterParams struct {
-	ClusterEventID int32            `db:"cluster_event_id" json:"clusterEventID"`
-	ClusterID      int32            `db:"cluster_id" json:"clusterID"`
-	Timestamp      pgtype.Timestamp `db:"timestamp" json:"timestamp"`
-	Name           string           `db:"name" json:"name"`
+	ClusterID int32            `db:"cluster_id" json:"clusterID"`
+	Timestamp pgtype.Timestamp `db:"timestamp" json:"timestamp"`
+	Name      string           `db:"name" json:"name"`
 }
 
 func (q *Queries) UpdateCluster(ctx context.Context, arg UpdateClusterParams) error {
-	_, err := q.db.Exec(ctx, updateCluster,
-		arg.ClusterEventID,
-		arg.ClusterID,
-		arg.Timestamp,
-		arg.Name,
-	)
+	_, err := q.db.Exec(ctx, updateCluster, arg.ClusterID, arg.Timestamp, arg.Name)
 	return err
 }
 
 const updateNode = `-- name: UpdateNode :exec
-
 INSERT INTO "Node" (
-  "node_event_id",
-  "node_id",
-  "timestamp",
-  "creation_time",
-  "name",
-  "ip_address_internal",
-  "ip_address_external",
-  "hostname",
-  "status_capacity_cpu",
-  "status_capacity_memory",
-  "status_capacity_pods",
-  "status_allocatable_cpu",
-  "status_allocatable_memory",
-  "status_allocatable_pods",
-  "kubelet_version",
-  "node_conditions_ready",
-  "node_conditions_disk_pressure",
-  "node_conditions_memory_pressure",
-  "node_conditions_pid_Pressure",
-  "node_conditions_network_unavailable"
-) VALUES (
-  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
-)
+    "node_id",
+    "timestamp",
+    "creation_time",
+    "name",
+    "ip_address_internal",
+    "ip_address_external",
+    "hostname",
+    "status_capacity_cpu",
+    "status_capacity_memory",
+    "status_capacity_pods",
+    "status_allocatable_cpu",
+    "status_allocatable_memory",
+    "status_allocatable_pods",
+    "kubelet_version",
+    "node_conditions_ready",
+    "node_conditions_disk_pressure",
+    "node_conditions_memory_pressure",
+    "node_conditions_pid_Pressure",
+    "node_conditions_network_unavailable"
+  )
+VALUES (
+    $1,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6,
+    $7,
+    $8,
+    $9,
+    $10,
+    $11,
+    $12,
+    $13,
+    $14,
+    $15,
+    $16,
+    $17,
+    $18,
+    $19
+  )
 `
 
 type UpdateNodeParams struct {
-	NodeEventID                      int32            `db:"node_event_id" json:"nodeEventID"`
 	NodeID                           pgtype.UUID      `db:"node_id" json:"nodeID"`
 	Timestamp                        pgtype.Timestamp `db:"timestamp" json:"timestamp"`
 	CreationTime                     pgtype.Timestamp `db:"creation_time" json:"creationTime"`
@@ -115,7 +123,6 @@ type UpdateNodeParams struct {
 // RETURNING "container_event_id", "container_id", "timestamp", "pod_id", "name", "image", "status", "ports";
 func (q *Queries) UpdateNode(ctx context.Context, arg UpdateNodeParams) error {
 	_, err := q.db.Exec(ctx, updateNode,
-		arg.NodeEventID,
 		arg.NodeID,
 		arg.Timestamp,
 		arg.CreationTime,
@@ -141,17 +148,16 @@ func (q *Queries) UpdateNode(ctx context.Context, arg UpdateNodeParams) error {
 
 const updateService = `-- name: UpdateService :exec
 INSERT INTO "Service" (
-  "name",
-  "namespace",
-  "timestamp",
-  "labels",
-  "creation_timestamp",
-  "ports",
-  "external_ips",
-  "cluster_ip"
-) VALUES (
-  $1, $2, $3, $4, $5, $6, $7, $8
-)
+    "name",
+    "namespace",
+    "timestamp",
+    "labels",
+    "creation_timestamp",
+    "ports",
+    "external_ips",
+    "cluster_ip"
+  )
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 `
 
 type UpdateServiceParams struct {
