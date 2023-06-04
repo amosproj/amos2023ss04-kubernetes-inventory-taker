@@ -1,65 +1,66 @@
-CREATE TABLE "Cluster" (
-  "cluster_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "cluster_id" int NOT NULL,
-  "timestamp" timestamp NOT NULL DEFAULT NOW(),
-  "name" text NOT NULL
-);
--- https://kubernetes.io/docs/concepts/architecture/nodes/
-CREATE TABLE "Node" (
-  "node_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "node_id" uuid,
+CREATE TABLE "clusters" (
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "resource_version" text NOT NULL,
   "timestamp" timestamp NOT NULL,
-  "creation_time" timestamp,
+  "cluster_uid" uuid NOT NULL,
+  "name" text NOT NULL,
+  "data" json
+);
+-- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#node-v1-core
+-- https://kubernetes.io/docs/concepts/architecture/nodes/
+CREATE TABLE "nodes" (
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "resource_version" text NOT NULL,
+  "timestamp" timestamp NOT NULL,
+  "node_uid" uuid NOT NULL,
   "name" text,
+  "namespace" text,
   "ip_address_internal" text ARRAY,
   "ip_address_external" text ARRAY,
   "hostname" text,
-  "status_capacity_cpu" text,
-  "status_capacity_memory" text,
-  "status_capacity_pods" text,
-  "status_allocatable_cpu" text,
-  "status_allocatable_memory" text,
-  "status_allocatable_pods" text,
-  "kubelet_version" text,
-  "node_conditions_ready" text,
-  "node_conditions_disk_pressure" text,
-  "node_conditions_memory_pressure" text,
-  "node_conditions_pid_Pressure" text,
-  "node_conditions_network_unavailable" text
-);
--- https://kubernetes.io/docs/concepts/workloads/pods/
-CREATE TABLE "Pod" (
-  "pod_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "pod_resource_version" int NOT NULL,
-  "pod_id" uuid NOT NULL,
-  "timestamp" timestamp NOT NULL,
-  "cluster_id" int,
-  "node_id" varchar(50),
-  "name" varchar(255),
-  "namespace" varchar(50),
-  "status" varchar(50),
-  "stamp2" timestamp
-);
--- https://kubernetes.io/docs/concepts/containers/
-CREATE TABLE "Container" (
-  "container_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "container_id" int,
-  "timestamp" timestamp NOT NULL,
-  "pod_id" uuid,
-  "name" varchar(255),
-  "image" varchar(255),
   "status" text,
-  "ports" varchar(255)
+  "data" json
 );
+-- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#pod-v1-core
+-- https://kubernetes.io/docs/concepts/workloads/pods/
+CREATE TABLE "pods" (
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "resource_version" text NOT NULL,
+  "timestamp" timestamp NOT NULL,
+  "pod_uid" uuid NOT NULL,
+  "name" text NOT NULL,
+  "namespace" text,
+  "labels" text[],
+  "node_name" text,
+  "status" text,
+  "data" json
+);
+-- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core
+-- https://kubernetes.io/docs/concepts/containers/
+CREATE TABLE "containers" (
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  /* "resource_version" string NOT NULL, */
+  /* Containers do not seem to have any resource version/metav1 field*/
+  "timestamp" timestamp NOT NULL,
+  "container_uid" uuid NOT NULL,
+  "name" text NOT NULL,
+  "pod_uid" uuid,
+  "image" text,
+  "ports" text,
+  "status" text,
+  "data" json
+);
+-- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#service-v1-core
 -- https://kubernetes.io/docs/concepts/services-networking/service/
-CREATE TABLE "Service" (
-  "service_event_id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "name" TEXT NOT NULL,
-  "namespace" TEXT NOT NULL,
-  "timestamp" TIMESTAMP NOT NULL,
-  "labels" TEXT [] NOT NULL,
-  "creation_timestamp" TIMESTAMP NOT NULL,
-  "ports" TEXT ARRAY NOT NULL,
-  "external_ips" TEXT [],
-  "cluster_ip" TEXT NOT NULL
+CREATE TABLE "services" (
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "resource_version" text NOT NULL,
+  "timestamp" timestamp NOT NULL,
+  "service_uid" uuid NOT NULL,
+  "name" text NOT NULL,
+  "namespace" text,
+  "labels" text[],
+  "external_name" text[],
+  "status" text,
+  "data" json
 );
