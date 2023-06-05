@@ -1,4 +1,4 @@
-// pages/index.tsx
+"use client";
 import React from "react";
 import StripedTable from "@/components/containerTable";
 import containers from "@/components/containerTestData";
