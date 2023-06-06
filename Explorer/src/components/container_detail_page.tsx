@@ -3,80 +3,41 @@
 import { Table } from "flowbite-react";
 import { H1 } from "@/components/style_elements";
 import { Health, HealthIndicatorBadge } from "@/components/health_indicators";
+import {
+  ChangeLogEntry,
+  ContainerDetails,
+  ContainerIndex,
+} from "@/lib/types/ContainerDetails";
 
-// Magic Number Definitions for Container Data Structure
-enum ContainerIndex {
-  ID = 0,
-  NAME,
-  STATUS,
-  IMAGE,
-  SERVICE,
-  CLUSTER,
-  NODE,
-  POD,
-  PORTS,
-  VOLUMES,
-  AGE,
-  CPU_USAGE,
-  SPACE_USAGE,
-  CREATED_ON,
-  RESTART_OPTIONS,
-}
-
-// Example for Container Data Structure to generate page
-const container_data = [
-  { field: "ID", content: "235480394" },
-  { field: "Name", content: "Company Mail" },
-  { field: "Status", content: "Error" },
-  { field: "Image", content: "postfix:v1.0.3" },
-  { field: "Service", content: "Mailserver" },
-  { field: "Cluster", content: "DMZ-Cluster" },
-  { field: "Node", content: "DMZ-Node-2" },
-  { field: "Pod", content: "DMZ-Pod-Mail" },
-  { field: "Ports", content: "25:25, 110:110" },
-  { field: "Volumes", content: "Mail-Storage-1, Mail-Storage-2" },
-  { field: "Age", content: "124 Days 10 Hours 22 Minutes 12 Seconds" },
-  { field: "CPU Usage", content: "22 %" },
-  { field: "Space Usage", content: "212 GB" },
-  { field: "Created on", content: "12.03.2022 12:12:56" },
-  { field: "Restart Option", content: "Always" },
-];
-
-// Example for Changelog Data Structure to generate page
-const changelog_data = [
-  {
-    status: "running",
-    name: "nginx-earthlt",
-    port: "8000",
-    started: "15 minutes ago",
-  },
-  {
-    status: "running",
-    name: "kind bouman",
-    port: "3000",
-    started: "10 minutes ago",
-  },
-  { status: "disabled", name: "radis-stack", port: "8000", started: "" },
-];
-
-export default function ContainerDetailPage(): JSX.Element {
+export default function ContainerDetailPage({
+  container_details,
+}: {
+  container_details: ContainerDetails;
+}): JSX.Element {
   return (
     <div>
       <div className="flex">
         <H1
-          content={"Container ID " + container_data[ContainerIndex.ID].content}
+          content={
+            "Container ID " +
+            container_details.fields[ContainerIndex.ID].content
+          }
         />
         <HealthIndicatorBadge
-          status={container_data[ContainerIndex.STATUS].content as Health}
+          status={
+            container_details.fields[ContainerIndex.STATUS].content as Health
+          }
         />
       </div>
       <div className="flex">
         <div className="w-1/4 w-max">
-          <ContainerDetailsWidget />
+          <ContainerDetailsWidget container_data={container_details.fields} />
         </div>
         <div className="w-1/2 w-max px-8">
           <ContainerWorkLoad />
-          <ContainerChangelogWidget />
+          <ContainerChangelogWidget
+            changelog_data={container_details.changelog}
+          />
         </div>
       </div>
     </div>
@@ -127,7 +88,11 @@ function ContainerWorkLoad(): JSX.Element {
   );
 }
 
-function ContainerChangelogWidget(): JSX.Element {
+function ContainerChangelogWidget({
+  changelog_data,
+}: {
+  changelog_data: Array<ChangeLogEntry>;
+}): JSX.Element {
   return (
     <div className="p-0">
       <section>
@@ -182,7 +147,11 @@ function ContainerChangelogWidget(): JSX.Element {
   );
 }
 
-function ContainerDetailsWidget(): JSX.Element {
+function ContainerDetailsWidget({
+  container_data,
+}: {
+  container_data: Array<{ field: string; content: string }>;
+}): JSX.Element {
   return (
     <div className="p-0 w-max">
       <h2 className="mt-2 mb-3 text-2xl font-bold">Details</h2>
