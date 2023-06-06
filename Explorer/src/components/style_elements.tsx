@@ -1,4 +1,5 @@
 "use client";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function H1({ content }: any): JSX.Element {
   return (

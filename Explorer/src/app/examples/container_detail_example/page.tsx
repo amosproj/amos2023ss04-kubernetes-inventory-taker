@@ -1,3 +1,5 @@
+"use client";
+
 import ContainerDetailPage from "@/components/container_detail_page";
 import { getContainerDetails } from "@/lib/db";
 /* @ts-expect-error Async Server Component */
