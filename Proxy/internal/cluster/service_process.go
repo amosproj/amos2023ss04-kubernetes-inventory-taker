@@ -14,25 +14,28 @@ import (
 )
 
 func ProcessService(event Event, bunDB *bun.DB) {
-	service := event.Object.(*corev1.Service)
-	if event.Type == Update && event.OldObj.(*corev1.Service).ResourceVersion == service.ResourceVersion {
+	//nolint:forcetypeassert
+	serviceNew := event.Object.(*corev1.Service)
+
+	//nolint:forcetypeassert
+	if event.Type == Update && event.OldObj.(*corev1.Service).ResourceVersion == serviceNew.ResourceVersion {
 		return
 	}
 
 	// Convert the service's ports to a slice of strings
 	ports := []string{}
-	for _, port := range service.Spec.Ports {
+	for _, port := range serviceNew.Spec.Ports {
 		ports = append(ports, fmt.Sprintf("%d/%s", port.Port, port.Protocol))
 	}
 
 	// Convert the service's labels to a slice of strings
 	labels := []string{}
-	for key, value := range service.Labels {
+	for key, value := range serviceNew.Labels {
 		labels = append(labels, fmt.Sprintf("%s=%s", key, value))
 	}
 
 	// Get json of node
-	jsonData, err := json.Marshal(service)
+	jsonData, err := json.Marshal(serviceNew)
 	if err != nil {
 		klog.Error("Error converting Node to JSON:", err)
 		return
@@ -42,14 +45,14 @@ func ProcessService(event Event, bunDB *bun.DB) {
 	serviceDB := &model.Service{
 		BaseModel: schema.BaseModel{},
 
-		Name:              service.Name,
-		Namespace:         service.Namespace,
+		Name:              serviceNew.Name,
+		Namespace:         serviceNew.Namespace,
 		Timestamp:         event.timestamp,
 		Labels:            labels,
-		CreationTimestamp: service.CreationTimestamp.Time,
+		CreationTimestamp: serviceNew.CreationTimestamp.Time,
 		Ports:             ports,
-		ExternalIPs:       service.Spec.ExternalIPs,
-		ClusterIP:         service.Spec.ClusterIP,
+		ExternalIPs:       serviceNew.Spec.ExternalIPs,
+		ClusterIP:         serviceNew.Spec.ClusterIP,
 		Data:              string(jsonData),
 	}
 

@@ -34,16 +34,18 @@ type Allocatable struct {
 }
 
 func ProcessNode(event Event, bunDB *bun.DB) {
-	node := event.Object.(*corev1.Node)
+	//nolint:forcetypeassert
+	nodeNew := event.Object.(*corev1.Node)
 
-	if event.Type == Update && event.OldObj.(*corev1.Node).ResourceVersion == node.ResourceVersion {
+	//nolint:forcetypeassert
+	if event.Type == Update && event.OldObj.(*corev1.Node).ResourceVersion == nodeNew.ResourceVersion {
 		return
 	}
-	conditions := getNodeConditions(node)
-	capacity, allocatable := getStatus(node)
-	internalIPs, externalIPs, hostname := getNodeAddresses(node)
+	conditions := getNodeConditions(nodeNew)
+	capacity, allocatable := getStatus(nodeNew)
+	internalIPs, externalIPs, hostname := getNodeAddresses(nodeNew)
 
-	jsonData, err := json.Marshal(node)
+	jsonData, err := json.Marshal(nodeNew)
 	if err != nil {
 		klog.Error("Error converting Node to JSON:", err)
 		return
@@ -53,10 +55,10 @@ func ProcessNode(event Event, bunDB *bun.DB) {
 	nodeDB := model.Node{
 		BaseModel: schema.BaseModel{},
 
-		NodeID:                  string(node.UID),
+		NodeID:                  string(nodeNew.UID),
 		Timestamp:               event.timestamp,
-		CreationTime:            node.CreationTimestamp.Time,
-		Name:                    node.Name,
+		CreationTime:            nodeNew.CreationTimestamp.Time,
+		Name:                    nodeNew.Name,
 		IPAddressInternal:       internalIPs,
 		IPAddressExternal:       externalIPs,
 		Hostname:                hostname,
@@ -66,7 +68,7 @@ func ProcessNode(event Event, bunDB *bun.DB) {
 		StatusAllocatableCPU:    allocatable.CPU.String(),
 		StatusAllocatableMemory: allocatable.Memory.String(),
 		StatusAllocatablePods:   allocatable.Pods.String(),
-		KubeletVersion:          node.Status.NodeInfo.KubeletVersion,
+		KubeletVersion:          nodeNew.Status.NodeInfo.KubeletVersion,
 		Ready:                   conditions.Ready,
 		DiskPressure:            conditions.DiskPressure,
 		MemoryPressure:          conditions.MemoryPressure,

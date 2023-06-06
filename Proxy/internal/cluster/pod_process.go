@@ -12,8 +12,10 @@ import (
 )
 
 func ProcessPod(event Event, bunDB *bun.DB) {
+	//nolint:forcetypeassert
 	podNew := event.Object.(*corev1.Pod)
 
+	//nolint:forcetypeassert
 	if event.Type == Update && event.OldObj.(*corev1.Pod).ResourceVersion == podNew.ResourceVersion {
 		return
 	}

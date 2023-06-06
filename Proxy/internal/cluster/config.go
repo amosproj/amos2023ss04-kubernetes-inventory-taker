@@ -148,7 +148,7 @@ func SetupEventHandlerFuncs(workqueue workqueue.RateLimitingInterface) cache.Res
 	}
 }
 
-//nolint:cyclop
+//nolint:cyclop,lll
 func RegisterEventHandlers(resourceTypes []string, informerFactory informers.SharedInformerFactory, funcs cache.ResourceEventHandlerFuncs) {
 	if slices.Contains(resourceTypes, "deployment") {
 		klog.Info("found deployment in config")
@@ -212,6 +212,7 @@ func ProcessWorkqueue(bunDB *bun.DB, workqueue workqueue.RateLimitingInterface) 
 		if shutdown {
 			return
 		}
+		//nolint:forcetypeassert
 		event := item.(Event)
 		klog.Info("processing object of type", reflect.TypeOf(event.Object))
 

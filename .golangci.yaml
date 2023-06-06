@@ -16,7 +16,5 @@ linters:
 
     - wsl
     - nlreturn
-    - forcetypeassert
-    - lll
     - gocritic
     - nonamedreturns
