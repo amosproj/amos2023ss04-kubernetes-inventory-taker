@@ -80,6 +80,7 @@ func SetupDBConnection() *bun.DB {
 	sqldb := sql.OpenDB(pgconn)
 
 	db := bun.NewDB(sqldb, pgdialect.New())
+
 	return db
 }
 
@@ -106,9 +107,11 @@ func ReadExternalConfig() Config {
 
 	// parse kubernetes config file location from cmd flags
 	if home := homedir.HomeDir(); home != "" {
+		//nolint:gocritic
 		externalConfig.KubeconfigPath = *flag.String("kubeconfig", filepath.Join(home, ".kube", "config"),
 			"(optional) absolute path to the kubeconfig file")
 	} else {
+		//nolint:gocritic
 		externalConfig.KubeconfigPath = *flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
 	}
 

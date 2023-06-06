@@ -25,6 +25,7 @@ func main() {
 	funcs := SetupEventHandlerFuncs(workqueue)
 
 	stopCh := make(chan struct{})
+
 	RegisterEventHandlers(externalConfig.ResourceTypes, informerFactory, funcs)
 
 	defer close(stopCh)
@@ -32,6 +33,7 @@ func main() {
 
 	for i := 0; i < 1; i++ {
 		klog.Info("starting worker ", i)
+		//nolint:wsl,nolintlint
 		go ProcessWorkqueue(bunDB, workqueue)
 	}
 

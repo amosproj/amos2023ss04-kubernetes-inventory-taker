@@ -41,6 +41,7 @@ func ProcessNode(event Event, bunDB *bun.DB) {
 	if event.Type == Update && event.OldObj.(*corev1.Node).ResourceVersion == nodeNew.ResourceVersion {
 		return
 	}
+
 	conditions := getNodeConditions(nodeNew)
 	capacity, allocatable := getStatus(nodeNew)
 	internalIPs, externalIPs, hostname := getNodeAddresses(nodeNew)
@@ -85,9 +86,12 @@ func ProcessNode(event Event, bunDB *bun.DB) {
 }
 
 // getNodeAddresses separates the internal and external IP addresses and the hostname from a node's status.
-func getNodeAddresses(node *corev1.Node) (internalIPs []string, externalIPs []string, hostname string) {
+func getNodeAddresses(node *corev1.Node) ([]string, []string, string) {
+	var internalIPs, externalIPs []string
+
+	var hostname string
+
 	for _, address := range node.Status.Addresses {
-		//nolint:exhaustive
 		switch address.Type {
 		case corev1.NodeInternalIP:
 			internalIPs = append(internalIPs, address.Address)
@@ -95,10 +99,11 @@ func getNodeAddresses(node *corev1.Node) (internalIPs []string, externalIPs []st
 			externalIPs = append(externalIPs, address.Address)
 		case corev1.NodeHostName:
 			hostname = address.Address
+		case corev1.NodeExternalDNS:
+		case corev1.NodeInternalDNS:
 		}
-		// Intentionally not handling v1.NodeInternalDNS and v1.NodeExternalDNS cases
-		// as they are not required for this particular functionality.
 	}
+
 	return internalIPs, externalIPs, hostname
 }
 
@@ -132,7 +137,7 @@ func getNodeConditions(node *corev1.Node) NodeConditions {
 }
 
 // Does return status of cpu, memory and pods; allocatable are resources of a node that are available for scheduling.
-func getStatus(node *corev1.Node) (capacity Capacity, allocatable Allocatable) {
+func getStatus(node *corev1.Node) (Capacity, Allocatable) {
 	return Capacity{
 			CPU:    node.Status.Capacity[corev1.ResourceCPU],
 			Memory: node.Status.Capacity[corev1.ResourceMemory],

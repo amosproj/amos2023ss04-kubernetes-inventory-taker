@@ -98,8 +98,8 @@ INSERT INTO "Pods"("timestamp", "name", pod_resource_version, pod_id, node_name,
 -- Test data for containers table
 INSERT INTO "Containers"(container_id, timestamp, pod_id, name, image, status, ports)
     VALUES (1, '2023-05-23 15:08:25.506', 1, 'container1', 'image1', 'Terminated', '8080, 8443'),
-(2, NOW(), 1, '2023-05-23 15:10:25.206', 'image2', 'Waiting', '9000'),
-(3, NOW(), 2, '2023-05-23 15:10:25.306', 'image3', 'Waiting', '8080'),
+(2, '2023-05-23 15:10:25.206', 1, 'container2', 'image2', 'Waiting', '9000'),
+(3, '2023-05-23 15:10:25.306', 2, 'container3', 'image3', 'Waiting', '8080'),
 (4, NOW(), 2, 'container4', 'image4', 'Running', ''),
 (5, NOW(), 3, 'container5', 'image5', 'Running', '8080'),
 (6, NOW(), 3, 'container6', 'image6', 'Running', '9000'),

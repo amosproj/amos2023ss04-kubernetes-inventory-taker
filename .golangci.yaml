@@ -14,7 +14,4 @@ linters:
     - exhaustruct
     - depguard
 
-    - wsl
     - nlreturn
-    - gocritic
-    - nonamedreturns
