@@ -1,4 +1,4 @@
-export type ContainerList = {
+export type ContainerData = {
     container_event_id: string,
     container_id: string,
     timestamp: string,
@@ -6,5 +6,10 @@ export type ContainerList = {
     name: string,
     image: string,
     status: string,
-    ports: string
+    ports: string,
+  };
+
+  
+  export type ContainerList = {
+    containers: Array<ContainerData>
   };

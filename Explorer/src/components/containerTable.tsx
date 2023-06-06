@@ -1,14 +1,18 @@
 "use client"
 import { Table } from "flowbite-react";
-import {ContainerList} from "@/lib/types/ContainerList";
+import {ContainerList, ContainerData} from "@/lib/types/ContainerList";
+import { list } from "postcss";
 
 export default function ContainerTable({
   containers,
 }: {
   containers: ContainerList;
+ 
 }): JSX.Element {
   return (
+    
     <div>
+      
       <Table>
         <Table.Head>
           <Table.HeadCell
@@ -26,7 +30,7 @@ export default function ContainerTable({
           </Table.HeadCell>
         </Table.Head>
         <Table.Body>
-          {containers.map((container: ContainerList, index: number) => (
+          {containers.containers.map((container: ContainerData, index: number) => (
             <Table.Row key={index}>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
                 <a

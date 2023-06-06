@@ -82,6 +82,7 @@ export async function getContainerList(
       await pool.query("SELECT * FROM containers order by container_event_id DESC")
     );
    list = res.rows;
-   return list;
+   
+   return {containers: list};
   }
     
