@@ -70,19 +70,11 @@ export async function getContainerDetails(
   return { fields: adjusted_container_data, changelog: changelog_data };
 }
 
+export async function getContainerList(): Promise<ContainerList> {
+  const res = await pool.query(
+    "SELECT * FROM containers order by container_event_id DESC"
+  );
+  const list = res.rows;
 
-
-
-export async function getContainerList(
-
-): Promise<ContainerList> {
-  const adjusted_containers_list = [];
-    let list:any ;
-    const res = (
-      await pool.query("SELECT * FROM containers order by container_event_id DESC")
-    );
-   list = res.rows;
-   
-   return {containers: list};
-  }
-    
+  return { containers: list };
+}

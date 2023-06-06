@@ -7,12 +7,12 @@ export default function ContainerTable({
   containers,
 }: {
   containers: ContainerList;
- 
+
 }): JSX.Element {
   return (
-    
+
     <div>
-      
+
       <Table>
         <Table.Head>
           <Table.HeadCell
@@ -26,7 +26,7 @@ export default function ContainerTable({
             className="bg-green-500 bg-opacity-30 text-left"
             scope="col"
           >
-            Image  
+            Image
           </Table.HeadCell>
         </Table.Head>
         <Table.Body>
@@ -36,7 +36,7 @@ export default function ContainerTable({
                 <a
                   href={`/container/${container.container_id}`}
                   className="text-decoration-none text-blue-800"
-                  
+
                 >
                   {container.name}
                 </a>

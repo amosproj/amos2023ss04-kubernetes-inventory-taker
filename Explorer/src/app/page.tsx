@@ -1,7 +1,6 @@
 import ContainerTable from "@/components/containerTable";
 import { getContainerList } from "@/lib/db";
 
-
 export default async function Index() {
   const data = await getContainerList();
   return (
@@ -11,5 +10,3 @@ export default async function Index() {
     </div>
   );
 }
-
-
