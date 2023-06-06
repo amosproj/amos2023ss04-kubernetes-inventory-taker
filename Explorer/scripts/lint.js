@@ -5,6 +5,7 @@ const filesToLint = process.argv
   .slice(2)
   .map((path) => path.replace(/^Explorer\//, ""));
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ESLint } = require("eslint");
 
 (async function main() {
