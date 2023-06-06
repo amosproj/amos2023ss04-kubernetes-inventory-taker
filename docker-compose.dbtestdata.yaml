@@ -1,13 +1,13 @@
-version: "3.8"
-services:
-  dbTestData:
-    image: postgres:15
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: example
-    volumes:
-      - ./DB/:/docker-entrypoint-initdb.d/
+#version: "3.8"
+#services:
+#  dbTestData:
+#    image: postgres:15
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      POSTGRES_PASSWORD: example
+#    volumes:
+#      - ./DB/:/docker-entrypoint-initdb.d/
 #Uncomment the following services if needed
 #  proxy:
 #    build: ./Proxy
