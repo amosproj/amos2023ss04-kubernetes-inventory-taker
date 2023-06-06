@@ -12,3 +12,11 @@ linters:
     - exhaustivestruct
     - structcheck
     - exhaustruct
+    - depguard
+
+    - wsl
+    - nlreturn
+    - forcetypeassert
+    - lll
+    - gocritic
+    - nonamedreturns
