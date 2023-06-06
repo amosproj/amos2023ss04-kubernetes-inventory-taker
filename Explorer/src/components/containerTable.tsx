@@ -1,36 +1,15 @@
-import React, { useState } from "react";
-import { Table, Toast } from "flowbite-react";
+"use client"
+import { Table } from "flowbite-react";
+import {ContainerList} from "@/lib/types/ContainerList";
 
-interface Container {
-  name: string;
-  image: string;
-}
-
-interface StripedTableProps {
-  containers: Container[];
-}
-
-const ContainerTable: React.FC<StripedTableProps> = ({ containers }) => {
-  const [showToast, setShowToast] = useState(false);
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setShowToast(true);
-  };
-
+export default function ContainerTable({
+  containers,
+}: {
+  containers: ContainerList;
+}): JSX.Element {
   return (
-    <>
-      {showToast && (
-        <div className="py-4">
-          <Toast className="bg-orange-500 bg-opacity-50">
-            <div className="ml-3 text-sm font-normal">
-              your container detail page could be here
-            </div>
-            <Toast.Toggle onClick={() => setShowToast(false)} />
-          </Toast>
-        </div>
-      )}
-      <Table striped>
+    <div>
+      <Table>
         <Table.Head>
           <Table.HeadCell
             className="bg-green-500 bg-opacity-30 text-left"
@@ -43,17 +22,17 @@ const ContainerTable: React.FC<StripedTableProps> = ({ containers }) => {
             className="bg-green-500 bg-opacity-30 text-left"
             scope="col"
           >
-            Image
+            Image  
           </Table.HeadCell>
         </Table.Head>
         <Table.Body>
-          {containers.map((container, index) => (
+          {containers.map((container: ContainerList, index: number) => (
             <Table.Row key={index}>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
                 <a
-                  href="#"
+                  href={`/container/${container.container_id}`}
                   className="text-decoration-none text-blue-800"
-                  onClick={handleClick}
+                  
                 >
                   {container.name}
                 </a>
@@ -65,8 +44,6 @@ const ContainerTable: React.FC<StripedTableProps> = ({ containers }) => {
           ))}
         </Table.Body>
       </Table>
-    </>
-  );
-};
-
-export default ContainerTable;
+    </div>
+ );
+}

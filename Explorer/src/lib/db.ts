@@ -1,5 +1,6 @@
 import "server-only";
 import { ContainerDetails, ContainerIndex } from "./types/ContainerDetails";
+import { ContainerList } from "./types/ContainerList";
 import { Pool } from "pg";
 
 // Example for Container Data Structure to generate page
@@ -39,8 +40,10 @@ const changelog_data = [
 ];
 
 const pool = new Pool({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  user: "postgres",
+  password: "example",
+  //user: process.env.DB_USER,
+  //password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || "5432"),
   database: process.env.PGSQL_DATABASE,
@@ -66,3 +69,19 @@ export async function getContainerDetails(
 
   return { fields: adjusted_container_data, changelog: changelog_data };
 }
+
+
+
+
+export async function getContainerList(
+
+): Promise<ContainerList> {
+  const adjusted_containers_list = [];
+    let list:any ;
+    const res = (
+      await pool.query("SELECT * FROM containers order by container_event_id DESC")
+    );
+   list = res.rows;
+   return list;
+  }
+    

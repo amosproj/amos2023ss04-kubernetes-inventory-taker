@@ -1,15 +1,15 @@
-"use client";
-import React from "react";
-import StripedTable from "@/components/containerTable";
-import containers from "@/components/containerTestData";
+import ContainerTable from "@/components/containerTable";
+import { getContainerList } from "@/lib/db";
 
-const ContainerPage: React.FC = () => {
+
+export default async function Index() {
+  const data = await getContainerList();
   return (
     <div className="container mx-auto px-4">
       <h1 className="text-5xl mb-6 mt-10">Containers</h1>
-      <StripedTable containers={containers} />
+      <ContainerTable containers={data} />
     </div>
   );
-};
+}
 
-export default ContainerPage;
+
