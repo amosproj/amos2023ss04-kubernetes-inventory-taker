@@ -1,5 +1,5 @@
 "use client";
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function H1({ content }: any): JSX.Element {
   return (
     <h1 className="mb-4 my-2 text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">
@@ -8,6 +8,7 @@ export function H1({ content }: any): JSX.Element {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function H2({ content }: any): JSX.Element {
   return (
     <h1 className="mb-4 my-2 text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">

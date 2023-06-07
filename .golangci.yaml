@@ -12,3 +12,6 @@ linters:
     - exhaustivestruct
     - structcheck
     - exhaustruct
+    - depguard
+
+    - nlreturn
