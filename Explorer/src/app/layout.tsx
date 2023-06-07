@@ -17,7 +17,7 @@ export default function RootLayout({
         <Flowbite>
           <SidebarProvider>
             <div className="flex dark:bg-gray-900 h-screen">
-              <div className="order-1 float-left">
+              <div className="order-1 float-left bg-black">
                 <ActualSidebar />
               </div>
               <main className="order-2 w-full overflow-x-hidden">

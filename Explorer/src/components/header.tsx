@@ -10,7 +10,7 @@ export const Header: FC<Record<string, never>> = function () {
 
   return (
     <header className="sticky top-0 z-20">
-      <Navbar fluid>
+      <Navbar fluid className="bg-slate-200">
         {isPageWithSidebar && (
           <button
             aria-controls="sidebar"
