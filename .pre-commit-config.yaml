@@ -16,12 +16,8 @@ repos:
   - repo: https://github.com/tekwizely/pre-commit-golang
     rev: v1.0.0-rc.1
     hooks:
-      - id: golangci-lint-mod
-        args:
-          - --fix
       - id: go-build-mod
       - id: go-test-mod
-
   - repo: local
     hooks:
       - id: eslint
@@ -30,3 +26,10 @@ repos:
         files: 'Explorer/.*\.(js|jsx|ts|tsx)$'
         entry: bash -c 'cd Explorer && npm run precommit-lint "$@"'
         types: [file]
+      - id: golangci-lint
+        name: golangci-lint
+        language: system
+        types: [file, go]
+        # This checks all files instead of only the ones that were changed.
+        # If this check is taking too long we can refine this
+        entry: bash -c 'echo "$@"; RESULT=0;cd Proxy && for i in "$@"; do echo "$i" | cut -d'/' -f2- | xargs golangci-lint run --fix; ((RESULT|=$?)); done && exit $RESULT'
