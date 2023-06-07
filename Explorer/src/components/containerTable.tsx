@@ -30,7 +30,7 @@ const ContainerTable: React.FC<StripedTableProps> = ({ containers }) => {
           </Toast>
         </div>
       )}
-      <Table striped>
+      <Table striped data-cy="container-table">
         <Table.Head>
           <Table.HeadCell
             className="bg-green-500 bg-opacity-30 text-left"
