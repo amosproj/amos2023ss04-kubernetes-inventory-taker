@@ -8,7 +8,7 @@ interface SidebarContextProps {
   setOpenOnSmallScreens: (isOpen: boolean) => void;
 }
 
-const SidebarContext = createContext<SidebarContextProps>(undefined);
+const SidebarContext = createContext<SidebarContextProps>(undefined!);
 
 export function SidebarProvider({
   children,
