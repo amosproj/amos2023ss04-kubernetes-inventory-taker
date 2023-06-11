@@ -1,14 +1,12 @@
 export type ContainerData = {
-  container_event_id: string;
-  container_id: string;
+  container_event_id: number;
+  container_id: number;
   timestamp: string;
-  pod_id: string;
+  pod_id: number;
   name: string;
   image: string;
   status: string;
-  ports: string;
+  ports: number;
 };
 
-export type ContainerList = {
-  containers: Array<ContainerData>;
-};
+export type ContainerList = ContainerData[];

@@ -7,7 +7,7 @@ export default async function Index(): JSX.Element {
   return (
     <div className="container mx-auto px-4">
       <h1 className="text-5xl mb-6 mt-10">Containers</h1>
-      <ContainerTable containers={data} />
+      <ContainerTable list={data} />
     </div>
   );
 }
