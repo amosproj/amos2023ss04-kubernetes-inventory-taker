@@ -5,13 +5,14 @@ import (
 
 	//nolint:revive,stylecheck
 	. "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/cluster"
+	db "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/setup"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog"
 )
 
 func main() {
-	bunDB := SetupDBConnection()
+	bunDB := db.SetupDBConnection()
 
 	externalConfig := ReadExternalConfig()
 	klog.Infof("kubeconfig path is set to \"%s\"\n", externalConfig.KubeconfigPath)

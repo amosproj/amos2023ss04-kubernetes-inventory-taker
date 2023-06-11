@@ -1,7 +1,6 @@
 package cluster
 
 import (
-	"database/sql"
 	"flag"
 	"os"
 	"path/filepath"
@@ -9,8 +8,6 @@ import (
 	"time"
 
 	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	"github.com/uptrace/bun/driver/pgdriver"
 	"gopkg.in/yaml.v2"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -42,46 +39,6 @@ type Event struct {
 	OldObj    interface{}
 	Object    interface{}
 	timestamp time.Time
-}
-
-const (
-	timeoutSeconds     = 5 // for db
-	dialTimeoutSeconds = 5 // for db
-)
-
-// SetupDBConnection setup database connection.
-func SetupDBConnection() *bun.DB {
-	dbUser, exists := os.LookupEnv("DB_USER")
-	if !exists {
-		klog.Warning("DB_USER environment variable is not set. Trying dbUser = postgres")
-
-		dbUser = "postgres"
-	}
-
-	dbPassword, exists := os.LookupEnv("DB_PASSWORD")
-	if !exists {
-		klog.Warning("DB_PASSWORD environment variable is not set. Trying dbPassword = example")
-
-		dbPassword = "example"
-	}
-
-	pgconn := pgdriver.NewConnector(
-		pgdriver.WithNetwork("tcp"),
-		pgdriver.WithAddr("localhost:5432"),
-
-		pgdriver.WithUser(dbUser),
-		pgdriver.WithPassword(dbPassword),
-		pgdriver.WithDatabase("postgres"),
-		pgdriver.WithInsecure(true),
-		pgdriver.WithTimeout(timeoutSeconds*time.Second),
-		pgdriver.WithDialTimeout(dialTimeoutSeconds*time.Second),
-	)
-
-	sqldb := sql.OpenDB(pgconn)
-
-	db := bun.NewDB(sqldb, pgdialect.New())
-
-	return db
 }
 
 func ReadExternalConfig() Config {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/model"
+	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/model"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/schema"
 	corev1 "k8s.io/api/core/v1"
