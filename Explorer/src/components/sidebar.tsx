@@ -42,7 +42,7 @@ const Sidebar: FC<PropsWithChildren<Record<string, unknown>>> = function ({
 export default Object.assign(Sidebar, { ...FlowbiteSidebar });
 
 export function ActualSidebar(): JSX.Element {
-  const current_page = useContext(NavigationContext);
+  const current_page = useContext(NavigationContext).current_page;
 
   return (
     <FlowbiteSidebar>

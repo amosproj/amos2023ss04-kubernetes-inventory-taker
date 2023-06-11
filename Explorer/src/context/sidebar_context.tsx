@@ -73,4 +73,6 @@ export function useSidebarContext(): SidebarContextProps {
   return context;
 }
 
-export const NavigationContext = createContext("dashboard");
+export const NavigationContext = createContext({
+  current_page: "",
+});
