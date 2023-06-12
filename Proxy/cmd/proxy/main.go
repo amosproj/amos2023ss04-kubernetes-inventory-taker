@@ -12,10 +12,10 @@ import (
 )
 
 func main() {
+	externalConfig := ReadExternalConfig()
+
 	bunDB := db.SetupDBConnection()
 
-	externalConfig := ReadExternalConfig()
-	klog.Infof("kubeconfig path is set to \"%s\"\n", externalConfig.KubeconfigPath)
 	WriteCluster(externalConfig.KubeconfigPath, bunDB)
 
 	clientset := CreateClientSet(externalConfig.KubeconfigPath)

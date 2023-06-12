@@ -44,35 +44,45 @@ type Event struct {
 func ReadExternalConfig() Config {
 	var externalConfig Config
 
+	var proxyConfigPath, kubeConfigPath string
+
 	// parse proxy config file name from cmd flags
 	// defaults to same directory
-	proxyConfigFile := flag.String("config", "../../config.yaml",
+	flag.StringVar(&proxyConfigPath, "config", "config.yaml",
 		"(optional) proxy configuration, overwrites kubeconfig flag")
-
-	yamlFile, err := os.ReadFile(*proxyConfigFile)
-	if err == nil {
-		err = yaml.Unmarshal(yamlFile, &externalConfig)
-		if err != nil {
-			externalConfig.KubeconfigPath = ""
-			externalConfig.ResourceTypes = []string{}
-		}
-	}
-
-	if externalConfig.KubeconfigPath != "" {
-		return externalConfig
-	}
 
 	// parse kubernetes config file location from cmd flags
 	if home := homedir.HomeDir(); home != "" {
-		//nolint:gocritic
-		externalConfig.KubeconfigPath = *flag.String("kubeconfig", filepath.Join(home, ".kube", "config"),
+		flag.StringVar(&kubeConfigPath, "kubeconfig", filepath.Join(home, ".kube", "config"),
 			"(optional) absolute path to the kubeconfig file")
 	} else {
-		//nolint:gocritic
-		externalConfig.KubeconfigPath = *flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
+		flag.StringVar(&kubeConfigPath, "kubeconfig", "", "absolute path to the kubeconfig file")
 	}
 
 	flag.Parse()
+
+	yamlFile, err := os.ReadFile(proxyConfigPath)
+	if err == nil {
+		klog.Info("Parsing proxy config ", "with file path ", proxyConfigPath)
+
+		err = yaml.Unmarshal(yamlFile, &externalConfig)
+		if err != nil {
+			klog.Error("Failed umarsheling proxy config file, using empty values ", "config path ", proxyConfigPath)
+
+			externalConfig.KubeconfigPath = ""
+			externalConfig.ResourceTypes = []string{}
+		}
+	} else {
+		klog.Error("failed reading proxy config file ", proxyConfigPath, " using empty fields")
+	}
+
+	if externalConfig.KubeconfigPath == "" {
+		klog.Warning("no Kubeconfig path defined in proxy config, using fallback ", "kubernetes config path ", kubeConfigPath)
+
+		externalConfig.KubeconfigPath = kubeConfigPath
+	}
+
+	klog.Info("currently configured values: ", externalConfig)
 
 	return externalConfig
 }
