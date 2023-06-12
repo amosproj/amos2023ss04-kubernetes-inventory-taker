@@ -1,7 +1,8 @@
 import ContainerTable from "@/components/containerTable";
 import { getContainerList } from "@/lib/db";
-
-export default async function Index() {
+export const dynamic = "force-dynamic";
+/* @ts-expect-error Async Server Component */
+export default async function Index(): JSX.Element {
   const data = await getContainerList();
   return (
     <div className="container mx-auto px-4">
