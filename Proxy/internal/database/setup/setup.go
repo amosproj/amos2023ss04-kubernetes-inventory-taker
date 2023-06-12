@@ -2,6 +2,7 @@ package setup
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -37,9 +38,18 @@ func SetupDBConnection() *bun.DB {
 		dbPassword = "example"
 	}
 
+	dbURI, exists := os.LookupEnv("DB_URI")
+	if !exists {
+		klog.Warning("DB_URI environment variable is not set. Trying dbURI = localhost")
+
+		dbURI = "localhost"
+	}
+
+	pgAddr := fmt.Sprintf("%s:5432", dbURI)
+
 	pgconn := pgdriver.NewConnector(
 		pgdriver.WithNetwork("tcp"),
-		pgdriver.WithAddr("localhost:5432"),
+		pgdriver.WithAddr(pgAddr),
 		pgdriver.WithUser(dbUser),
 		pgdriver.WithPassword(dbPassword),
 		pgdriver.WithDatabase("postgres"),
