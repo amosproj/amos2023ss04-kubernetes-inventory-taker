@@ -86,6 +86,7 @@ func testDBConnection(db *bun.DB) {
 			}
 		} else {
 			klog.Info("Successfully connected to database.")
+			return
 		}
 	}
 }
