@@ -16,12 +16,8 @@ repos:
   - repo: https://github.com/tekwizely/pre-commit-golang
     rev: v1.0.0-rc.1
     hooks:
-      - id: golangci-lint-mod
-        args:
-          - --fix
       - id: go-build-mod
       - id: go-test-mod
-
   - repo: local
     hooks:
       - id: eslint
@@ -30,3 +26,9 @@ repos:
         files: 'Explorer/.*\.(js|jsx|ts|tsx)$'
         entry: bash -c 'cd Explorer && npm run precommit-lint "$@"'
         types: [file]
+      - id: golangci-lint
+        name: golangci-lint
+        language: system
+        types: [file, go]
+        pass_filenames: false
+        entry: bash -c 'cd Proxy && golangci-lint run --fix'
