@@ -76,3 +76,19 @@ export function useSidebarContext(): SidebarContextProps {
 export const NavigationContext = createContext({
   current_page: "",
 });
+
+import { create } from "zustand";
+
+interface NavigationStore {
+  page: string;
+  changePage: (newPage: string) => void;
+}
+
+export const useNavigationStore = create<NavigationStore>((set) => ({
+  page: "",
+  changePage: (newPage: string) => {
+    set(() => ({
+      page: newPage,
+    }));
+  },
+}));
