@@ -13,19 +13,19 @@ import (
 )
 
 func ProcessContainer(pod *corev1.Pod, bunDB *bun.DB, timestamp time.Time) {
-	statuses := pod.Status.ContainerStatuses
+	containerStatuses := pod.Status.ContainerStatuses
 
-	for idx := range statuses {
-		containerSpec := getSpec(*pod, statuses[idx].Name)
+	for idx := range containerStatuses {
+		containerSpec := getSpec(*pod, containerStatuses[idx].Name)
 		Ports := containerSpec.Ports
 
 		contaierDB := &model.Container{
 			Timestamp:   timestamp,
-			ContainerID: statuses[idx].ContainerID,
+			ContainerID: containerStatuses[idx].ContainerID,
 			PodID:       string(pod.UID),
-			Name:        statuses[idx].Name,
-			Image:       statuses[idx].Image,
-			Status:      getContainerState(statuses[idx].State),
+			Name:        containerStatuses[idx].Name,
+			Image:       containerStatuses[idx].Image,
+			Status:      getContainerState(containerStatuses[idx].State),
 			Ports:       formatPorts(Ports),
 		}
 		// Insert the Container into the database

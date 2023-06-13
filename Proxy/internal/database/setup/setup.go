@@ -14,10 +14,10 @@ import (
 )
 
 const (
-	timeoutSeconds     = 5
-	dialTimeoutSeconds = 5
-	DBRetryInterval    = 2 * time.Second  // Retry interval for DB connection
-	DBTimeout          = 30 * time.Second // Timeout for DB connection
+	connectionTimeout = 5 * time.Second
+	dialTimeout       = 5 * time.Second
+	retryInterval     = 2 * time.Second  // retry interval for testDBConnection
+	retryTimeout      = 30 * time.Second // final timeout for testDBConnection
 )
 
 // SetupDBConnection setup database connection.
@@ -54,8 +54,8 @@ func SetupDBConnection() *bun.DB {
 		pgdriver.WithPassword(dbPassword),
 		pgdriver.WithDatabase("postgres"),
 		pgdriver.WithInsecure(true),
-		pgdriver.WithTimeout(timeoutSeconds*time.Second),
-		pgdriver.WithDialTimeout(dialTimeoutSeconds*time.Second),
+		pgdriver.WithTimeout(connectionTimeout),
+		pgdriver.WithDialTimeout(dialTimeout),
 	)
 
 	sqldb := sql.OpenDB(pgconn)
@@ -74,7 +74,7 @@ func testDBConnection(db *bun.DB) {
 	for {
 		err := db.Ping()
 		if err != nil {
-			if time.Since(start) < DBTimeout {
+			if time.Since(start) < retryTimeout {
 				// Check if the error is due to database not started
 				switch {
 				case strings.Contains(err.Error(), "connection refused"):
@@ -90,7 +90,7 @@ func testDBConnection(db *bun.DB) {
 					klog.Warningf("Could not connect to database: %v. Retrying...", err)
 				}
 
-				time.Sleep(DBRetryInterval)
+				time.Sleep(retryInterval)
 			} else {
 				klog.Fatalf("Could not connect to database after 30 seconds: %v", err)
 			}
