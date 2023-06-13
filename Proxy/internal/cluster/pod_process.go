@@ -38,9 +38,12 @@ func ProcessPod(event Event, bunDB *bun.DB) {
 		Data:               string(jsonData),
 	}
 
-	// Insert the Service into the database
+	// Insert the pod into the database
 	_, err = bunDB.NewInsert().Model(podDB).Exec(context.Background())
 	if err != nil {
 		klog.Error(err)
 	}
+
+	// This adds the containers inside the pod
+	ProcessContainer(podNew, bunDB, event.timestamp)
 }

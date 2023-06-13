@@ -47,8 +47,8 @@ CREATE TABLE "Pods"(
 CREATE TABLE "Containers"(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
-  "container_id" int,
-  "pod_id" int,
+  "container_id" text,
+  "pod_id" uuid,
   "name" text,
   "image" text,
   "status" text,
