@@ -2,6 +2,8 @@ package cluster
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"time"
 
 	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/model"
@@ -14,6 +16,9 @@ func ProcessContainer(pod *corev1.Pod, bunDB *bun.DB, timestamp time.Time) {
 	statuses := pod.Status.ContainerStatuses
 
 	for idx := range statuses {
+		containerSpec := getSpec(*pod, statuses[idx].Name)
+		Ports := containerSpec.Ports
+
 		contaierDB := &model.Container{
 			Timestamp:   timestamp,
 			ContainerID: statuses[idx].ContainerID,
@@ -21,7 +26,7 @@ func ProcessContainer(pod *corev1.Pod, bunDB *bun.DB, timestamp time.Time) {
 			Name:        statuses[idx].Name,
 			Image:       statuses[idx].Image,
 			Status:      getContainerState(statuses[idx].State),
-			Ports:       "TODO: ports",
+			Ports:       formatPorts(Ports),
 		}
 		// Insert the Container into the database
 		_, err := bunDB.NewInsert().Model(contaierDB).Exec(context.Background())
@@ -44,4 +49,27 @@ func getContainerState(state corev1.ContainerState) string {
 	}
 
 	return stateString
+}
+
+func getSpec(pod corev1.Pod, containerName string) *corev1.Container {
+	containers := pod.Spec.Containers
+
+	for idx := range containers {
+		if containers[idx].Name == containerName {
+			return &containers[idx]
+		}
+	}
+
+	return nil
+}
+
+func formatPorts(ports []corev1.ContainerPort) string {
+	portStrings := make([]string, 0, len(ports)) // preallocate the slice with capacity
+	for _, port := range ports {
+		portStrings = append(portStrings, fmt.Sprintf("%d/%s", port.ContainerPort, port.Protocol))
+	}
+
+	portsString := strings.Join(portStrings, ", ")
+
+	return portsString
 }
