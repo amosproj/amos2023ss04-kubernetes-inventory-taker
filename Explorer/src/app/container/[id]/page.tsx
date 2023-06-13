@@ -2,6 +2,7 @@ import ContainerDetailPage from "@/components/container_detail_page";
 import { getContainerDetails } from "@/lib/db";
 // Having to use this annotation is a known bug in React TypeScript
 // https://nextjs.org/docs/app/building-your-application/data-fetching/fetching#async-and-await-in-server-components
+export const dynamic = "force-dynamic";
 
 export default async function Index({
   params,
