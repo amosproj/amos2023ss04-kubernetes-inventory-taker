@@ -35,12 +35,12 @@ const Sidebar: FC<PropsWithChildren<Record<string, unknown>>> = function ({
   );
 };
 
-import { useNavigationStore } from "@/context/sidebar_context";
+/*import { useNavigationStore } from "@/context/sidebar_context";*/
 
 export default Object.assign(Sidebar, { ...FlowbiteSidebar });
 
 export function ActualSidebar(): JSX.Element {
-  const current_page = useNavigationStore((state) => state.page);
+  const current_page = "test"; /*useNavigationStore((state) => state.page);*/
 
   return (
     <FlowbiteSidebar>
@@ -49,49 +49,56 @@ export function ActualSidebar(): JSX.Element {
           <FlowbiteSidebar.Item
             href="dashboard"
             icon={HiPresentationChartLine}
-            active={current_page === "dashboard" ? true : false}
+            active={current_page.localeCompare("dashboard") ? false : true}
           >
             Dashboard
           </FlowbiteSidebar.Item>
           <FlowbiteSidebar.Item
             href="cluster"
             icon={HiHome}
-            active={current_page === "cluster" ? true : false}
+            active={current_page.localeCompare("cluster") ? false : true}
           >
             Cluster
           </FlowbiteSidebar.Item>
           <FlowbiteSidebar.Item
+            href="deployments"
+            icon={HiTemplate}
+            active={current_page.localeCompare("deployments") ? false : true}
+          >
+            Deployments
+          </FlowbiteSidebar.Item>
+          <FlowbiteSidebar.Item
             href="nodes"
             icon={HiTemplate}
-            active={current_page === "nodes" ? true : false}
+            active={current_page.localeCompare("nodes") ? false : true}
           >
             Nodes
           </FlowbiteSidebar.Item>
           <FlowbiteSidebar.Item
             href="pods"
             icon={HiTable}
-            active={current_page === "pods" ? true : false}
+            active={current_page.localeCompare("pods") ? false : true}
           >
             Pods
           </FlowbiteSidebar.Item>
           <FlowbiteSidebar.Item
             href="containers"
             icon={HiFolder}
-            active={current_page === "containers" ? true : false}
+            active={current_page.localeCompare("containers") ? false : true}
           >
             Containers
           </FlowbiteSidebar.Item>
           <FlowbiteSidebar.Item
             href="volumes"
             icon={HiServer}
-            active={current_page === "volumes" ? true : false}
+            active={current_page.localeCompare("volumes") ? false : true}
           >
             Volumes
           </FlowbiteSidebar.Item>
           <FlowbiteSidebar.Item
             href="services"
             icon={HiChip}
-            active={current_page === "services" ? true : false}
+            active={current_page.localeCompare("services") ? false : true}
           >
             Services
           </FlowbiteSidebar.Item>
@@ -100,7 +107,7 @@ export function ActualSidebar(): JSX.Element {
           <FlowbiteSidebar.Item
             href="settings"
             icon={HiCog}
-            active={current_page === "settings" ? true : false}
+            active={current_page.localeCompare("settings") ? false : true}
           >
             Settings
           </FlowbiteSidebar.Item>

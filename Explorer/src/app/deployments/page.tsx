@@ -8,7 +8,7 @@ export default async function Index(): JSX.Element {
 
   return (
     <div className="p-6">
-      <H1 content={"Dashboard"} />
+      <H1 content={"Deployments"} />
     </div>
   );
 }
