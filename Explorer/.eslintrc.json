@@ -10,6 +10,7 @@
   "parser": "@typescript-eslint/parser",
   "root": true,
   "rules": {
+    "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-namespace": [
       2,
       {
