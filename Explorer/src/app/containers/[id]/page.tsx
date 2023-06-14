@@ -10,7 +10,7 @@ export default async function Index({
   params: { id: string };
   /* @ts-expect-error Async Server Component */
 }): JSX.Element {
-  const data = await getContainerDetails(parseInt(params.id));
+  const data = await getContainerDetails(decodeURIComponent(params.id));
   return (
     <div className="p-6">
       <ContainerDetailPage container_details={data} />
