@@ -35,12 +35,14 @@ const Sidebar: FC<PropsWithChildren<Record<string, unknown>>> = function ({
   );
 };
 
-/*import { useNavigationStore } from "@/context/sidebar_context";*/
-
 export default Object.assign(Sidebar, { ...FlowbiteSidebar });
 
+import { usePathname } from "next/navigation";
+
 export function ActualSidebar(): JSX.Element {
-  const current_page = "test"; /*useNavigationStore((state) => state.page);*/
+  const pathname = usePathname();
+  const splitPathname = pathname.split("/");
+  const current_page = splitPathname[1];
 
   return (
     <FlowbiteSidebar>

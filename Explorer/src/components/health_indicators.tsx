@@ -1,5 +1,3 @@
-"use client";
-
 import { Badge } from "flowbite-react";
 
 export type Health = "Running" | "Stopped" | "Error" | "Warning";
