@@ -1,5 +1,6 @@
 import "server-only";
 import { ContainerDetails, ContainerIndex } from "./types/ContainerDetails";
+import { ContainerList, ContainerData } from "./types/ContainerList";
 import { Pool } from "pg";
 
 // Example for Container Data Structure to generate page
@@ -65,4 +66,12 @@ export async function getContainerDetails(
   }
 
   return { fields: adjusted_container_data, changelog: changelog_data };
+}
+
+export async function getContainerList(): Promise<ContainerList> {
+  const res = await pool.query(
+    "SELECT * FROM containers order by container_event_id DESC"
+  );
+  const containers: ContainerData[] = res.rows;
+  return containers;
 }

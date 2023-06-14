@@ -8,6 +8,7 @@ services:
       DB_PASSWORD: example
     volumes:
       - ./Proxy/.kube/:/.kube
+      - ./Proxy/cmd/proxy/config.yaml:/config.yaml
     network_mode: host
 
   db:

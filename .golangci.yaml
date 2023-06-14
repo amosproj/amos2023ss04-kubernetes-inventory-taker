@@ -13,5 +13,3 @@ linters:
     - structcheck
     - exhaustruct
     - depguard
-
-    - nlreturn

@@ -65,3 +65,15 @@ type Node struct {
 	NetworkUnavailable      string    `bun:"node_conditions_network_unavailable,type:text"`
 	Data                    string    `bun:"data,type:json"`
 }
+
+type Container struct {
+	bun.BaseModel `bun:"table:Containers"`
+	ID            int       `bun:"id,autoincrement"`
+	Timestamp     time.Time `bun:"timestamp,type:timestamp,notnull"`
+	ContainerID   string    `bun:"container_id,type:text"`
+	PodID         string    `bun:"pod_id,type:uuid"`
+	Name          string    `bun:"name,type:text"`
+	Image         string    `bun:"image,type:text"`
+	Status        string    `bun:"status,type:text"`
+	Ports         string    `bun:"ports,type:text"`
+}

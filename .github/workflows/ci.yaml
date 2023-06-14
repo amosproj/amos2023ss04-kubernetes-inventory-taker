@@ -20,7 +20,7 @@ jobs:
       - run: cd Explorer && npm install && cd .. # We use the eslint defined in the package.json
       - run: pip install pre-commit
       - run: pre-commit run --all
-        env: { SKIP: golangci-lint-mod }
+        env: { SKIP: golangci-lint }
   golangci-lint-mod:
     runs-on: "ubuntu-latest"
     steps:
