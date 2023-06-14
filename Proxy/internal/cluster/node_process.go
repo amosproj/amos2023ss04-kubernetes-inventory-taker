@@ -7,7 +7,6 @@ import (
 
 	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/model"
 	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/schema"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/klog"
@@ -54,8 +53,6 @@ func ProcessNode(event Event, bunDB *bun.DB) {
 
 	// Create a new Node
 	nodeDB := model.Node{
-		BaseModel: schema.BaseModel{},
-
 		NodeID:                  string(nodeNew.UID),
 		Timestamp:               event.timestamp,
 		CreationTime:            nodeNew.CreationTimestamp.Time,

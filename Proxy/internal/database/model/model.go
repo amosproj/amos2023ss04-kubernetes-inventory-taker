@@ -2,20 +2,16 @@ package model
 
 import (
 	"time"
-
-	"github.com/uptrace/bun"
 )
 
 type Cluster struct {
-	bun.BaseModel `bun:"table:clusters"`
-	ID            int       `bun:"id,autoincrement"`
-	ClusterID     int       `bun:"cluster_id"`
-	Timestamp     time.Time `bun:"timestamp,notnull"`
-	Name          string    `bun:"name"`
+	ID        int       `bun:"id,autoincrement"`
+	ClusterID int       `bun:"cluster_id"`
+	Timestamp time.Time `bun:"timestamp,notnull"`
+	Name      string    `bun:"name"`
 }
 
 type Service struct {
-	bun.BaseModel     `bun:"services"`
 	ID                int       `bun:"id,autoincrement"`
 	Name              string    `bun:"name,type:text,notnull,pk"`
 	Namespace         string    `bun:"namespace,type:text,notnull,pk"`
@@ -29,7 +25,6 @@ type Service struct {
 }
 
 type Pod struct {
-	bun.BaseModel      `bun:"pods"`
 	ID                 int       `bun:"id,autoincrement"`
 	PodResourceVersion string    `bun:"pod_resource_version,type:text,notnull"`
 	PodID              string    `bun:"pod_id,type:uuid,notnull"`
@@ -42,7 +37,6 @@ type Pod struct {
 }
 
 type Node struct {
-	bun.BaseModel           `bun:"table:nodes"`
 	ID                      int       `bun:"id,autoincrement"`
 	NodeID                  string    `bun:"node_id,type:uuid"`
 	Timestamp               time.Time `bun:"timestamp,type:timestamp,notnull"`
@@ -67,13 +61,12 @@ type Node struct {
 }
 
 type Container struct {
-	bun.BaseModel `bun:"table:containers"`
-	ID            int       `bun:"id,autoincrement"`
-	Timestamp     time.Time `bun:"timestamp,type:timestamp,notnull"`
-	ContainerID   string    `bun:"container_id,type:text"`
-	PodID         string    `bun:"pod_id,type:uuid"`
-	Name          string    `bun:"name,type:text"`
-	Image         string    `bun:"image,type:text"`
-	Status        string    `bun:"status,type:text"`
-	Ports         string    `bun:"ports,type:text"`
+	ID          int       `bun:"id,autoincrement"`
+	Timestamp   time.Time `bun:"timestamp,type:timestamp,notnull"`
+	ContainerID string    `bun:"container_id,type:text"`
+	PodID       string    `bun:"pod_id,type:uuid"`
+	Name        string    `bun:"name,type:text"`
+	Image       string    `bun:"image,type:text"`
+	Status      string    `bun:"status,type:text"`
+	Ports       string    `bun:"ports,type:text"`
 }
