@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/model"
+	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/model"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/schema"
 	corev1 "k8s.io/api/core/v1"
@@ -38,9 +38,12 @@ func ProcessPod(event Event, bunDB *bun.DB) {
 		Data:               string(jsonData),
 	}
 
-	// Insert the Service into the database
+	// Insert the pod into the database
 	_, err = bunDB.NewInsert().Model(podDB).Exec(context.Background())
 	if err != nil {
 		klog.Error(err)
 	}
+
+	// This adds the containers inside the pod
+	ProcessContainer(podNew, bunDB, event.timestamp)
 }
