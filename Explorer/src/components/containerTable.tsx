@@ -31,7 +31,9 @@ export default function ContainerTable({
             <Table.Row key={index}>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
                 <a
-                  href={`/container/${container.container_id}`}
+                  href={`/containers/${encodeURIComponent(
+                    container.container_id
+                  )}`}
                   className="text-decoration-none text-blue-800"
                   id="list"
                 >

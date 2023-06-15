@@ -48,13 +48,13 @@ const pool = new Pool({
 });
 
 export async function getContainerDetails(
-  container_id: number | undefined
+  container_id: string | undefined
 ): Promise<ContainerDetails> {
   const adjusted_container_data = structuredClone(container_data);
   if (container_id) {
     const res = (
       await pool.query(
-        "SELECT * FROM containers c WHERE container_id = $1 order by container_event_id DESC limit 1",
+        'SELECT * FROM "Containers" c WHERE container_id = $1 order by timestamp DESC limit 1',
         [container_id]
       )
     ).rows[0];
@@ -70,7 +70,7 @@ export async function getContainerDetails(
 
 export async function getContainerList(): Promise<ContainerList> {
   const res = await pool.query(
-    "SELECT * FROM containers order by container_event_id DESC"
+    'SELECT * FROM "Containers" order by timestamp DESC'
   );
   const containers: ContainerData[] = res.rows;
   return containers;
