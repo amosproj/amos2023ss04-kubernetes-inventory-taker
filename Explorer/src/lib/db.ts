@@ -54,7 +54,7 @@ export async function getContainerDetails(
   if (container_id) {
     const res = (
       await pool.query(
-        'SELECT * FROM "Containers" c WHERE container_id = $1 order by timestamp DESC limit 1',
+        'SELECT * FROM "containers" c WHERE container_id = $1 order by timestamp DESC limit 1',
         [container_id]
       )
     ).rows[0];
@@ -70,7 +70,7 @@ export async function getContainerDetails(
 
 export async function getContainerList(): Promise<ContainerList> {
   const res = await pool.query(
-    'SELECT * FROM "Containers" order by timestamp DESC'
+    'SELECT * FROM "containers" order by timestamp DESC'
   );
   const containers: ContainerData[] = res.rows;
   return containers;
