@@ -15,40 +15,74 @@ import (
 func ProcessContainer(pod *corev1.Pod, bunDB *bun.DB, timestamp time.Time) {
 	containerStatuses := pod.Status.ContainerStatuses
 
-	for idx := range containerStatuses {
-		containerSpec := getSpec(*pod, containerStatuses[idx].Name)
-		Ports := containerSpec.Ports
+	for _, cStatus := range containerStatuses {
+		containerSpec := getSpec(*pod, cStatus.Name)
+		ports := containerSpec.Ports
+		state := scanContainerState(&cStatus.State)
+		lastState := scanContainerState(&cStatus.LastTerminationState)
 
-		contaierDB := &model.Container{
-			Timestamp:   timestamp,
-			ContainerID: containerStatuses[idx].ContainerID,
-			PodID:       string(pod.UID),
-			Name:        containerStatuses[idx].Name,
-			Image:       containerStatuses[idx].Image,
-			Status:      getContainerState(containerStatuses[idx].State),
-			Ports:       formatPorts(Ports),
+		containerDB := &model.Container{
+			Timestamp:    timestamp,
+			ContainerID:  cStatus.ContainerID,
+			PodID:        string(pod.UID),
+			Name:         cStatus.Name,
+			Image:        cStatus.Image,
+			Status:       state.Kind,
+			Ports:        formatPorts(ports),
+			ImageID:      cStatus.ImageID,
+			Ready:        cStatus.Ready,
+			RestartCount: int(cStatus.RestartCount),
+			Started:      *cStatus.Started,
 		}
+
+		if _, err := bunDB.NewInsert().Model(state).Exec(context.Background()); err != nil {
+			klog.Error(err)
+		}
+
+		containerDB.StateID = state.ID
+
+		if lastState != nil {
+			if _, err := bunDB.NewInsert().Model(lastState).Exec(context.Background()); err != nil {
+				klog.Error(err)
+			}
+
+			containerDB.LastStateID = lastState.ID
+		}
+
 		// Insert the Container into the database
-		_, err := bunDB.NewInsert().Model(contaierDB).Exec(context.Background())
-		if err != nil {
+		if _, err := bunDB.NewInsert().Model(containerDB).Exec(context.Background()); err != nil {
 			klog.Error(err)
 		}
 	}
 }
 
-func getContainerState(state corev1.ContainerState) string {
-	var stateString string
+func scanContainerState(state *corev1.ContainerState) *model.ContainerState {
+	if state == nil {
+		return nil
+	}
+
+	var ret model.ContainerState
 
 	switch {
 	case state.Running != nil:
-		stateString = "Running"
+		ret.Kind = "Running"
+		ret.StartedAt = state.Running.StartedAt.Time
 	case state.Waiting != nil:
-		stateString = "Waiting"
+		ret.Kind = "Waiting"
+		ret.Reason = state.Waiting.Reason
+		ret.Message = state.Waiting.Message
 	case state.Terminated != nil:
-		stateString = "Terminated"
+		ret.Kind = "Terminated"
+		ret.ContainerID = state.Terminated.ContainerID
+		ret.Reason = state.Terminated.Reason
+		ret.Message = state.Terminated.Message
+		ret.FinishedAt = state.Terminated.FinishedAt.Time
+		ret.StartedAt = state.Terminated.StartedAt.Time
+		ret.ExitCode = int(state.Terminated.ExitCode)
+		ret.Signal = int(state.Terminated.Signal)
 	}
 
-	return stateString
+	return &ret
 }
 
 func getSpec(pod corev1.Pod, containerName string) *corev1.Container {

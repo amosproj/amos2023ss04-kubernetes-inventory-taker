@@ -67,13 +67,61 @@ type Node struct {
 }
 
 type Container struct {
-	bun.BaseModel `bun:"table:Containers"`
-	ID            int       `bun:"id,autoincrement"`
-	Timestamp     time.Time `bun:"timestamp,type:timestamp,notnull"`
+	bun.BaseModel `bun:"table:containers"`
+	ID            int             `bun:"id,autoincrement,pk"`
+	Timestamp     time.Time       `bun:"timestamp,type:timestamp,notnull"`
+	ContainerID   string          `bun:"container_id,type:text"`
+	PodID         string          `bun:"pod_id,type:uuid"`
+	Name          string          `bun:"name,type:text"`
+	Image         string          `bun:"image,type:text"`
+	Status        string          `bun:"status,type:text"`
+	Ports         string          `bun:"ports,type:text"`
+	ImageID       string          `bun:"image_id,type:text"`
+	Ready         bool            `bun:"ready"`
+	RestartCount  int             `bun:"restart_count"`
+	Started       bool            `bun:"started"`
+	StateID       int             `bun:"state_id"`
+	LastStateID   int             `bun:"last_state_id,nullzero"`
+	State         *ContainerState `bun:"rel:belongs-to,join:state=id"`
+	LastState     *ContainerState `bun:"rel:belongs-to,join:last_state=id"`
+}
+
+type ContainerState struct {
+	bun.BaseModel `bun:"table:container_states"`
+	ID            int       `bun:"id,autoincrement,pk"`
+	Kind          string    `bun:"kind,type:text"`
+	StartedAt     time.Time `bun:"started_at,type:time"`
 	ContainerID   string    `bun:"container_id,type:text"`
-	PodID         string    `bun:"pod_id,type:uuid"`
-	Name          string    `bun:"name,type:text"`
-	Image         string    `bun:"image,type:text"`
-	Status        string    `bun:"status,type:text"`
-	Ports         string    `bun:"ports,type:text"`
+	ExitCode      int       `bun:"exit_code,type:int"`
+	FinishedAt    time.Time `bun:"finished_at,type:time"`
+	Message       string    `bun:"message,type:text"`
+	Reason        string    `bun:"reason,type:text"`
+	Signal        int       `bun:"signal,type:int"`
+}
+
+type VolumeDevice struct {
+	bun.BaseModel `bun:"table:volume_devices"`
+	ID            int    `bun:"id,autoincrement"`
+	ContainerID   int    `bun:"container_id,type:int"`
+	DevicePath    string `bun:"device_path,type:text"`
+	Name          string `bun:"name,type:text"`
+}
+
+type VolumeMount struct {
+	bun.BaseModel `bun:"table:volume_mounts"`
+	ID            int    `bun:"id,autoincrement"`
+	ContainerID   int    `bun:"container_id,type:int"`
+	DevicePath    string `bun:"device_path,type:text"`
+	Name          string `bun:"name,type:text"`
+}
+
+type ContainerPort struct {
+	bun.BaseModel `bun:"table:container_ports"`
+	ID            int    `bun:"id,autoincrement"`
+	ContainerID   int    `bun:"container_id,type:int"`
+	ContainerPort int    `bun:"container_port,type:int"`
+	HostIP        string `bun:"host_ip,type:text"`
+	HostPort      int    `bun:"host_port,type:int"`
+	Name          string `bun:"name,type:text"`
+	Protocol      string `bun:"protocol,type:text"`
 }
