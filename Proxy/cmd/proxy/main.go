@@ -3,8 +3,7 @@ package main
 import (
 	"time"
 
-	//nolint:revive,stylecheck
-	. "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/cluster"
+	cluster "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/cluster"
 	db "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/setup"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/util/workqueue"
@@ -12,22 +11,23 @@ import (
 )
 
 func main() {
-	externalConfig := ReadExternalConfig()
+	externalConfig := cluster.ReadExternalConfig()
 
-	bunDB := db.SetupDBConnection()
+	bunDB := db.DBConnection()
+	defer bunDB.Close()
 
-	WriteCluster(externalConfig.KubeconfigPath, bunDB)
+	cluster.WriteCluster(externalConfig.KubeconfigPath, bunDB)
 
-	clientset := CreateClientSet(externalConfig.KubeconfigPath)
+	clientset := cluster.CreateClientSet(externalConfig.KubeconfigPath)
 	informerFactory := informers.NewSharedInformerFactory(clientset, time.Minute)
 
 	workqueue := workqueue.NewRateLimitingQueue(workqueue.DefaultControllerRateLimiter())
 
-	funcs := SetupEventHandlerFuncs(workqueue)
+	funcs := cluster.SetupEventHandlerFuncs(workqueue)
 
 	stopCh := make(chan struct{})
 
-	RegisterEventHandlers(externalConfig.ResourceTypes, informerFactory, funcs)
+	cluster.RegisterEventHandlers(externalConfig.ResourceTypes, informerFactory, funcs)
 
 	defer close(stopCh)
 	informerFactory.Start(stopCh)
@@ -35,10 +35,9 @@ func main() {
 	for i := 0; i < 1; i++ {
 		klog.Info("starting worker ", i)
 		//nolint:wsl,nolintlint
-		go ProcessWorkqueue(bunDB, workqueue)
+		go cluster.ProcessWorkqueue(bunDB, workqueue)
 	}
 
 	// Wait for the workequeue to stop
 	<-stopCh
-	bunDB.Close()
 }
