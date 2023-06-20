@@ -7,7 +7,6 @@ import (
 
 	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/model"
 	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/schema"
 	"gopkg.in/yaml.v2"
 	"k8s.io/klog"
 )
@@ -33,8 +32,6 @@ func WriteCluster(kubeconfigPath string, bunDB *bun.DB) {
 	}
 
 	clusterDB := model.Cluster{
-		BaseModel: schema.BaseModel{},
-
 		ClusterID: 0,
 		Timestamp: time.Now(),
 		Name:      config.CurrentContext,
