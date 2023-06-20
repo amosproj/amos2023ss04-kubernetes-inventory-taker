@@ -61,12 +61,62 @@ type Node struct {
 }
 
 type Container struct {
-	ID          int       `bun:"id,autoincrement"`
-	Timestamp   time.Time `bun:"timestamp,type:timestamp,notnull"`
+	ID           int       `bun:"id,autoincrement,pk"`
+	Timestamp    time.Time `bun:"timestamp,type:timestamp,notnull"`
+	ContainerID  string    `bun:"container_id,type:text"`
+	PodID        string    `bun:"pod_id,type:uuid"`
+	Name         string    `bun:"name,type:text"`
+	Image        string    `bun:"image,type:text"`
+	Status       string    `bun:"status,type:text"`
+	Ports        string    `bun:"ports,type:text"`
+	ImageID      string    `bun:"image_id,type:text"`
+	Ready        bool      `bun:"ready"`
+	RestartCount int       `bun:"restart_count"`
+	Started      bool      `bun:"started"`
+	StateID      int       `bun:"state_id"`
+	// since LastState can be unset, it should automatically me NULL in the database instead of 0
+	LastStateID int `bun:"last_state_id,nullzero"`
+	// theses references are not used for inserting, as bun does not support that
+	State     *ContainerState `bun:"rel:belongs-to,join:state=id"`
+	LastState *ContainerState `bun:"rel:belongs-to,join:last_state=id"`
+}
+
+type ContainerState struct {
+	ID          int       `bun:"id,autoincrement,pk"`
+	Kind        string    `bun:"kind,type:text"`
+	StartedAt   time.Time `bun:"started_at,type:time"`
 	ContainerID string    `bun:"container_id,type:text"`
-	PodID       string    `bun:"pod_id,type:uuid"`
-	Name        string    `bun:"name,type:text"`
-	Image       string    `bun:"image,type:text"`
-	Status      string    `bun:"status,type:text"`
-	Ports       string    `bun:"ports,type:text"`
+	ExitCode    int       `bun:"exit_code,type:int"`
+	FinishedAt  time.Time `bun:"finished_at,type:time"`
+	Message     string    `bun:"message,type:text"`
+	Reason      string    `bun:"reason,type:text"`
+	Signal      int       `bun:"signal,type:int"`
+}
+
+type VolumeDevice struct {
+	ID          int    `bun:"id,autoincrement,pk"`
+	ContainerID int    `bun:"container_id,type:int"`
+	DevicePath  string `bun:"device_path,type:text"`
+	Name        string `bun:"name,type:text"`
+}
+
+type VolumeMount struct {
+	ID               int    `bun:"id,autoincrement,pk"`
+	ContainerID      int    `bun:"container_id,type:int"`
+	MountPath        string `bun:"mount_path,type:text"`
+	MountPropagation string `bun:"mount_propagation,type:text"`
+	Name             string `bun:"name,type:text"`
+	ReadOnly         bool   `bun:"read_only,type:bool"`
+	SubPath          string `bun:"sub_path,type:text"`
+	SubPathExpr      string `bun:"sub_path_expr,type:text"`
+}
+
+type ContainerPort struct {
+	ID            int    `bun:"id,autoincrement,pk"`
+	ContainerID   int    `bun:"container_id,type:int"`
+	ContainerPort int    `bun:"container_port,type:int"`
+	HostIP        string `bun:"host_ip,type:text"`
+	HostPort      int    `bun:"host_port,type:int"`
+	Name          string `bun:"name,type:text"`
+	Protocol      string `bun:"protocol,type:text"`
 }
