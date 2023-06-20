@@ -6,7 +6,6 @@ import (
 
 	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/model"
 	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/schema"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/klog"
 )
@@ -26,7 +25,6 @@ func ProcessPod(event Event, bunDB *bun.DB) {
 	}
 
 	podDB := &model.Pod{
-		BaseModel:          schema.BaseModel{},
 		ID:                 0,
 		PodResourceVersion: podNew.ResourceVersion,
 		PodID:              string(podNew.UID),
