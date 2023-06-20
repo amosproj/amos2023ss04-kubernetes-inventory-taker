@@ -61,22 +61,24 @@ type Node struct {
 }
 
 type Container struct {
-	ID           int             `bun:"id,autoincrement,pk"`
-	Timestamp    time.Time       `bun:"timestamp,type:timestamp,notnull"`
-	ContainerID  string          `bun:"container_id,type:text"`
-	PodID        string          `bun:"pod_id,type:uuid"`
-	Name         string          `bun:"name,type:text"`
-	Image        string          `bun:"image,type:text"`
-	Status       string          `bun:"status,type:text"`
-	Ports        string          `bun:"ports,type:text"`
-	ImageID      string          `bun:"image_id,type:text"`
-	Ready        bool            `bun:"ready"`
-	RestartCount int             `bun:"restart_count"`
-	Started      bool            `bun:"started"`
-	StateID      int             `bun:"state_id"`
-	LastStateID  int             `bun:"last_state_id,nullzero"`
-	State        *ContainerState `bun:"rel:belongs-to,join:state=id"`
-	LastState    *ContainerState `bun:"rel:belongs-to,join:last_state=id"`
+	ID           int       `bun:"id,autoincrement,pk"`
+	Timestamp    time.Time `bun:"timestamp,type:timestamp,notnull"`
+	ContainerID  string    `bun:"container_id,type:text"`
+	PodID        string    `bun:"pod_id,type:uuid"`
+	Name         string    `bun:"name,type:text"`
+	Image        string    `bun:"image,type:text"`
+	Status       string    `bun:"status,type:text"`
+	Ports        string    `bun:"ports,type:text"`
+	ImageID      string    `bun:"image_id,type:text"`
+	Ready        bool      `bun:"ready"`
+	RestartCount int       `bun:"restart_count"`
+	Started      bool      `bun:"started"`
+	StateID      int       `bun:"state_id"`
+	// since LastState can be unset, it should automatically me NULL in the database instead of 0
+	LastStateID int `bun:"last_state_id,nullzero"`
+	// theses references are not used for inserting, as bun does not support that
+	State     *ContainerState `bun:"rel:belongs-to,join:state=id"`
+	LastState *ContainerState `bun:"rel:belongs-to,join:last_state=id"`
 }
 
 type ContainerState struct {
@@ -105,8 +107,8 @@ type VolumeMount struct {
 	MountPropagation string `bun:"mount_propagation,type:text"`
 	Name             string `bun:"name,type:text"`
 	ReadOnly         bool   `bun:"read_only,type:bool"`
-	SubPath          string
-	SubPathExpr      string
+	SubPath          string `bun:"sub_path,type:text"`
+	SubPathExpr      string `bun:"sub_path_expr,type:text"`
 }
 
 type ContainerPort struct {

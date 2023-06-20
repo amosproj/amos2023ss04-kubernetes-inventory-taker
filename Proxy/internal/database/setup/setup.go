@@ -21,10 +21,8 @@ const (
 	retryTimeout      = 30 * time.Second // final timeout for testDBConnection
 )
 
-// SetupDBConnection setup database connection.
-//
-//nolint:revive
-func SetupDBConnection() *bun.DB {
+// DBConnection setup database connection.
+func DBConnection() *bun.DB {
 	dbUser, exists := os.LookupEnv("DB_USER")
 	if !exists {
 		klog.Warning("DB_USER environment variable is not set. Trying dbUser = postgres")

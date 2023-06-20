@@ -12,6 +12,7 @@ import (
 	"k8s.io/klog"
 )
 
+// Process all contenders from one Pod.
 func ProcessContainer(pod *corev1.Pod, bunDB *bun.DB, timestamp time.Time) {
 	containerStatuses := pod.Status.ContainerStatuses
 
@@ -60,6 +61,7 @@ func ProcessContainer(pod *corev1.Pod, bunDB *bun.DB, timestamp time.Time) {
 	}
 }
 
+// ContainerState can be one of 3 types, all are mapped to one table.
 func scanContainerState(state *corev1.ContainerState) *model.ContainerState {
 	if state == nil {
 		return nil
