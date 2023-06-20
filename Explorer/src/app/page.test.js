@@ -1,6 +1,6 @@
-/* eslint-disable */
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import Index from "./page";
+//eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { toBeInTheDocument } from "@testing-library/jest-dom";
 
 jest.mock("../lib/db", () => ({
