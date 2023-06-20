@@ -3,11 +3,14 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN  npm install --production
+RUN  npm ci --omit=dev
 
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+COPY package.json package-lock.json ./
+# Install dev dependencies because next.js build calls them
+RUN npm ci -D
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -24,7 +27,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
 USER nextjs

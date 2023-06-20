@@ -1,5 +1,6 @@
 import "server-only";
 import { ContainerDetails, ContainerIndex } from "./types/ContainerDetails";
+import { ContainerList, ContainerData } from "./types/ContainerList";
 import { Pool } from "pg";
 
 // Example for Container Data Structure to generate page
@@ -47,13 +48,13 @@ const pool = new Pool({
 });
 
 export async function getContainerDetails(
-  container_id: number | undefined
+  container_id: string | undefined
 ): Promise<ContainerDetails> {
   const adjusted_container_data = structuredClone(container_data);
   if (container_id) {
     const res = (
       await pool.query(
-        "SELECT * FROM containers c WHERE container_id = $1 order by container_event_id DESC limit 1",
+        "SELECT * FROM containers c WHERE container_id = $1 order by timestamp DESC limit 1",
         [container_id]
       )
     ).rows[0];
@@ -65,4 +66,12 @@ export async function getContainerDetails(
   }
 
   return { fields: adjusted_container_data, changelog: changelog_data };
+}
+
+export async function getContainerList(): Promise<ContainerList> {
+  const res = await pool.query(
+    "SELECT * FROM containers order by timestamp DESC"
+  );
+  const containers: ContainerData[] = res.rows;
+  return containers;
 }

@@ -1,0 +1,47 @@
+package cluster
+
+import (
+	"context"
+	"encoding/json"
+
+	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/model"
+	"github.com/uptrace/bun"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/klog"
+)
+
+func ProcessPod(event Event, bunDB *bun.DB) {
+	//nolint:forcetypeassert
+	podNew := event.Object.(*corev1.Pod)
+
+	//nolint:forcetypeassert
+	if event.Type == Update && event.OldObj.(*corev1.Pod).ResourceVersion == podNew.ResourceVersion {
+		return
+	}
+
+	jsonData, err := json.Marshal(podNew)
+	if err != nil {
+		klog.Error("Error converting Node to JSON:", err)
+	}
+
+	podDB := &model.Pod{
+		ID:                 0,
+		PodResourceVersion: podNew.ResourceVersion,
+		PodID:              string(podNew.UID),
+		Timestamp:          event.timestamp,
+		NodeName:           podNew.Spec.NodeName,
+		Name:               podNew.Name,
+		Namespace:          podNew.Namespace,
+		StatusPhase:        string(podNew.Status.Phase),
+		Data:               string(jsonData),
+	}
+
+	// Insert the pod into the database
+	_, err = bunDB.NewInsert().Model(podDB).Exec(context.Background())
+	if err != nil {
+		klog.Error(err)
+	}
+
+	// This adds the containers inside the pod
+	ProcessContainer(podNew, bunDB, event.timestamp)
+}

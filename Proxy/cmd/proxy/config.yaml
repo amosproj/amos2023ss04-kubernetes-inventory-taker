@@ -1,0 +1,7 @@
+kubeconfigPath:
+resourceTypes:
+  #  - deployment
+  #  - namespace
+  - node
+  - pod
+  - service

@@ -1,36 +1,32 @@
+"use client";
+import Link from "next/link";
+import { Table, Dropdown } from "flowbite-react";
+import { ContainerData, ContainerList } from "@/lib/types/ContainerList";
+import { Health, HealthIndicatorBadge } from "@/components/health_indicators";
+//import { list } from "postcss";
 import React, { useState } from "react";
-import { Table, Toast } from "flowbite-react";
 
-interface Container {
-  name: string;
-  image: string;
-}
+export default function ContainerTable({
+  list,
+}: {
+  list: ContainerList;
+}): JSX.Element {
+  const [sortedList, setSortedList] = useState([...list]);
 
-interface StripedTableProps {
-  containers: Container[];
-}
-
-const ContainerTable: React.FC<StripedTableProps> = ({ containers }) => {
-  const [showToast, setShowToast] = useState(false);
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setShowToast(true);
+  const handleSortAsc = () => {
+    const sorted = [...sortedList];
+    sorted.sort((a, b) => a.status.localeCompare(b.status));
+    setSortedList(sorted);
   };
 
+  const handleSortDsc = () => {
+    const sorted = [...sortedList];
+    sorted.sort((a, b) => b.status.localeCompare(a.status));
+    setSortedList(sorted);
+  };
   return (
-    <>
-      {showToast && (
-        <div className="py-4">
-          <Toast className="bg-orange-500 bg-opacity-50">
-            <div className="ml-3 text-sm font-normal">
-              your container detail page could be here
-            </div>
-            <Toast.Toggle onClick={() => setShowToast(false)} />
-          </Toast>
-        </div>
-      )}
-      <Table striped>
+    <div>
+      <Table>
         <Table.Head>
           <Table.HeadCell
             className="bg-green-500 bg-opacity-30 text-left"
@@ -45,28 +41,46 @@ const ContainerTable: React.FC<StripedTableProps> = ({ containers }) => {
           >
             Image
           </Table.HeadCell>
+          <Table.HeadCell
+            className="bg-green-500 bg-opacity-30 text-left"
+            scope="col"
+          >
+            <span>
+              <Dropdown inline label="STATUS" dismissOnClick={true}>
+                <Dropdown.Item>
+                  <a onClick={() => handleSortAsc()}>Assending</a>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <a onClick={() => handleSortDsc()}>Descending</a>
+                </Dropdown.Item>
+              </Dropdown>
+            </span>
+          </Table.HeadCell>
         </Table.Head>
         <Table.Body>
-          {containers.map((container, index) => (
+          {sortedList.map((container: ContainerData, index: number) => (
             <Table.Row key={index}>
-              <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
-                <a
-                  href="#"
+              <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
+                <Link
+                  href={`/containers/${encodeURIComponent(
+                    container.container_id
+                  )}`}
                   className="text-decoration-none text-blue-800"
-                  onClick={handleClick}
+                  id="list"
                 >
                   {container.name}
-                </a>
+                </Link>
               </Table.Cell>
-              <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
+              <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
                 {container.image}
+              </Table.Cell>
+              <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
+                <HealthIndicatorBadge status={container.status as Health} />
               </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table>
-    </>
+    </div>
   );
-};
-
-export default ContainerTable;
+}

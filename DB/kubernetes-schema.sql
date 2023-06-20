@@ -1,50 +1,70 @@
-CREATE TABLE "cluster" (
-  "cluster_event_id" int PRIMARY KEY,
-  "cluster_id" int,
+CREATE TABLE clusters(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
-  "name" varchar(255)
+  "cluster_id" int,
+  "name" text
 );
 
 -- https://kubernetes.io/docs/concepts/architecture/nodes/
-CREATE TABLE "nodes" (
-  "node_event_id" int PRIMARY KEY,
-  "node_id" int,
+CREATE TABLE nodes(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
-  "cluster_id" int,
-  "name" varchar(255),
-  "ip_address_internal" varchar(255),
-  "ip_address_external" varchar(255),
-  "status" varchar(50)
+  "name" text,
+  "node_id" uuid,
+  "creation_time" timestamp,
+  "ip_address_internal" text ARRAY,
+  "ip_address_external" text ARRAY,
+  "hostname" text,
+  "status_capacity_cpu" text,
+  "status_capacity_memory" text,
+  "status_capacity_pods" text,
+  "status_allocatable_cpu" text,
+  "status_allocatable_memory" text,
+  "status_allocatable_pods" text,
+  "kubelet_version" text,
+  "node_conditions_ready" text,
+  "node_conditions_disk_pressure" text,
+  "node_conditions_memory_pressure" text,
+  "node_conditions_pid_Pressure" text,
+  "node_conditions_network_unavailable" text,
+  "data" json NOT NULL
 );
 
 -- https://kubernetes.io/docs/concepts/workloads/pods/
-CREATE TABLE "pods" (
-  "pod_event_id" int PRIMARY KEY,
-  "pod_id" int,
+CREATE TABLE pods(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
-  "cluster_id" int,
-  "node_id" int,
-  "name" varchar(255),
-  "status" varchar(50)
+  "name" text,
+  "pod_resource_version" text NOT NULL,
+  "pod_id" uuid NOT NULL,
+  "node_name" text,
+  "namespace" text,
+  "status_phase" text,
+  "data" json NOT NULL
 );
 
 -- https://kubernetes.io/docs/concepts/containers/
-CREATE TABLE "containers" (
-  "container_event_id" int PRIMARY KEY,
-  "container_id" int,
+CREATE TABLE containers(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
-  "pod_id" int,
-  "name" varchar(255),
-  "image" varchar(255),
-  "status" varchar(50),
-  "ports" varchar(255)
+  "container_id" text,
+  "pod_id" uuid,
+  "name" text,
+  "image" text,
+  "status" text,
+  "ports" text
 );
 
 -- https://kubernetes.io/docs/concepts/services-networking/service/
-CREATE TABLE "services" (
-  "service_id" int PRIMARY KEY,
-  "cluster_id" int,
-  "name" varchar(255),
-  "type" varchar(50),
-  "port" int
+CREATE TABLE services(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "timestamp" timestamp NOT NULL,
+  "name" text NOT NULL,
+  "namespace" text NOT NULL,
+  "labels" text ARRAY NOT NULL,
+  "creation_timestamp" timestamp NOT NULL,
+  "ports" text ARRAY NOT NULL,
+  "external_ips" text ARRAY,
+  "cluster_ip" text NOT NULL,
+  "data" json NOT NULL
 );
