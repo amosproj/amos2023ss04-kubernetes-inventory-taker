@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { Table, Dropdown } from "flowbite-react";
 import { ContainerData, ContainerList } from "@/lib/types/ContainerList";
 import { Health, HealthIndicatorBadge } from "@/components/health_indicators";
@@ -47,10 +48,10 @@ export default function ContainerTable({
             <span>
               <Dropdown inline label="STATUS" dismissOnClick={true}>
                 <Dropdown.Item>
-                  <a onClick={handleSortAsc}>Assending</a>
+                  <a onClick={() => handleSortAsc()}>Assending</a>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <a onClick={handleSortDsc}>Descending</a>
+                  <a onClick={() => handleSortDsc()}>Descending</a>
                 </Dropdown.Item>
               </Dropdown>
             </span>
@@ -60,7 +61,7 @@ export default function ContainerTable({
           {sortedList.map((container: ContainerData, index: number) => (
             <Table.Row key={index}>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
-                <a
+                <Link
                   href={`/containers/${encodeURIComponent(
                     container.container_id
                   )}`}
@@ -68,7 +69,7 @@ export default function ContainerTable({
                   id="list"
                 >
                   {container.name}
-                </a>
+                </Link>
               </Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
                 {container.image}
