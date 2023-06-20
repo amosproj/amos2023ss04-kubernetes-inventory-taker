@@ -101,23 +101,27 @@ type ContainerState struct {
 
 type VolumeDevice struct {
 	bun.BaseModel `bun:"table:volume_devices"`
-	ID            int    `bun:"id,autoincrement"`
+	ID            int    `bun:"id,autoincrement,pk"`
 	ContainerID   int    `bun:"container_id,type:int"`
 	DevicePath    string `bun:"device_path,type:text"`
 	Name          string `bun:"name,type:text"`
 }
 
 type VolumeMount struct {
-	bun.BaseModel `bun:"table:volume_mounts"`
-	ID            int    `bun:"id,autoincrement"`
-	ContainerID   int    `bun:"container_id,type:int"`
-	DevicePath    string `bun:"device_path,type:text"`
-	Name          string `bun:"name,type:text"`
+	bun.BaseModel    `bun:"table:volume_mounts"`
+	ID               int    `bun:"id,autoincrement,pk"`
+	ContainerID      int    `bun:"container_id,type:int"`
+	MountPath        string `bun:"mount_path,type:text"`
+	MountPropagation string `bun:"mount_propagation,type:text"`
+	Name             string `bun:"name,type:text"`
+	ReadOnly         bool   `bun:"read_only,type:bool"`
+	SubPath          string
+	SubPathExpr      string
 }
 
 type ContainerPort struct {
 	bun.BaseModel `bun:"table:container_ports"`
-	ID            int    `bun:"id,autoincrement"`
+	ID            int    `bun:"id,autoincrement,pk"`
 	ContainerID   int    `bun:"container_id,type:int"`
 	ContainerPort int    `bun:"container_port,type:int"`
 	HostIP        string `bun:"host_ip,type:text"`

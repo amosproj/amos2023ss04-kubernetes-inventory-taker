@@ -53,6 +53,10 @@ func ProcessContainer(pod *corev1.Pod, bunDB *bun.DB, timestamp time.Time) {
 		if _, err := bunDB.NewInsert().Model(containerDB).Exec(context.Background()); err != nil {
 			klog.Error(err)
 		}
+
+		insertVolumeMounts(bunDB, containerSpec.VolumeMounts, containerDB.ID)
+		insertVolumeDevices(bunDB, containerSpec.VolumeDevices, containerDB.ID)
+		insertContainerPorts(bunDB, containerSpec.Ports, containerDB.ID)
 	}
 }
 
@@ -83,6 +87,58 @@ func scanContainerState(state *corev1.ContainerState) *model.ContainerState {
 	}
 
 	return &ret
+}
+
+func insertVolumeDevices(bunDB *bun.DB, volDevices []corev1.VolumeDevice, containerID int) {
+	for _, volDev := range volDevices {
+		model := &model.VolumeDevice{
+			ContainerID: containerID,
+			DevicePath:  volDev.DevicePath,
+			Name:        volDev.Name,
+		}
+
+		if _, err := bunDB.NewInsert().Model(model).Exec(context.Background()); err != nil {
+			klog.Error(err)
+		}
+	}
+}
+
+func insertVolumeMounts(bunDB *bun.DB, volMounts []corev1.VolumeMount, containerID int) {
+	for _, volMount := range volMounts {
+		model := &model.VolumeMount{
+			ContainerID: containerID,
+			MountPath:   volMount.MountPath,
+			Name:        volMount.Name,
+			ReadOnly:    volMount.ReadOnly,
+			SubPath:     volMount.SubPath,
+			SubPathExpr: volMount.SubPathExpr,
+		}
+
+		if volMount.MountPropagation != nil {
+			model.MountPropagation = string(*volMount.MountPropagation)
+		}
+
+		if _, err := bunDB.NewInsert().Model(model).Exec(context.Background()); err != nil {
+			klog.Error(err)
+		}
+	}
+}
+
+func insertContainerPorts(bunDB *bun.DB, cPorts []corev1.ContainerPort, containerID int) {
+	for _, port := range cPorts {
+		model := &model.ContainerPort{
+			ContainerID:   containerID,
+			ContainerPort: int(port.ContainerPort),
+			HostIP:        port.HostIP,
+			HostPort:      int(port.HostPort),
+			Name:          port.Name,
+			Protocol:      string(port.Protocol),
+		}
+
+		if _, err := bunDB.NewInsert().Model(model).Exec(context.Background()); err != nil {
+			klog.Error(err)
+		}
+	}
 }
 
 func getSpec(pod corev1.Pod, containerName string) *corev1.Container {
