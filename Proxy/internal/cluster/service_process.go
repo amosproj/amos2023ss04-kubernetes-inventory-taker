@@ -8,7 +8,6 @@ import (
 
 	model "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/model"
 	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/schema"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/klog"
 )
@@ -43,8 +42,6 @@ func ProcessService(event Event, bunDB *bun.DB) {
 
 	// Create a Service struct from the corev1.Service
 	serviceDB := &model.Service{
-		BaseModel: schema.BaseModel{},
-
 		Name:              serviceNew.Name,
 		Namespace:         serviceNew.Namespace,
 		Timestamp:         event.timestamp,

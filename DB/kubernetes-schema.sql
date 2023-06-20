@@ -1,4 +1,4 @@
-CREATE TABLE "Clusters"(
+CREATE TABLE clusters(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "cluster_id" int,
@@ -6,7 +6,7 @@ CREATE TABLE "Clusters"(
 );
 
 -- https://kubernetes.io/docs/concepts/architecture/nodes/
-CREATE TABLE "Nodes"(
+CREATE TABLE nodes(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "name" text,
@@ -31,7 +31,7 @@ CREATE TABLE "Nodes"(
 );
 
 -- https://kubernetes.io/docs/concepts/workloads/pods/
-CREATE TABLE "Pods"(
+CREATE TABLE pods(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "name" text,
@@ -56,7 +56,7 @@ CREATE TABLE "container_states"(
 );
 
 -- https://kubernetes.io/docs/concepts/containers/
-CREATE TABLE "containers"(
+CREATE TABLE containers(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "container_id" text,
@@ -102,7 +102,7 @@ CREATE TABLE "container_ports"(
 );
 
 -- https://kubernetes.io/docs/concepts/services-networking/service/
-CREATE TABLE "Services"(
+CREATE TABLE services(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "name" text NOT NULL,
