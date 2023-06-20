@@ -3,6 +3,7 @@ module github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy
 go 1.20
 
 require (
+	github.com/uptrace/bun/extra/bundebug v1.1.14
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.27.2
 	k8s.io/apimachinery v0.27.2
@@ -11,7 +12,12 @@ require (
 	k8s.io/utils v0.0.0-20230209194617-a36077c30491
 )
 
-require mellium.im/sasl v0.3.1 // indirect
+require (
+	github.com/fatih/color v1.15.0 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.19 // indirect
+	mellium.im/sasl v0.3.1 // indirect
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
