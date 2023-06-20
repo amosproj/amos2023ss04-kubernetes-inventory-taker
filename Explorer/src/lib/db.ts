@@ -70,7 +70,17 @@ export async function getContainerDetails(
 
 export async function getContainerList(): Promise<ContainerList> {
   const res = await pool.query(
-    "SELECT * FROM containers order by timestamp DESC"
+    // returns entry with the last timestamp for every unique (name, pod_id)
+    `SELECT
+        *
+    FROM (
+        SELECT
+            *,
+            RANK() OVER (PARTITION BY name, pod_id ORDER BY timestamp DESC) AS rank
+        FROM
+            containers) t
+    WHERE
+        t.rank = 1`
   );
   const containers: ContainerData[] = res.rows;
   return containers;
