@@ -1,4 +1,4 @@
-CREATE TABLE "Clusters"(
+CREATE TABLE clusters(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "cluster_id" int,
@@ -6,7 +6,7 @@ CREATE TABLE "Clusters"(
 );
 
 -- https://kubernetes.io/docs/concepts/architecture/nodes/
-CREATE TABLE "Nodes"(
+CREATE TABLE nodes(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "name" text,
@@ -31,7 +31,7 @@ CREATE TABLE "Nodes"(
 );
 
 -- https://kubernetes.io/docs/concepts/workloads/pods/
-CREATE TABLE "Pods"(
+CREATE TABLE pods(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "name" text,
@@ -43,8 +43,20 @@ CREATE TABLE "Pods"(
   "data" json NOT NULL
 );
 
+CREATE TABLE "container_states"(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "kind" text,
+  "started_at" time,
+  "container_id" text,
+  "exit_code" int,
+  "finished_at" time,
+  "message" text,
+  "reason" text,
+  "signal" int
+);
+
 -- https://kubernetes.io/docs/concepts/containers/
-CREATE TABLE "Containers"(
+CREATE TABLE containers(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "container_id" text,
@@ -52,11 +64,45 @@ CREATE TABLE "Containers"(
   "name" text,
   "image" text,
   "status" text,
-  "ports" text
+  "ports" text,
+  "image_id" text,
+  "ready" bool,
+  "restart_count" int,
+  "started" bool,
+  "state_id" int REFERENCES "container_states" (id),
+  "last_state_id" int REFERENCES "container_states" (id)
+);
+
+CREATE TABLE "volume_devices"(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "container_id" int REFERENCES "containers" ("id") NOT NULL,
+  "device_path" text,
+  "name" text
+);
+
+CREATE TABLE "volume_mounts"(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "container_id" int REFERENCES "containers" ("id") NOT NULL,
+  "mount_path" text,
+  "mount_propagation" text,
+  "name" text,
+  "read_only" bool,
+  "sub_path" text,
+  "sub_path_expr" text
+);
+
+CREATE TABLE "container_ports"(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "container_id" int REFERENCES "containers" ("id") NOT NULL,
+  "container_port" int,
+  "host_ip" text,
+  "host_port" int,
+  "name" text,
+  "protocol" text
 );
 
 -- https://kubernetes.io/docs/concepts/services-networking/service/
-CREATE TABLE "Services"(
+CREATE TABLE services(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
   "name" text NOT NULL,

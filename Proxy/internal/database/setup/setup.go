@@ -10,6 +10,7 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+	"github.com/uptrace/bun/extra/bundebug"
 	"k8s.io/klog"
 )
 
@@ -20,10 +21,8 @@ const (
 	retryTimeout      = 30 * time.Second // final timeout for testDBConnection
 )
 
-// SetupDBConnection setup database connection.
-//
-//nolint:revive
-func SetupDBConnection() *bun.DB {
+// DBConnection setup database connection.
+func DBConnection() *bun.DB {
 	dbUser, exists := os.LookupEnv("DB_USER")
 	if !exists {
 		klog.Warning("DB_USER environment variable is not set. Trying dbUser = postgres")
@@ -60,11 +59,15 @@ func SetupDBConnection() *bun.DB {
 
 	sqldb := sql.OpenDB(pgconn)
 
-	db := bun.NewDB(sqldb, pgdialect.New())
+	dbConn := bun.NewDB(sqldb, pgdialect.New())
 
-	testDBConnection(db)
+	// This line can toggle verbose debugging output for every query that is send
+	// db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
+	dbConn.AddQueryHook(bundebug.NewQueryHook())
 
-	return db
+	testDBConnection(dbConn)
+
+	return dbConn
 }
 
 // TestDBConnection attempts to establish a connection with the database and retries for 30 seconds if unsuccessful.

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { Table, Dropdown } from "flowbite-react";
 import { ContainerData, ContainerList } from "@/lib/types/ContainerList";
 import { Health, HealthIndicatorBadge } from "@/components/health_indicators";
@@ -11,6 +12,29 @@ export default function ContainerTable({
   list: ContainerList;
 }): JSX.Element {
   const [sortedList, setSortedList] = useState([...list]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredContainers, setFilteredContainers] =
+    useState<ContainerList>(list);
+
+  const handleSearch = () => {
+    const filtered = list.filter(
+      (container) =>
+        container.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        container.image.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredContainers(filtered);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   const handleSortAsc = () => {
     const sorted = [...sortedList];
@@ -25,6 +49,23 @@ export default function ContainerTable({
   };
   return (
     <div>
+      <div className="mb-4 text-right">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+          className="border border-gray-300 px-4 py-2 rounded-md"
+        />
+        <button
+          type="button"
+          onClick={handleSearch}
+          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+        >
+          Search
+        </button>
+      </div>
       <Table>
         <Table.Head>
           <Table.HeadCell
@@ -47,20 +88,20 @@ export default function ContainerTable({
             <span>
               <Dropdown inline label="STATUS" dismissOnClick={true}>
                 <Dropdown.Item>
-                  <a onClick={handleSortAsc}>Assending</a>
+                  <a onClick={() => handleSortAsc()}>Assending</a>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <a onClick={handleSortDsc}>Descending</a>
+                  <a onClick={() => handleSortDsc()}>Descending</a>
                 </Dropdown.Item>
               </Dropdown>
             </span>
           </Table.HeadCell>
         </Table.Head>
         <Table.Body>
-          {sortedList.map((container: ContainerData, index: number) => (
+          {filteredContainers.map((container: ContainerData, index: number) => (
             <Table.Row key={index}>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
-                <a
+                <Link
                   href={`/containers/${encodeURIComponent(
                     container.container_id
                   )}`}
@@ -68,7 +109,7 @@ export default function ContainerTable({
                   id="list"
                 >
                   {container.name}
-                </a>
+                </Link>
               </Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
                 {container.image}
