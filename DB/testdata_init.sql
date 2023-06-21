@@ -1,9 +1,5 @@
 INSERT INTO public.clusters ("timestamp",cluster_id,"name") VALUES
 	 ('2023-06-20 14:24:50.963378',0,'minikube');
-INSERT INTO public.container_ports (container_id,container_port,host_ip,host_port,"name",protocol) VALUES
-	 (2,53,'',0,'dns','UDP'),
-	 (2,53,'',0,'dns-tcp','TCP'),
-	 (2,9153,'',0,'metrics','TCP');
 INSERT INTO public.container_states (kind,started_at,container_id,exit_code,finished_at,message,reason,signal) VALUES
 	 ('Running','13:34:12','',0,'00:00:00','','',0),
 	 ('Terminated','12:59:10','docker://f1a76ad6267be481c7939b0ae3cc36209b4c7f442cebb59d6b329763fdf68479',255,'13:33:18','','Error',0),
@@ -162,3 +158,7 @@ INSERT INTO public.volume_mounts (container_id,mount_path,mount_propagation,"nam
 	 (21,'/var/run/secrets/kubernetes.io/serviceaccount','','kube-api-access-hr52s',true,'',''),
 	 (22,'/var/run/secrets/kubernetes.io/serviceaccount','','kube-api-access-hr52s',true,'',''),
 	 (23,'/var/run/secrets/kubernetes.io/serviceaccount','','kube-api-access-hr52s',true,'','');
+INSERT INTO public.container_ports (container_id,container_port,host_ip,host_port,"name",protocol) VALUES
+	 (2,53,'',0,'dns','UDP'),
+	 (2,53,'',0,'dns-tcp','TCP'),
+	 (2,9153,'',0,'metrics','TCP');
