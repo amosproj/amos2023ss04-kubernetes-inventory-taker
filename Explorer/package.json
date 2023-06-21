@@ -10,7 +10,7 @@
     "precommit-lint": "node scripts/lint",
     "cypress": "cypress open",
     "format": "prettier --write \"src/**/*.{ts,tsx,js}\"",
-    "test": "jest --passWithNoTests --watchAll"
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@types/node": "^18.16.18",
