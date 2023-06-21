@@ -30,7 +30,7 @@ assignees: ""
 
 - Colours match with [color scheme](https://amos-p4.atlassian.net/l/cp/g5VzjL88)
 - Implementation is unit tested
-- Code documentation updated (jsdoc or godoc?)
+- Code documentation updated
 - Changes to database documented at [Confluence- Database scheme](https://amos-p4.atlassian.net/l/cp/zY8cqaaP)
 - Changes to architecture documented at [Confluence - Architecture](https://amos-p4.atlassian.net/l/cp/RT8RaER0)
 
