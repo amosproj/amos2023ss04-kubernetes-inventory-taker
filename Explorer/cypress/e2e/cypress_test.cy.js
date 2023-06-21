@@ -1,6 +1,7 @@
 describe("Navigation", () => {
   it("should navigate to the about page", () => {
     // Start from cypress_test_1
+
     cy.visit("/cypress_test/cypress_test_1");
 
     // Find a link with an href attribute containing "cypress_test_2" and click it
