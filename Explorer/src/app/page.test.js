@@ -22,6 +22,6 @@ describe("Index", () => {
   it("displays the container list", async () => {
     const { getByText } = render(await Index());
 
-    expect(getByText("Container 1")).toBeInTheDocument();
+    expect(getByText("Container 2")).toBeInTheDocument();
   });
 });
