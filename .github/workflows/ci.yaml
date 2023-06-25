@@ -35,6 +35,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: Proxy/go.mod
+          cache: false
           check-latest: true
           cache-dependency-path: Proxy/go.sum
       - name: golangci-lint
