@@ -116,8 +116,15 @@ jobs:
           cat config
 
       - name: Start kit
-        run: docker compose up
+        run: docker compose up -d
 
+      - name: Wait for 20 seconds #wait for proxy to collect some data
+        run: sleep 20
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: Explorer
 
   #proxy-integration-test:
   #runs-on: "ubuntu-latest"
