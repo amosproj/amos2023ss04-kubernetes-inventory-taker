@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: Explorer/package-lock.json
       - run: cd Explorer && npm ci
       - run: pip install pre-commit
@@ -33,7 +33,9 @@ jobs:
     steps:
       - uses: actions/setup-go@v4
         with:
-          go-version: "1.20"
+          go-version-file: Proxy/go.mod
+          check-latest: true
+          cache-dependency-path: Proxy/go.sum
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
@@ -88,14 +90,32 @@ jobs:
   #unit-test:
   #runs-on: "ubuntu-latest"
 
-  setup-kubernetes-cluster:
+  k8s-cypress-tests:
     runs-on: "ubuntu-latest"
     steps:
-      - name: AbsaOSS/k3d-action
-        uses: AbsaOSS/k3d-action@v2.4.0
+      - uses: actions/checkout@v3
+      - uses: AbsaOSS/k3d-action@v2.4.0
         with:
           cluster-name: "Test-Cluster"
           args: --agents 1
+
+      - name: Prepare kubeconfig # Copy kubeconfig into /Proxy/.kube folder
+        run: |
+          cd Proxy && mkdir .kube && cd .kube
+          cp -r $HOME/.kube/config .
+          cat config
+
+      - name: Start kit
+        run: docker compose up -d
+      - run: sleep 20 # Wait for the proxy to collect some data
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: Explorer
+        env:
+          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
+
 
   #proxy-integration-test:
   #runs-on: "ubuntu-latest"
