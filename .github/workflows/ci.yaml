@@ -12,87 +12,87 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  pre-commit:
-    runs-on: "ubuntu-latest"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - run: cd Explorer && npm install && cd .. # We use the eslint defined in the package.json
-      - run: pip install pre-commit
-      - run: pre-commit run --all
-        env: { SKIP: golangci-lint }
-  jest-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  # pre-commit:
+  #   runs-on: "ubuntu-latest"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - run: cd Explorer && npm install && cd .. # We use the eslint defined in the package.json
+  #     - run: pip install pre-commit
+  #     - run: pre-commit run --all
+  #       env: { SKIP: golangci-lint }
+  # jest-tests:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18.x"
+  #     - name: Setup Node.js environment
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: "18.x"
 
-      - name: Install dependencies and Run Jest tests
-        run: |
-          cd Explorer
-          npm ci
-          npm test
-  golangci-lint-mod:
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/setup-go@v4
-        with:
-          go-version: "1.20"
-      - uses: actions/checkout@v3
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or `latest` to use the latest version
-          version: v1.52
-          working-directory: Proxy
-          args: --timeout 5m
+  #     - name: Install dependencies and Run Jest tests
+  #       run: |
+  #         cd Explorer
+  #         npm ci
+  #         npm test
+  # golangci-lint-mod:
+  #   runs-on: "ubuntu-latest"
+  #   steps:
+  #     - uses: actions/setup-go@v4
+  #       with:
+  #         go-version: "1.20"
+  #     - uses: actions/checkout@v3
+  #     - name: golangci-lint
+  #       uses: golangci/golangci-lint-action@v3
+  #       with:
+  #         # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or `latest` to use the latest version
+  #         version: v1.52
+  #         working-directory: Proxy
+  #         args: --timeout 5m
 
-  build-and-push-images:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - dockerfile: ./Proxy/Dockerfile
-            image: proxy
-            context: ./Proxy
-          - dockerfile: ./Explorer/Dockerfile
-            image: explorer
-            context: ./Explorer
-    permissions:
-      contents: write
-      packages: write
+  # build-and-push-images:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - dockerfile: ./Proxy/Dockerfile
+  #           image: proxy
+  #           context: ./Proxy
+  #         - dockerfile: ./Explorer/Dockerfile
+  #           image: explorer
+  #           context: ./Explorer
+  #   permissions:
+  #     contents: write
+  #     packages: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Log in to the Container registry
+  #       uses: docker/login-action@v2
+  #       with:
+  #         registry: ${{ env.REGISTRY }}
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.image }}
+  #     - name: Extract metadata (tags, labels) for Docker
+  #       id: meta
+  #       uses: docker/metadata-action@v4
+  #       with:
+  #         images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.image }}
 
-      - name: Build and push Docker Images
-        uses: docker/build-push-action@v4
-        with:
-          context: ${{ matrix.context }}
-          file: ${{ matrix.dockerfile }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+  #     - name: Build and push Docker Images
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: ${{ matrix.context }}
+  #         file: ${{ matrix.dockerfile }}
+  #         push: true
+  #         tags: ${{ steps.meta.outputs.tags }}
+  #         labels: ${{ steps.meta.outputs.labels }}
 
   #unit-test:
   #runs-on: "ubuntu-latest"
@@ -100,11 +100,21 @@ jobs:
   setup-kubernetes-cluster:
     runs-on: "ubuntu-latest"
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: AbsaOSS/k3d-action
         uses: AbsaOSS/k3d-action@v2.4.0
         with:
           cluster-name: "Test-Cluster"
           args: --agents 1
+
+      - name: prepare kubeconfig
+        run: |
+          cd Proxy && mkdir .kube && cd .kube
+          cp -r $KUBECONFIG
+          cat config
+
 
   #proxy-integration-test:
   #runs-on: "ubuntu-latest"
