@@ -118,6 +118,12 @@ jobs:
         env:
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
 
+      - name: Cypress run component testing
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: Explorer
+          component: true
+
       - name: Upload screenshots
         uses: actions/upload-artifact@v3
         if: failure()
@@ -127,12 +133,14 @@ jobs:
           if-no-files-found: ignore
           retention-days: 1
 
-      - name: Cypress run component testing
-        uses: cypress-io/github-action@v5
+      - name: Upload videos
+        uses: actions/upload-artifact@v3
+        if: failure()
         with:
-          working-directory: Explorer
-          component: true
-
+          name: cypress-videos
+          path: Explorer/cypress/videos
+          if-no-files-found: ignore
+          retention-days: 1
 
   #proxy-integration-test:
   #runs-on: "ubuntu-latest"
