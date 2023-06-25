@@ -116,7 +116,7 @@ jobs:
           cat config
 
       - name: Start kit
-        run: docker compose up -d
+        run: docker compose up
 
 
   #proxy-integration-test:
