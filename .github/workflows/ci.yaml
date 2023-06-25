@@ -114,6 +114,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           working-directory: Explorer
+          headed: true
         env:
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
 
@@ -131,8 +132,6 @@ jobs:
         with:
           working-directory: Explorer
           component: true
-        env:
-          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
 
 
   #proxy-integration-test:
