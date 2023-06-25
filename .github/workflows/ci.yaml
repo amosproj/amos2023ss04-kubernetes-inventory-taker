@@ -12,15 +12,22 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  pre-commit:
+  pre-commit and jest:
     runs-on: "ubuntu-latest"
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - run: cd Explorer && npm install && cd .. # We use the eslint defined in the package.json
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: Explorer/package-lock.json
+      - run: cd Explorer && npm ci
       - run: pip install pre-commit
-      - run: pre-commit run --all
+      - name: Run pre-commit
+        run: pre-commit run --all
         env: { SKIP: golangci-lint }
+      - name: Run jest-tests
+        run: cd Explorer && npx -y jest
   golangci-lint-mod:
     runs-on: "ubuntu-latest"
     steps:
