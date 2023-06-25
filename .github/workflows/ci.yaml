@@ -109,7 +109,7 @@ jobs:
           cluster-name: "Test-Cluster"
           args: --agents 1
 
-      - name: Prepare kubeconfig
+      - name: Prepare kubeconfig # Copy kubeconfig into /Proxy/.kube folder
         run: |
           cd Proxy && mkdir .kube && cd .kube
           cp -r $HOME/.kube/config .
@@ -118,13 +118,16 @@ jobs:
       - name: Start kit
         run: docker compose up -d
 
-      - name: Wait for 20 seconds #wait for proxy to collect some data
+      - name: Wait for 20 seconds # Wait for the proxy to collect some data
         run: sleep 20
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
           working-directory: Explorer
+        env:
+          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
+
 
   #proxy-integration-test:
   #runs-on: "ubuntu-latest"
