@@ -109,11 +109,14 @@ jobs:
           cluster-name: "Test-Cluster"
           args: --agents 1
 
-      - name: prepare kubeconfig
+      - name: Prepare kubeconfig
         run: |
           cd Proxy && mkdir .kube && cd .kube
           cp -r $HOME/.kube/config .
           cat config
+
+      - name: Start kit
+        run: docker compose up -d
 
 
   #proxy-integration-test:
