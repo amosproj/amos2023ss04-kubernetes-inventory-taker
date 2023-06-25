@@ -110,10 +110,18 @@ jobs:
         run: docker compose up -d
       - run: sleep 20 # Wait for the proxy to collect some data
 
-      - name: Cypress run
+      - name: Cypress run e2e testing
         uses: cypress-io/github-action@v5
         with:
           working-directory: Explorer
+        env:
+          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
+
+      - name: Cypress run component testing
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: Explorer
+          component: true
         env:
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
 
