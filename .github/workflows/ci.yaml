@@ -31,12 +31,12 @@ jobs:
   golangci-lint-mod:
     runs-on: "ubuntu-latest"
     steps:
+      - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
         with:
           go-version-file: Proxy/go.mod
           check-latest: true
           cache-dependency-path: Proxy/go.sum
-      - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
