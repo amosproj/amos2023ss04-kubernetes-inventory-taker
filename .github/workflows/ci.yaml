@@ -112,7 +112,7 @@ jobs:
       - name: prepare kubeconfig
         run: |
           cd Proxy && mkdir .kube && cd .kube
-          cp -r $KUBECONFIG
+          cp -r $KUBECONFIG .
           cat config
 
 
