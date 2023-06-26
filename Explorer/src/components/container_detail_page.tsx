@@ -159,7 +159,7 @@ function ContainerDetailsWidget({
             if (value instanceof Date) {
               value = value.toUTCString();
             } else if (typeof value === "boolean") {
-              value = value ? "\u2713" : "\u2717";
+              value = value ? "true" : "false";
             }
             return (
               <Table.Row
