@@ -11,6 +11,9 @@ export default async function Index({
   /* @ts-expect-error Async Server Component */
 }): JSX.Element {
   const data = await getContainerDetails(decodeURIComponent(params.id));
+  if (!data) {
+    throw "Unkown ID";
+  }
   return (
     <div className="p-6">
       <ContainerDetailPage container_details={data} />
