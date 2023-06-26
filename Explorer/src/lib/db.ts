@@ -1,5 +1,5 @@
 import "server-only";
-import { Container, ContainerList } from "./types/Container";
+import { ContainerDetails, ContainerList } from "./types/Container";
 import { Pool } from "pg";
 
 const pool = new Pool({
@@ -12,10 +12,10 @@ const pool = new Pool({
 
 export async function getContainerDetails(
   container_id: string
-): Promise<Container | undefined> {
+): Promise<ContainerDetails | undefined> {
   return (
     await pool.query(
-      "SELECT * FROM containers c WHERE container_id = $1 order by timestamp DESC limit 1",
+      "SELECT * FROM containers c LEFT JOIN container_states cs ON cs.id  = c.state_id WHERE c.container_id = $1 order by timestamp DESC limit 1",
       [container_id]
     )
   ).rows[0];

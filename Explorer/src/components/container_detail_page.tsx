@@ -3,12 +3,12 @@
 import { Table } from "flowbite-react";
 import { H1 } from "@/components/style_elements";
 import { HealthIndicatorBadge } from "@/components/health_indicators";
-import { Container } from "@/lib/types/Container";
+import { ContainerDetails } from "@/lib/types/Container";
 
 export default function ContainerDetailPage({
   container_details,
 }: {
-  container_details: Container;
+  container_details: ContainerDetails;
 }): JSX.Element {
   return (
     <div>
@@ -140,7 +140,7 @@ function _ContainerChangelogWidget({
 function ContainerDetailsWidget({
   container_data,
 }: {
-  container_data: Container;
+  container_data: ContainerDetails;
 }): JSX.Element {
   return (
     <div className="p-0 w-max">
