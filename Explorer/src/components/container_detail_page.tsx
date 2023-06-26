@@ -158,6 +158,8 @@ function ContainerDetailsWidget({
           {Object.entries(container_data).map(([name, value], index) => {
             if (value instanceof Date) {
               value = value.toUTCString();
+            } else if (typeof value === "boolean") {
+              value = value ? "\u2713" : "\u2717";
             }
             return (
               <Table.Row
