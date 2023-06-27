@@ -25,7 +25,6 @@ jest.mock("../lib/db", () => ({
       status: "Pending",
       ports: 2,
     },
-
   ]),
 }));
 
@@ -37,7 +36,9 @@ describe("Index", () => {
   });
 
   it("filters containers based on search term", async () => {
-    const { getByPlaceholderText, getAllByRole, getByText } = render(await Index());
+    const { getByPlaceholderText, getAllByRole, getByText } = render(
+      await Index()
+    );
 
     const searchInput = getByPlaceholderText("Search...");
     fireEvent.change(searchInput, { target: { value: "Container 1" } });
@@ -51,7 +52,5 @@ describe("Index", () => {
 
     const updatedTableRows = getAllByRole("row");
     expect(updatedTableRows).toHaveLength(3); // All containers match the search term
-
-
   });
 });
