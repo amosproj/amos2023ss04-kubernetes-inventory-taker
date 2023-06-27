@@ -11,8 +11,6 @@ export default function ContainerTable({
 }: {
   list: ContainerList;
 }): JSX.Element {
-  const [sortedList, setSortedList] = useState([...list]);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredContainers, setFilteredContainers] =
     useState<ContainerList>(list);
