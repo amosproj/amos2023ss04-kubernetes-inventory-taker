@@ -23,9 +23,11 @@ repos:
       - id: eslint
         name: eslint
         language: system
-        files: 'Explorer/.*\.(js|jsx|ts|tsx)$'
-        entry: bash -c 'cd Explorer && npm run precommit-lint "$@"'
-        types: [file]
+        files: "^Explorer/"
+        entry: bash -c 'cd Explorer && npm run precommit-lint "$0" "$@"'
+        # Pass 1. argument explicitly
+        # $@ only captures arg 2-n
+        types_or: [javascript, jsx, ts, tsx, json]
       - id: golangci-lint
         name: golangci-lint
         language: system
