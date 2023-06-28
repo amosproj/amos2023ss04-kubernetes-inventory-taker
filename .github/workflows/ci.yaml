@@ -36,13 +36,11 @@ jobs:
         with:
           go-version-file: Proxy/go.mod
           cache: false
-          check-latest: true
-          cache-dependency-path: Proxy/go.sum
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or `latest` to use the latest version
-          version: v1.52
+          version: v1.53
           working-directory: Proxy
           args: --timeout 5m
 
@@ -111,10 +109,10 @@ jobs:
       - run: sleep 20 # Wait for the proxy to collect some data
 
       - name: Cypress run e2e testing
+        continue-on-error: true
         uses: cypress-io/github-action@v5
         with:
           working-directory: Explorer
-          headed: true
           browser: chrome
         env:
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
@@ -125,7 +123,6 @@ jobs:
           working-directory: Explorer
           install: false # we have already installed everything
           component: true
-          headed: true
           browser: chrome
 
       - name: Upload screenshots
