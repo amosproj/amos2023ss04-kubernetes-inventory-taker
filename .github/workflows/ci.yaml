@@ -109,14 +109,13 @@ jobs:
         run: docker compose up -d
       - run: sleep 20 # Wait for the proxy to collect some data
 
-      - name: Cypress run e2e testing (continue-on-error)
-        continue-on-error: true
+      - name: Cypress run e2e testing
         id: cypressE2E
         uses: cypress-io/github-action@v5
         with:
           working-directory: Explorer
           browser: chrome
-          config: defaultCommandTimeout=10000,baseUrl=http://localhost:3000
+          config: defaultCommandTimeout=10000,baseUrl=http://localhost:3000,retries=4
 
       - name: Upload screenshots Cypress E2E Testing
         uses: actions/upload-artifact@v3
