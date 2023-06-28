@@ -27,6 +27,7 @@ jobs:
         run: pre-commit run --all
         env: { SKIP: golangci-lint }
       - name: Run jest-tests
+        if: always()
         run: cd Explorer && npx -y jest
   golangci-lint-mod:
     runs-on: "ubuntu-latest"
@@ -108,8 +109,9 @@ jobs:
         run: docker compose up -d
       - run: sleep 20 # Wait for the proxy to collect some data
 
-      - name: Cypress run e2e testing
+      - name: Cypress run e2e testing (continue-on-error)
         continue-on-error: true
+        id: cypressE2E
         uses: cypress-io/github-action@v5
         with:
           working-directory: Explorer
@@ -118,6 +120,8 @@ jobs:
           CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
 
       - name: Cypress run component testing
+        id: cypressComponent
+        if: always()
         uses: cypress-io/github-action@v5
         with:
           working-directory: Explorer
@@ -127,7 +131,7 @@ jobs:
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v3
-        if: failure()
+        if: steps.cypressE2E.outcome != 'success' || steps.cypressComponent.outcome != 'success'
         with:
           name: cypress-snapshots
           path: Explorer/cypress/screenshots
@@ -136,7 +140,7 @@ jobs:
 
       - name: Upload videos
         uses: actions/upload-artifact@v3
-        if: failure()
+        if: steps.cypressE2E.outcome != 'success' || steps.cypressComponent.outcome != 'success'
         with:
           name: cypress-videos
           path: Explorer/cypress/videos
