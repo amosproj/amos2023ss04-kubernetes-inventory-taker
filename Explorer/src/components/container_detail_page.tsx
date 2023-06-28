@@ -2,49 +2,37 @@
 
 import { Table } from "flowbite-react";
 import { H1 } from "@/components/style_elements";
-import { Health, HealthIndicatorBadge } from "@/components/health_indicators";
-import {
-  ChangeLogEntry,
-  ContainerDetails,
-  ContainerIndex,
-} from "@/lib/types/ContainerDetails";
+import { HealthIndicatorBadge } from "@/components/health_indicators";
+import { Container } from "@/lib/types/Container";
 
 export default function ContainerDetailPage({
   container_details,
 }: {
-  container_details: ContainerDetails;
+  container_details: Container;
 }): JSX.Element {
   return (
     <div>
       <div className="flex">
-        <H1
-          content={
-            "Container ID " +
-            container_details.fields[ContainerIndex.ID].content
-          }
-        />
-        <HealthIndicatorBadge
-          status={
-            container_details.fields[ContainerIndex.STATUS].content as Health
-          }
-        />
+        <H1 content={"Container ID " + container_details.id} />
+        <HealthIndicatorBadge status={container_details.status} />
       </div>
       <div className="flex">
         <div className="w-1/4 w-max">
-          <ContainerDetailsWidget container_data={container_details.fields} />
+          <ContainerDetailsWidget container_data={container_details} />
         </div>
-        <div className="w-1/2 w-max px-8">
+        {/* <div className="w-1/2 w-max px-8">
           <ContainerWorkLoad />
           <ContainerChangelogWidget
             changelog_data={container_details.changelog}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
 }
-
-function ContainerWorkLoad(): JSX.Element {
+// FIXME: Once we have usage data in the table
+// This function should be used to display it
+function _ContainerWorkLoad(): JSX.Element {
   return (
     <div className="flex row">
       <div className="pr-4">
@@ -87,11 +75,13 @@ function ContainerWorkLoad(): JSX.Element {
     </div>
   );
 }
-
-function ContainerChangelogWidget({
+// FIXME: once we have an approach for changelog
+// refactor this function
+function _ContainerChangelogWidget({
   changelog_data,
 }: {
-  changelog_data: Array<ChangeLogEntry>;
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  changelog_data: Array<any>;
 }): JSX.Element {
   return (
     <div className="p-0">
@@ -150,7 +140,7 @@ function ContainerChangelogWidget({
 function ContainerDetailsWidget({
   container_data,
 }: {
-  container_data: Array<{ field: string; content: string }>;
+  container_data: Container;
 }): JSX.Element {
   return (
     <div className="p-0 w-max">
@@ -165,19 +155,26 @@ function ContainerDetailsWidget({
           </Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {container_data.map((entry, index) => (
-            <Table.Row
-              key={index}
-              className="bg-white dark:border-gray-700 dark:bg-gray-800"
-            >
-              <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-50 dark:bg-gray-800">
-                {entry.field}
-              </Table.Cell>
-              <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-30 dark:bg-gray-600">
-                {entry.content}
-              </Table.Cell>
-            </Table.Row>
-          ))}
+          {Object.entries(container_data).map(([name, value], index) => {
+            if (value instanceof Date) {
+              value = value.toUTCString();
+            } else if (typeof value === "boolean") {
+              value = value ? "true" : "false";
+            }
+            return (
+              <Table.Row
+                key={index}
+                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+              >
+                <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-50 dark:bg-gray-800">
+                  {name.toUpperCase()}
+                </Table.Cell>
+                <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-30 dark:bg-gray-600">
+                  {value}
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
         </Table.Body>
       </Table>
     </div>

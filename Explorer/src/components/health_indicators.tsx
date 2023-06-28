@@ -1,15 +1,15 @@
 "use client";
 
+import { Status } from "@/lib/types/Status";
 import { Badge } from "flowbite-react";
 
-export type Health = "Running" | "Stopped" | "Error" | "Warning";
 // Widget for component health
 export function HealthIndicatorWidget({
   name,
   status,
 }: {
   name: string;
-  status: Health;
+  status: Status;
 }): JSX.Element {
   function get_status_color() {
     switch (status) {
@@ -64,7 +64,7 @@ export function HealthIndicatorWidget({
 export function HealthIndicatorBadge({
   status,
 }: {
-  status: Health;
+  status: Status;
 }): JSX.Element {
   function get_status_color_label() {
     switch (status) {

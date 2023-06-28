@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { Table, Dropdown } from "flowbite-react";
-import { ContainerData, ContainerList } from "@/lib/types/ContainerList";
-import { Health, HealthIndicatorBadge } from "@/components/health_indicators";
+import { Container, ContainerList } from "@/lib/types/Container";
+import { HealthIndicatorBadge } from "@/components/health_indicators";
 //import { list } from "postcss";
 import React, { useState } from "react";
 
@@ -11,8 +11,6 @@ export default function ContainerTable({
 }: {
   list: ContainerList;
 }): JSX.Element {
-  const [sortedList, setSortedList] = useState([...list]);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredContainers, setFilteredContainers] =
     useState<ContainerList>(list);
@@ -37,15 +35,15 @@ export default function ContainerTable({
   };
 
   const handleSortAsc = () => {
-    const sorted = [...sortedList];
+    const sorted = [...filteredContainers];
     sorted.sort((a, b) => a.status.localeCompare(b.status));
-    setSortedList(sorted);
+    setFilteredContainers(sorted);
   };
 
   const handleSortDsc = () => {
-    const sorted = [...sortedList];
+    const sorted = [...filteredContainers];
     sorted.sort((a, b) => b.status.localeCompare(a.status));
-    setSortedList(sorted);
+    setFilteredContainers(sorted);
   };
   return (
     <div>
@@ -88,17 +86,17 @@ export default function ContainerTable({
             <span>
               <Dropdown inline label="STATUS" dismissOnClick={true}>
                 <Dropdown.Item>
-                  <a onClick={() => handleSortAsc()}>Assending</a>
+                  <button onClick={() => handleSortAsc()}>Ascending</button>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <a onClick={() => handleSortDsc()}>Descending</a>
+                  <button onClick={() => handleSortDsc()}>Descending</button>
                 </Dropdown.Item>
               </Dropdown>
             </span>
           </Table.HeadCell>
         </Table.Head>
         <Table.Body>
-          {filteredContainers.map((container: ContainerData, index: number) => (
+          {filteredContainers.map((container: Container, index: number) => (
             <Table.Row key={index}>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
                 <Link
@@ -115,7 +113,7 @@ export default function ContainerTable({
                 {container.image}
               </Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
-                <HealthIndicatorBadge status={container.status as Health} />
+                <HealthIndicatorBadge status={container.status} />
               </Table.Cell>
             </Table.Row>
           ))}
