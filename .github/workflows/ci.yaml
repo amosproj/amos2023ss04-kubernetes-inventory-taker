@@ -119,18 +119,18 @@ jobs:
 
       - name: Upload screenshots Cypress E2E Testing
         uses: actions/upload-artifact@v3
-        if: ${{ steps.cypressE2E.outcome != 'success' }}
+        if: ${{ always() && steps.cypressE2E.outcome != 'success' }}
         with:
-          name: cypress-snapshots
+          name: cypress-screenshots-E2E
           path: Explorer/cypress/screenshots
           if-no-files-found: ignore
           retention-days: 1
 
       - name: Upload videos Cypress E2E Testing
         uses: actions/upload-artifact@v3
-        if: ${{ steps.cypressE2E.outcome != 'success' }}
+        if: ${{ always() && steps.cypressE2E.outcome != 'success' }}
         with:
-          name: cypress-videos
+          name: cypress-videos-E2E
           path: Explorer/cypress/videos
           if-no-files-found: ignore
           retention-days: 1
@@ -147,18 +147,18 @@ jobs:
 
       - name: Upload screenshots Cypress Component Testing
         uses: actions/upload-artifact@v3
-        if: ${{ steps.cypressComponent.outcome != 'success' }}
+        if: ${{ always() && steps.cypressComponent.outcome != 'success' }}
         with:
-          name: cypress-snapshots
+          name: cypress-screenshots-component-testing
           path: Explorer/cypress/screenshots
           if-no-files-found: ignore
           retention-days: 1
 
       - name: Upload videos Cypress Component Testing
         uses: actions/upload-artifact@v3
-        if: ${{ steps.cypressComponent.outcome != 'success' }}
+        if: ${{ always() && steps.cypressComponent.outcome != 'success' }}
         with:
-          name: cypress-videos
+          name: cypress-videos-component-testing
           path: Explorer/cypress/videos
           if-no-files-found: ignore
           retention-days: 1
