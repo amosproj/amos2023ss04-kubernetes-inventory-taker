@@ -116,8 +116,25 @@ jobs:
         with:
           working-directory: Explorer
           browser: chrome
-        env:
-          CYPRESS_DEFAULT_COMMAND_TIMEOUT: 10000 # Set timeout to 10 seconds
+          config: defaultCommandTimeout=10000,baseUrl=http://localhost:3000
+
+      - name: Upload screenshots Cypress E2E Testing
+        uses: actions/upload-artifact@v3
+        if: steps.cypressE2E.outcome != 'success'
+        with:
+          name: cypress-snapshots
+          path: Explorer/cypress/screenshots
+          if-no-files-found: ignore
+          retention-days: 1
+
+      - name: Upload videos Cypress E2E Testing
+        uses: actions/upload-artifact@v3
+        if: steps.cypressE2E.outcome != 'success'
+        with:
+          name: cypress-videos
+          path: Explorer/cypress/videos
+          if-no-files-found: ignore
+          retention-days: 1
 
       - name: Cypress run component testing
         id: cypressComponent
@@ -129,18 +146,18 @@ jobs:
           component: true
           browser: chrome
 
-      - name: Upload screenshots
+      - name: Upload screenshots Cypress Component Testing
         uses: actions/upload-artifact@v3
-        if: steps.cypressE2E.outcome != 'success' || steps.cypressComponent.outcome != 'success'
+        if: steps.cypressComponent.outcome != 'success'
         with:
           name: cypress-snapshots
           path: Explorer/cypress/screenshots
           if-no-files-found: ignore
           retention-days: 1
 
-      - name: Upload videos
+      - name: Upload videos Cypress Component Testing
         uses: actions/upload-artifact@v3
-        if: steps.cypressE2E.outcome != 'success' || steps.cypressComponent.outcome != 'success'
+        if: steps.cypressComponent.outcome != 'success'
         with:
           name: cypress-videos
           path: Explorer/cypress/videos
