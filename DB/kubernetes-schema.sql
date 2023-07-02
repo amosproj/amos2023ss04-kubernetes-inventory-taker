@@ -101,6 +101,55 @@ CREATE TABLE "container_ports"(
   "protocol" text
 );
 
+-- https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+CREATE TABLE persistent_volumes(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "timestamp" timestamp NOT NULL,
+  "labels" text ARRAY,
+  "name" text NOT NULL,
+  "namespace" text NOT NULL,
+  "uid" text NOT NULL,
+  "creation_timestamp" timestamp NOT NULL,
+  "deletion_timestamp" timestamp,
+  "access_modes" text ARRAY,
+  "capacity" text,
+  "mount_options" text ARRAY,
+  "storage_class_name" text,
+  "volume_mode" text,
+  "message" text,
+  "phase" text,
+  "reason" text
+);
+
+CREATE TABLE persistent_volume_claims(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "timestamp" timestamp NOT NULL,
+  "labels" text ARRAY,
+  "name" text NOT NULL,
+  "namespace" text NOT NULL,
+  "uid" uuid,
+  "creation_timestamp" timestamp NOT NULL,
+  "deletion_timestamp" timestamp,
+  "access_modes" text ARRAY,
+  "storage_class_name" text,
+  "volume_mode" text,
+  "volume_name" text,
+  "capacity" text,
+  "phase" text,
+  "resize_status" text
+);
+
+CREATE TABLE persistent_volume_claims_conditions(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "persistent_volume_claim_id" int REFERENCES "persistent_volume_claims" ("id") NOT NULL,
+  "last_probe_time" timestamp,
+  "last_transition_time" timestamp,
+  "message" text,
+  "reason" text,
+  "status" text,
+  "type" text
+);
+
 -- https://kubernetes.io/docs/concepts/services-networking/service/
 CREATE TABLE services(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
