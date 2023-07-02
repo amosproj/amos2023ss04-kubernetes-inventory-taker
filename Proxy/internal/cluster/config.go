@@ -18,7 +18,6 @@ import (
 	"k8s.io/client-go/util/homedir"
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog"
-	"k8s.io/utils/strings/slices"
 )
 
 type Config struct {
@@ -118,60 +117,27 @@ func SetupEventHandlerFuncs(workqueue workqueue.RateLimitingInterface) cache.Res
 	}
 }
 
-//nolint:cyclop,lll
-func RegisterEventHandlers(resourceTypes []string, informerFactory informers.SharedInformerFactory, funcs cache.ResourceEventHandlerFuncs) {
-	if slices.Contains(resourceTypes, "deployment") {
-		klog.Info("found deployment in config")
-
-		deploymentInformer := informerFactory.Apps().V1().Deployments().Informer()
-
-		_, err := deploymentInformer.AddEventHandler(funcs)
-		if err != nil {
-			klog.Warning("failed to add deployment handler: ", err)
-		}
+func RegisterEventHandlers(resourceTypes []string, informerFactory informers.SharedInformerFactory,
+	funcs cache.ResourceEventHandlerFuncs,
+) {
+	informerMap := map[string]cache.SharedIndexInformer{
+		"deployment": informerFactory.Apps().V1().Deployments().Informer(),
+		"namespace":  informerFactory.Core().V1().Namespaces().Informer(),
+		"node":       informerFactory.Core().V1().Nodes().Informer(),
+		"pod":        informerFactory.Core().V1().Pods().Informer(),
+		"service":    informerFactory.Core().V1().Services().Informer(),
 	}
 
-	if slices.Contains(resourceTypes, "namespace") {
-		klog.Info("found namespace in config")
+	for _, resourceType := range resourceTypes {
+		if informer, ok := informerMap[resourceType]; ok {
+			klog.Info("registering event handler for ", resourceType)
 
-		namespaceInformer := informerFactory.Core().V1().Namespaces().Informer()
-
-		_, err := namespaceInformer.AddEventHandler(funcs)
-		if err != nil {
-			klog.Warning("failed to add namespace handler: ", err)
-		}
-	}
-
-	if slices.Contains(resourceTypes, "node") {
-		klog.Info("found node in config")
-
-		nodeInformer := informerFactory.Core().V1().Nodes().Informer()
-
-		_, err := nodeInformer.AddEventHandler(funcs)
-		if err != nil {
-			klog.Warning("failed to add node handler: ", err)
-		}
-	}
-
-	if slices.Contains(resourceTypes, "pod") {
-		klog.Info("found pod in config")
-
-		podInformer := informerFactory.Core().V1().Pods().Informer()
-
-		_, err := podInformer.AddEventHandler(funcs)
-		if err != nil {
-			klog.Warning("failed to add pod handler: ", err)
-		}
-	}
-
-	if slices.Contains(resourceTypes, "service") {
-		klog.Info("found service in config")
-
-		serviceInformer := informerFactory.Core().V1().Services().Informer()
-
-		_, err := serviceInformer.AddEventHandler(funcs)
-		if err != nil {
-			klog.Warning("failed to add service handler: ", err)
+			_, err := informer.AddEventHandler(funcs)
+			if err != nil {
+				klog.Warning("failed to add ", resourceType, " handler: ", err)
+			}
+		} else {
+			klog.Warning("no handler for ", resourceType, " found")
 		}
 	}
 }
