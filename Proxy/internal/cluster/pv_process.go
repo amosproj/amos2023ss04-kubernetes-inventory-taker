@@ -1,3 +1,4 @@
+// Package cluster [TODO:description]
 package cluster
 
 import (
@@ -9,6 +10,8 @@ import (
 	"k8s.io/klog"
 )
 
+// ProcessPersistentVolume Handling event of PersistentVolumeClaim
+// and insert the PV into the database with all available information.
 func ProcessPersistentVolume(event Event, bunDB *bun.DB) {
 	pvNew, ok := event.Object.(*corev1.PersistentVolume)
 	if !ok {

@@ -1,3 +1,5 @@
+// Package cluster provides abstraction from kubernetes API.
+// util.go contains type utility functions for the cluster package.
 package cluster
 
 import (
@@ -8,6 +10,7 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// packTimestamp handles nil v1.Time pointers as well.
 func packTimestamp(timestamp *v1.Time) time.Time {
 	if timestamp == nil {
 		return time.Time{}
@@ -16,6 +19,7 @@ func packTimestamp(timestamp *v1.Time) time.Time {
 	return timestamp.Time
 }
 
+// packAccessModes converts AccessModes to string slice.
 func packAccessModes(accessModes []corev1.PersistentVolumeAccessMode) []string {
 	ret := make([]string, 0, len(accessModes))
 
@@ -26,6 +30,7 @@ func packAccessModes(accessModes []corev1.PersistentVolumeAccessMode) []string {
 	return ret
 }
 
+// packLabels converts labels map to string slice joint with '='.
 func packLabels(labels map[string]string) []string {
 	ret := make([]string, 0, len(labels))
 
