@@ -37,3 +37,6 @@ bin/
 
 # kubernetes config
 .kube/
+
+# go main binary
+Proxy/main
