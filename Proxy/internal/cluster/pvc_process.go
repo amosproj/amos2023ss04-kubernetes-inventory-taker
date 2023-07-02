@@ -51,4 +51,22 @@ func ProcessPersistentVolumeClaim(event Event, bunDB *bun.DB) {
 	if err != nil {
 		klog.Error(err)
 	}
+
+	for _, condition := range pvcNew.Status.Conditions {
+		pvcConditionEntry := &model.PersistentVolumeClaimCondition{
+			PersistentVolumeClaimID: pvcEntry.ID,
+			LastProbeTime:           packTimestamp(&condition.LastProbeTime),
+			LastTransitionTime:      packTimestamp(&condition.LastTransitionTime),
+			Message:                 condition.Message,
+			Reason:                  condition.Reason,
+			Status:                  string(condition.Status),
+			Type:                    string(condition.Type),
+		}
+
+		// Insert the PersistentVolumeClaimCondition into the database
+		_, err := bunDB.NewInsert().Model(pvcConditionEntry).Exec(context.Background())
+		if err != nil {
+			klog.Error(err)
+		}
+	}
 }
