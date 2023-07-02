@@ -4,13 +4,6 @@ import (
 	"time"
 )
 
-type Cluster struct {
-	ID        int       `bun:"id,autoincrement"`
-	ClusterID int       `bun:"cluster_id"`
-	Timestamp time.Time `bun:"timestamp,notnull"`
-	Name      string    `bun:"name"`
-}
-
 type Service struct {
 	ID                int       `bun:"id,autoincrement"`
 	Name              string    `bun:"name,type:text,notnull,pk"`
