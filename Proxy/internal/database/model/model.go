@@ -1,3 +1,4 @@
+// Package model contains all the bun models for the database.
 package model
 
 import (
@@ -153,7 +154,6 @@ type PersistentVolumeClaim struct {
 
 type PersistentVolumeClaimCondition struct {
 	ID                      int       `bun:"id,autoincrement,pk"`
-	Timestamp               time.Time `bun:"timestamp,type:timestamp,notnull"`
 	PersistentVolumeClaimID int       `bun:"persistent_volume_claim_id,type:int"`
 	LastProbeTime           time.Time `bun:"last_probe_time,type:timestamp"`
 	LastTransitionTime      time.Time `bun:"last_transition_time,type:timestamp"`

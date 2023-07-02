@@ -1,3 +1,4 @@
+// Package cluster provides abstraction from kubernetes API.
 package cluster
 
 import (
@@ -9,6 +10,8 @@ import (
 	"k8s.io/klog"
 )
 
+// ProcessPersistentVolumeClaim Handling event of PersistentVolumeClaim
+// and insert the PVC into the database with all available information.
 func ProcessPersistentVolumeClaim(event Event, bunDB *bun.DB) {
 	pvcNew, ok := event.Object.(*corev1.PersistentVolumeClaim)
 	if !ok {
@@ -52,6 +55,7 @@ func ProcessPersistentVolumeClaim(event Event, bunDB *bun.DB) {
 		klog.Error(err)
 	}
 
+	// Insert associated PersistentVolumeClaimConditions into the database as well
 	for _, condition := range pvcNew.Status.Conditions {
 		pvcConditionEntry := &model.PersistentVolumeClaimCondition{
 			PersistentVolumeClaimID: pvcEntry.ID,

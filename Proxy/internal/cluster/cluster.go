@@ -1,3 +1,4 @@
+// Package cluster provides abstraction from kubernetes API.
 package cluster
 
 import (
@@ -30,6 +31,7 @@ type Event struct {
 	timestamp time.Time
 }
 
+// CreateClientSet to interact with kubernetes api server.
 func CreateClientSet(kubeconfigPath string) *kubernetes.Clientset {
 	// creates the connection
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
@@ -61,9 +63,11 @@ func SetupEventHandlerFuncs(workqueue workqueue.RateLimitingInterface) cache.Res
 	}
 }
 
+// RegisterEventHandlers for configured resource types in case they are implemented.
 func RegisterEventHandlers(resourceTypes []string, informerFactory informers.SharedInformerFactory,
 	funcs cache.ResourceEventHandlerFuncs,
 ) {
+	// For every watchable Resource a mapping has to be added here.
 	informerMap := map[string]cache.SharedIndexInformer{
 		"persistentvolume":      informerFactory.Core().V1().PersistentVolumes().Informer(),
 		"persistentvolumeclaim": informerFactory.Core().V1().PersistentVolumeClaims().Informer(),
@@ -88,6 +92,7 @@ func RegisterEventHandlers(resourceTypes []string, informerFactory informers.Sha
 	}
 }
 
+// ProcessWorkqueue is the logic for one workqueue handler.
 func ProcessWorkqueue(bunDB *bun.DB, workqueue workqueue.RateLimitingInterface) {
 	for {
 		item, shutdown := workqueue.Get()

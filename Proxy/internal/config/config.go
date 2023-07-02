@@ -1,3 +1,4 @@
+// Package config handles proxy configuration and command line flag parsing.
 package config
 
 import (
@@ -15,6 +16,8 @@ type Config struct {
 	ResourceTypes  []string `yaml:"resourceTypes"`
 }
 
+// ReadExternalConfig Parsing commnd line flags and reading external config file with resource types
+// to be tracked with informers.
 func ReadExternalConfig() Config {
 	var externalConfig Config
 
