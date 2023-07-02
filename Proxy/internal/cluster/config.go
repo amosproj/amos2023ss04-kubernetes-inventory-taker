@@ -121,11 +121,13 @@ func RegisterEventHandlers(resourceTypes []string, informerFactory informers.Sha
 	funcs cache.ResourceEventHandlerFuncs,
 ) {
 	informerMap := map[string]cache.SharedIndexInformer{
-		"deployment": informerFactory.Apps().V1().Deployments().Informer(),
-		"namespace":  informerFactory.Core().V1().Namespaces().Informer(),
-		"node":       informerFactory.Core().V1().Nodes().Informer(),
-		"pod":        informerFactory.Core().V1().Pods().Informer(),
-		"service":    informerFactory.Core().V1().Services().Informer(),
+		"persistentvolume":      informerFactory.Core().V1().PersistentVolumes().Informer(),
+		"persistentvolumeclaim": informerFactory.Core().V1().PersistentVolumeClaims().Informer(),
+		"deployment":            informerFactory.Apps().V1().Deployments().Informer(),
+		"namespace":             informerFactory.Core().V1().Namespaces().Informer(),
+		"node":                  informerFactory.Core().V1().Nodes().Informer(),
+		"pod":                   informerFactory.Core().V1().Pods().Informer(),
+		"service":               informerFactory.Core().V1().Services().Informer(),
 	}
 
 	for _, resourceType := range resourceTypes {
@@ -153,6 +155,10 @@ func ProcessWorkqueue(bunDB *bun.DB, workqueue workqueue.RateLimitingInterface) 
 		klog.Info("processing object of type", reflect.TypeOf(event.Object))
 
 		switch event.Object.(type) {
+		case *corev1.PersistentVolume:
+			ProcessPersistentVolume(event, bunDB)
+		case *corev1.PersistentVolumeClaim:
+
 		case *appsv1.Deployment:
 		case *corev1.Namespace:
 		case *corev1.Node:
