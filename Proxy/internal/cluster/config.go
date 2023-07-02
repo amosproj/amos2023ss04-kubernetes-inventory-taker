@@ -152,13 +152,13 @@ func ProcessWorkqueue(bunDB *bun.DB, workqueue workqueue.RateLimitingInterface) 
 		}
 		//nolint:forcetypeassert
 		event := item.(Event)
-		klog.Info("processing object of type", reflect.TypeOf(event.Object))
+		klog.Info("processing object of type ", reflect.TypeOf(event.Object))
 
 		switch event.Object.(type) {
 		case *corev1.PersistentVolume:
 			ProcessPersistentVolume(event, bunDB)
 		case *corev1.PersistentVolumeClaim:
-
+			ProcessPersistentVolumeClaim(event, bunDB)
 		case *appsv1.Deployment:
 		case *corev1.Namespace:
 		case *corev1.Node:
