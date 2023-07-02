@@ -136,3 +136,52 @@ type ContainerPort struct {
 	Name          string `bun:"name,type:text"`
 	Protocol      string `bun:"protocol,type:text"`
 }
+
+type PersistentVolume struct {
+	ID                int       `bun:"id,autoincrement,pk"`
+	Timestamp         time.Time `bun:"timestamp,type:timestamp,notnull"`
+	Labels            []string  `bun:"labels,type:text[],array"`
+	Name              string    `bun:"name,type:text,notnull"`
+	Namespace         string    `bun:"namespace,type:text,notnull"`
+	UID               string    `bun:"uid,type:text"`
+	CreationTimestamp time.Time `bun:"creation_timestamp,type:timestamp"`
+	DeletionTimestamp time.Time `bun:"deletion_timestamp,type:timestamp"`
+	AccessModes       []string  `bun:"access_modes,type:text[],array"`
+	Capacity          string    `bun:"capacity,type:text"`
+	MountOptions      []string  `bun:"mount_options,type:text[],array"`
+	StorageClassName  string    `bun:"storage_class_name,type:text"`
+	VolumeMode        string    `bun:"volume_mode,type:text"`
+	Message           string    `bun:"message,type:text"`
+	Phase             string    `bun:"phase,type:text"`
+	Reason            string    `bun:"reason,type:text"`
+}
+
+type PersistentVolumeClaim struct {
+	ID                int       `bun:"id,autoincrement,pk"`
+	Timestamp         time.Time `bun:"timestamp,type:timestamp,notnull"`
+	Labels            []string  `bun:"labels,type:text[],array"`
+	Name              string    `bun:"name,type:text,notnull"`
+	Namespace         string    `bun:"namespace,type:text,notnull"`
+	UID               string    `bun:"uid,type:text"`
+	CreationTimestamp time.Time `bun:"creation_timestamp,type:timestamp"`
+	DeletionTimestamp time.Time `bun:"deletion_timestamp,type:timestamp"`
+	AccessModes       []string  `bun:"access_modes,type:text[],array"`
+	StorageClassName  string    `bun:"storage_class_name,type:text"`
+	VolumeMode        string    `bun:"volume_mode,type:text"`
+	VolumeName        string    `bun:"volume_name,type:text"`
+	Capacity          string    `bun:"capacity,type:text"`
+	Phase             string    `bun:"phase,type:text"`
+	ResizeStatus      string    `bun:"resize_status,type:text"`
+}
+
+type PersistentVolumeClaimCondition struct {
+	ID                      int       `bun:"id,autoincrement,pk"`
+	Timestamp               time.Time `bun:"timestamp,type:timestamp,notnull"`
+	PersistentVolumeClaimID int       `bun:"persistent_volume_claim_id,type:int"`
+	LastProbeTime           time.Time `bun:"last_probe_time,type:timestamp"`
+	LastTransitionTime      time.Time `bun:"last_transition_time,type:timestamp"`
+	Message                 string    `bun:"message,type:text"`
+	Reason                  string    `bun:"reason,type:text"`
+	Status                  string    `bun:"status,type:text"`
+	Type                    string    `bun:"type,type:text"`
+}
