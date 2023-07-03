@@ -40,7 +40,23 @@ CREATE TABLE pods(
   "node_name" text,
   "namespace" text,
   "status_phase" text,
-  "data" json NOT NULL
+  "data" json NOT NULL,
+  "host_ip" text,
+  "pod_ip" text,
+  "pod_ips" text ARRAY,
+  "start_time" timestamp,
+  "qos_class" text
+);
+
+CREATE TABLE pod_status_conditions(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "pod_id" int REFERENCES pods(id) ON DELETE CASCADE,
+  "type" text,
+  "status" text,
+  "last_probe_time" timestamp,
+  "last_transition_time" timestamp,
+  "reason" text,
+  "message" text
 );
 
 CREATE TABLE "container_states"(
@@ -69,20 +85,20 @@ CREATE TABLE containers(
   "ready" bool,
   "restart_count" int,
   "started" bool,
-  "state_id" int REFERENCES "container_states" (id),
-  "last_state_id" int REFERENCES "container_states" (id)
+  "state_id" int REFERENCES "container_states"(id),
+  "last_state_id" int REFERENCES "container_states"(id)
 );
 
 CREATE TABLE "volume_devices"(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "container_id" int REFERENCES "containers" ("id") NOT NULL,
+  "container_id" int REFERENCES "containers"("id") NOT NULL,
   "device_path" text,
   "name" text
 );
 
 CREATE TABLE "volume_mounts"(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "container_id" int REFERENCES "containers" ("id") NOT NULL,
+  "container_id" int REFERENCES "containers"("id") NOT NULL,
   "mount_path" text,
   "mount_propagation" text,
   "name" text,
@@ -93,7 +109,7 @@ CREATE TABLE "volume_mounts"(
 
 CREATE TABLE "container_ports"(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "container_id" int REFERENCES "containers" ("id") NOT NULL,
+  "container_id" int REFERENCES "containers"("id") NOT NULL,
   "container_port" int,
   "host_ip" text,
   "host_port" int,

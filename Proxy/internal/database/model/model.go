@@ -19,7 +19,7 @@ type Service struct {
 }
 
 type Pod struct {
-	ID                 int       `bun:"id,autoincrement"`
+	ID                 int       `bun:"id,autoincrement,pk"`
 	PodResourceVersion string    `bun:"pod_resource_version,type:text,notnull"`
 	PodID              string    `bun:"pod_id,type:uuid,notnull"`
 	Timestamp          time.Time `bun:"timestamp,type:timestamp,notnull"`
@@ -28,6 +28,22 @@ type Pod struct {
 	Namespace          string    `bun:"namespace,type:text"`
 	StatusPhase        string    `bun:"status_phase,type:text"`
 	Data               string    `bun:"data,type:json"`
+	HostIP             string    `bun:"host_ip"`
+	PodIP              string    `bun:"pod_ip"`
+	PodIPs             []string  `bun:"pod_ips,array"`
+	StartTime          time.Time `bun:"start_time"`
+	QOSClass           string    `bun:"qos_class"`
+}
+
+type PodStatusCondition struct {
+	ID                 int       `bun:"id,autoincrement,notnull,pk"`
+	PodID              int       `bun:"pod_id"`
+	Type               string    `bun:"type"`
+	Status             string    `bun:"status"`
+	LastProbeTime      time.Time `bun:"last_probe_time,type:timestamp,nullzero"`
+	LastTransitionTime time.Time `bun:"last_transition_time,type:timestamp"`
+	Reason             string    `bun:"reason"`
+	Message            string    `bun:"message"`
 }
 
 type Node struct {
