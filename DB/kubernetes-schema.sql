@@ -31,19 +31,8 @@ CREATE TABLE nodes(
 );
 
 -- https://kubernetes.io/docs/concepts/workloads/pods/
-CREATE TABLE pod_statuses(
-  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "status_phase" text,
-  "host_ip" text,
-  "pod_ip" text,
-  "pod_ips" text ARRAY,
-  "start_time" timestamp,
-  "qos_class" text
-);
-
 CREATE TABLE pods(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "pod_status_id" int REFERENCES pod_statuses(id) ON DELETE SET NULL,
   "timestamp" timestamp NOT NULL,
   "name" text,
   "pod_resource_version" text NOT NULL,
@@ -51,16 +40,21 @@ CREATE TABLE pods(
   "node_name" text,
   "namespace" text,
   "status_phase" text,
-  "data" json NOT NULL
+  "data" json NOT NULL,
+  "host_ip" text,
+  "pod_ip" text,
+  "pod_ips" text ARRAY,
+  "start_time" timestamp,
+  "qos_class" text
 );
 
 CREATE TABLE pod_status_conditions(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "pod_status_id" int REFERENCES pod_statuses(id) ON DELETE CASCADE,
+  "pod_id" int REFERENCES pods(id) ON DELETE CASCADE,
   "type" text,
   "status" text,
-  "lastProbeTime" timestamp,
-  "lastTransitionTime" timestamp,
+  "last_probe_time" timestamp,
+  "last_transition_time" timestamp,
   "reason" text,
   "message" text
 );

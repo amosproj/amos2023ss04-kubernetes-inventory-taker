@@ -39,24 +39,7 @@ func insertPod(podNew *corev1.Pod, bunDB *bun.DB, eventTimestamp time.Time) {
 		podIPs[i] = podIP.IP
 	}
 
-	podStatusDB := &model.PodStatus{
-		ID:          0,
-		StatusPhase: string(podStatus.Phase),
-		HostIP:      podStatus.HostIP,
-		PodIP:       podStatus.PodIP,
-		PodIPs:      podIPs,
-		StartTime:   podStatus.StartTime.Time,
-		QOSClass:    string(podStatus.QOSClass),
-		// Conditions:  []model.PodStatusCondition{}, //handled by bun
-	}
-
-	_, err = bunDB.NewInsert().Model(podStatusDB).Exec(context.Background())
-	if err != nil {
-		klog.Error(err)
-	}
-
 	podDB := &model.Pod{
-		PodStatusID:        podStatusDB.ID,
 		PodResourceVersion: podNew.ResourceVersion,
 		PodID:              string(podNew.UID),
 		Timestamp:          eventTimestamp,
@@ -65,6 +48,11 @@ func insertPod(podNew *corev1.Pod, bunDB *bun.DB, eventTimestamp time.Time) {
 		Namespace:          podNew.Namespace,
 		StatusPhase:        string(podNew.Status.Phase),
 		Data:               string(jsonData),
+		HostIP:             podStatus.HostIP,
+		PodIP:              podStatus.PodIP,
+		PodIPs:             podIPs,
+		StartTime:          podStatus.StartTime.Time,
+		QOSClass:           string(podStatus.QOSClass),
 	}
 
 	_, err = bunDB.NewInsert().Model(podDB).Exec(context.Background())
@@ -72,13 +60,13 @@ func insertPod(podNew *corev1.Pod, bunDB *bun.DB, eventTimestamp time.Time) {
 		klog.Error(err)
 	}
 
-	insertPodStatusConditions(podStatus, podStatusDB.ID, bunDB)
+	insertPodStatusConditions(podStatus, podDB.ID, bunDB)
 }
 
-func insertPodStatusConditions(podStatus corev1.PodStatus, podStatusID int, bunDB *bun.DB) {
+func insertPodStatusConditions(podStatus corev1.PodStatus, podID int, bunDB *bun.DB) {
 	for _, condition := range podStatus.Conditions {
 		podStatusConditionDB := &model.PodStatusCondition{
-			PodStatusID:        podStatusID,
+			PodID:              podID,
 			Type:               string(condition.Type),
 			Status:             string(condition.Status),
 			LastProbeTime:      condition.LastProbeTime.Time,
