@@ -1,6 +1,6 @@
 describe("ContainerTable", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3001/containers"); // Replace with the URL of your application
+    cy.visit("/");
   });
 
   it("should sort the list in ascending order", () => {
