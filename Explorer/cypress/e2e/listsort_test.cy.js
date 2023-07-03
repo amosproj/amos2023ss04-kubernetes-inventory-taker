@@ -1,10 +1,10 @@
 describe("ContainerTable", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/"); // Replace with the URL of your application
+    cy.visit("http://localhost:3001/containers"); // Replace with the URL of your application
   });
 
   it("should sort the list in ascending order", () => {
-    cy.get("a").contains("Assending").click({ force: true });
+    cy.get("button").contains("Ascending").click({ force: true });
 
     cy.get("td:nth-child(3)") // Assuming the status column is the third column
       .invoke("text")
@@ -18,7 +18,7 @@ describe("ContainerTable", () => {
   });
 
   it("should sort the list in descending order", () => {
-    cy.get("a").contains("Descending").click({ force: true });
+    cy.get("button").contains("Descending").click({ force: true });
 
     cy.get("td:nth-child(3)") // Assuming the status column is the third column
       .invoke("text")
