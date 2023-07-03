@@ -5,6 +5,7 @@ repos:
     rev: v4.4.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^DB/testdata_init\.sql$
       - id: end-of-file-fixer
       - id: check-yaml
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
