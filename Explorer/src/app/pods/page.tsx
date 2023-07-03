@@ -2,6 +2,7 @@ import PodsTable from "@/components/podsTable";
 import { H1 } from "@/components/style_elements";
 import { getPodsList } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
 /* @ts-expect-error Async Server Component */
 export default async function Index(): JSX.Element {
   const data = await getPodsList();
