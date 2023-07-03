@@ -31,8 +31,19 @@ CREATE TABLE nodes(
 );
 
 -- https://kubernetes.io/docs/concepts/workloads/pods/
+CREATE TABLE pod_statuses(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "status_phase" text,
+  "host_ip" text,
+  "pod_ip" text,
+  "pod_ips" text ARRAY,
+  "start_time" timestamp,
+  "qos_class" text
+);
+
 CREATE TABLE pods(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "pod_status_id" int REFERENCES pod_statuses(id) ON DELETE SET NULL,
   "timestamp" timestamp NOT NULL,
   "name" text,
   "pod_resource_version" text NOT NULL,
@@ -41,6 +52,17 @@ CREATE TABLE pods(
   "namespace" text,
   "status_phase" text,
   "data" json NOT NULL
+);
+
+CREATE TABLE pod_status_conditions(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "pod_status_id" int REFERENCES pod_statuses(id) ON DELETE CASCADE,
+  "type" text,
+  "status" text,
+  "lastProbeTime" timestamp,
+  "lastTransitionTime" timestamp,
+  "reason" text,
+  "message" text
 );
 
 CREATE TABLE "container_states"(
@@ -69,20 +91,20 @@ CREATE TABLE containers(
   "ready" bool,
   "restart_count" int,
   "started" bool,
-  "state_id" int REFERENCES "container_states" (id),
-  "last_state_id" int REFERENCES "container_states" (id)
+  "state_id" int REFERENCES "container_states"(id),
+  "last_state_id" int REFERENCES "container_states"(id)
 );
 
 CREATE TABLE "volume_devices"(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "container_id" int REFERENCES "containers" ("id") NOT NULL,
+  "container_id" int REFERENCES "containers"("id") NOT NULL,
   "device_path" text,
   "name" text
 );
 
 CREATE TABLE "volume_mounts"(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "container_id" int REFERENCES "containers" ("id") NOT NULL,
+  "container_id" int REFERENCES "containers"("id") NOT NULL,
   "mount_path" text,
   "mount_propagation" text,
   "name" text,
@@ -93,7 +115,7 @@ CREATE TABLE "volume_mounts"(
 
 CREATE TABLE "container_ports"(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "container_id" int REFERENCES "containers" ("id") NOT NULL,
+  "container_id" int REFERENCES "containers"("id") NOT NULL,
   "container_port" int,
   "host_ip" text,
   "host_port" int,
