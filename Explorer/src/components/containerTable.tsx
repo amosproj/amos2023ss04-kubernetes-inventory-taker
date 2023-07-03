@@ -84,12 +84,12 @@ export default function ContainerTable({
             scope="col"
           >
             <span>
-              <Dropdown inline label="STATUS" dismissOnClick={true}>
-                <Dropdown.Item>
-                  <button onClick={() => handleSortAsc()}>Ascending</button>
+              <Dropdown inline label="STATUS">
+                <Dropdown.Item onClick={() => handleSortAsc()}>
+                  Ascending
                 </Dropdown.Item>
-                <Dropdown.Item>
-                  <button onClick={() => handleSortDsc()}>Descending</button>
+                <Dropdown.Item onClick={() => handleSortDsc()}>
+                  Descending
                 </Dropdown.Item>
               </Dropdown>
             </span>
