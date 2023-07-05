@@ -1,6 +1,7 @@
 import "server-only";
 import { Container, ContainerList } from "./types/Container";
 import { Pool } from "pg";
+import { PodList } from "./types/Pod";
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -37,4 +38,15 @@ export async function getContainerList(): Promise<ContainerList> {
   );
   const containers: ContainerList = res.rows;
   return containers;
+}
+
+export async function getPodsList(): Promise<PodList> {
+  const res = await pool.query(
+    `SELECT
+        *
+    FROM pods`
+  );
+
+  const pods: PodList = res.rows;
+  return pods;
 }
