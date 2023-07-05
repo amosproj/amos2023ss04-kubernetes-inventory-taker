@@ -37,3 +37,7 @@ bin/
 
 # kubernetes config
 .kube/
+
+# cypress videos and screenshots
+Explorer/cypress/videos/
+Explorer/cypress/screenshots/
