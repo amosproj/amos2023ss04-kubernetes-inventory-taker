@@ -1,7 +1,7 @@
 describe("Navigation", () => {
   it("has anchor tags using cy.get and .each", () => {
     //visit container list page
-    cy.visit("http://localhost:3000/");
+    cy.visit("/");
 
     //Find each a link and check href is defined
     cy.get("a").each(($a) => {
