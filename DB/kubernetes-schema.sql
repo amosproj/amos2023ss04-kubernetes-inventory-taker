@@ -59,6 +59,15 @@ CREATE TABLE pod_status_conditions(
   "message" text
 );
 
+CREATE TABLE pod_volumes(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "pod_id" int REFERENCES pods(id) ON DELETE CASCADE,
+  "type" text,
+  "name" text,
+  "persistent_claim_name" text,
+  "read_only" bool
+);
+
 CREATE TABLE "container_states"(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "kind" text,

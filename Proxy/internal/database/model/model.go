@@ -46,6 +46,15 @@ type PodStatusCondition struct {
 	Message            string    `bun:"message"`
 }
 
+type PodVolume struct {
+	ID        int    `bun:"id,autoincrement,notnull,pk"`
+	PodID     int    `bun:"pod_id"`
+	Type      string `bun:"type"`
+	Name      string `bun:"name"`
+	ClaimName string `bun:"claim_name"`
+	ReadOnly  bool   `bun:"read_only"`
+}
+
 type Node struct {
 	ID                      int       `bun:"id,autoincrement"`
 	NodeID                  string    `bun:"node_id,type:uuid"`
