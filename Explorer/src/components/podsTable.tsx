@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Table, Dropdown } from "flowbite-react";
 import { Pod, PodList } from "@/lib/types/Pod";
 import React, { useState } from "react";
+import { HealthIndicatorBadge } from "./health_indicators";
 
 export default function PodTable({ list }: { list: PodList }): JSX.Element {
   const [searchTerm, setSearchTerm] = useState("");
@@ -105,7 +106,7 @@ export default function PodTable({ list }: { list: PodList }): JSX.Element {
                 {pod.namespace}
               </Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
-                {/* <HealthIndicatorBadge status={pod.status} /> */}
+                <HealthIndicatorBadge status={pod.status_phase} />
               </Table.Cell>
             </Table.Row>
           ))}
