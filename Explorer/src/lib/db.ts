@@ -62,7 +62,7 @@ export async function getPodsList(): Promise<PodList> {
 export async function getPodDetails(id: string): Promise<Pod | undefined> {
   return (
     await pool.query(
-      "SELECT p.id, p.timestamp, p.name, p.pod_resource_version, p.pod_id, p.node_name, p.namespace, p.status_phase, p.host_ip, p.pod_ip, p.pod_ips, p.start_time, p.qos_class, c.container_id, c.image, c.status as container_status, c.ports, c.image_id FROM pods p JOIN containers c ON p.pod_id = c.pod_id WHERE p.id = $1 ORDER BY p.timestamp DESC LIMIT 1",
+      "SELECT p.id, p.timestamp, p.name, p.pod_resource_version, p.pod_id, p.node_name, p.namespace, p.status_phase, p.host_ip, p.pod_ip, p.pod_ips, p.start_time, p.qos_class, c.container_id, c.image, c.status as container_status, c.ports, c.image_id FROM pods p JOIN containers c ON p.pod_id = c.pod_id WHERE p.pod_id = $1 ORDER BY p.timestamp DESC LIMIT 1",
       [id]
     )
   ).rows[0];
