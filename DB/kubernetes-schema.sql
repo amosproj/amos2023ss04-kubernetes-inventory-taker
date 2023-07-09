@@ -5,28 +5,17 @@ CREATE TABLE clusters(
   "name" text
 );
 
--- https://kubernetes.io/docs/concepts/architecture/nodes/
-CREATE TABLE nodes(
+-- https://kubernetes.io/docs/concepts/services-networking/service/
+CREATE TABLE services(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
-  "name" text,
-  "node_id" uuid,
-  "creation_time" timestamp,
-  "ip_address_internal" text ARRAY,
-  "ip_address_external" text ARRAY,
-  "hostname" text,
-  "status_capacity_cpu" text,
-  "status_capacity_memory" text,
-  "status_capacity_pods" text,
-  "status_allocatable_cpu" text,
-  "status_allocatable_memory" text,
-  "status_allocatable_pods" text,
-  "kubelet_version" text,
-  "node_conditions_ready" text,
-  "node_conditions_disk_pressure" text,
-  "node_conditions_memory_pressure" text,
-  "node_conditions_pid_Pressure" text,
-  "node_conditions_network_unavailable" text,
+  "name" text NOT NULL,
+  "namespace" text NOT NULL,
+  "labels" text ARRAY NOT NULL,
+  "creation_timestamp" timestamp NOT NULL,
+  "ports" text ARRAY NOT NULL,
+  "external_ips" text ARRAY,
+  "cluster_ip" text NOT NULL,
   "data" json NOT NULL
 );
 
@@ -66,6 +55,31 @@ CREATE TABLE pod_volumes(
   "name" text,
   "persistent_claim_name" text,
   "read_only" bool
+);
+
+-- https://kubernetes.io/docs/concepts/architecture/nodes/
+CREATE TABLE nodes(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "timestamp" timestamp NOT NULL,
+  "name" text,
+  "node_id" uuid,
+  "creation_time" timestamp,
+  "ip_address_internal" text ARRAY,
+  "ip_address_external" text ARRAY,
+  "hostname" text,
+  "status_capacity_cpu" text,
+  "status_capacity_memory" text,
+  "status_capacity_pods" text,
+  "status_allocatable_cpu" text,
+  "status_allocatable_memory" text,
+  "status_allocatable_pods" text,
+  "kubelet_version" text,
+  "node_conditions_ready" text,
+  "node_conditions_disk_pressure" text,
+  "node_conditions_memory_pressure" text,
+  "node_conditions_pid_Pressure" text,
+  "node_conditions_network_unavailable" text,
+  "data" json NOT NULL
 );
 
 CREATE TABLE "container_states"(
@@ -173,18 +187,4 @@ CREATE TABLE persistent_volume_claims_conditions(
   "reason" text,
   "status" text,
   "type" text
-);
-
--- https://kubernetes.io/docs/concepts/services-networking/service/
-CREATE TABLE services(
-  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "timestamp" timestamp NOT NULL,
-  "name" text NOT NULL,
-  "namespace" text NOT NULL,
-  "labels" text ARRAY NOT NULL,
-  "creation_timestamp" timestamp NOT NULL,
-  "ports" text ARRAY NOT NULL,
-  "external_ips" text ARRAY,
-  "cluster_ip" text NOT NULL,
-  "data" json NOT NULL
 );
