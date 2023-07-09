@@ -3,7 +3,7 @@ import Index from "./page";
 //eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { toBeInTheDocument } from "@testing-library/jest-dom";
 
-jest.mock("../lib/db", () => ({
+jest.mock("../../lib/db", () => ({
   getContainerList: jest.fn().mockResolvedValue([
     {
       container_event_id: 1,
