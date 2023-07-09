@@ -41,7 +41,7 @@ import { usePathname } from "next/navigation";
 
 export function ActualSidebar(): JSX.Element {
   const pathname = usePathname();
-  const splitPathname = pathname.split("/");
+  const splitPathname = (pathname || "").split("/");
   const current_page = splitPathname[1];
 
   return (
