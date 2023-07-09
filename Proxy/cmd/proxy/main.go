@@ -4,6 +4,7 @@ import (
 	"time"
 
 	cluster "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/cluster"
+	config "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/config"
 	db "github.com/amosproj/amos2023ss04-kubernetes-inventory-taker/Proxy/internal/database/setup"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/util/workqueue"
@@ -11,12 +12,10 @@ import (
 )
 
 func main() {
-	externalConfig := cluster.ReadExternalConfig()
+	externalConfig := config.ReadExternalConfig()
 
 	bunDB := db.DBConnection()
 	defer bunDB.Close()
-
-	cluster.WriteCluster(externalConfig.KubeconfigPath, bunDB)
 
 	clientset := cluster.CreateClientSet(externalConfig.KubeconfigPath)
 	informerFactory := informers.NewSharedInformerFactory(clientset, time.Minute)
@@ -34,7 +33,7 @@ func main() {
 
 	for i := 0; i < 1; i++ {
 		klog.Info("starting worker ", i)
-		//nolint:wsl,nolintlint
+
 		go cluster.ProcessWorkqueue(bunDB, workqueue)
 	}
 

@@ -41,3 +41,5 @@ bin/
 # cypress videos and screenshots
 Explorer/cypress/videos/
 Explorer/cypress/screenshots/
+# go main binary
+Proxy/main
