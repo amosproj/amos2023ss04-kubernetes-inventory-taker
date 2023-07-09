@@ -1,6 +1,17 @@
 describe("ContainerTable", () => {
   beforeEach(() => {
-    cy.visit("/pods/1"); // Replace with the URL of your application
+    // Visit container list page
+    cy.visit("/pods");
+
+    // Collect all container links
+    cy.get('a[href*="/pods/"]').then(($links) => {
+      // Choose a random index
+      const randomIndex = Math.floor(Math.random() * $links.length);
+      // Get the link at the random index
+      const randomLink = $links[randomIndex];
+      // Click the random link to navigate to container detail page
+      cy.wrap(randomLink).click();
+    });
   });
 
   it("displays the expected fields in the table", () => {
