@@ -30,11 +30,12 @@ export async function getContainerList(): Promise<ContainerList> {
     FROM (
         SELECT
             *,
-            RANK() OVER (PARTITION BY name, pod_id ORDER BY timestamp DESC) AS rank
+            ROW_NUMBER() OVER (PARTITION BY name, pod_id ORDER BY timestamp DESC) AS row_number
         FROM
             containers) t
     WHERE
-        t.rank = 1`
+        t.row_number = 1
+    ORDER BY name ASC`
   );
   const containers: ContainerList = res.rows;
   return containers;
@@ -44,9 +45,16 @@ export async function getPodsList(): Promise<PodList> {
   const res = await pool.query(
     `SELECT
         *
-    FROM pods`
+    FROM (
+        SELECT
+            *,
+            ROW_NUMBER() OVER (PARTITION BY pod_id ORDER BY timestamp DESC, pod_resource_version DESC) AS row_number
+        FROM
+            pods) p
+    WHERE
+        p.row_number = 1
+    ORDER BY name ASC`
   );
-
   const pods: PodList = res.rows;
   return pods;
 }

@@ -51,7 +51,7 @@ func insertPod(podNew *corev1.Pod, bunDB *bun.DB, eventTimestamp time.Time) {
 		HostIP:             podStatus.HostIP,
 		PodIP:              podStatus.PodIP,
 		PodIPs:             podIPs,
-		StartTime:          podStatus.StartTime.Time,
+		StartTime:          packTimestamp(podStatus.StartTime),
 		QOSClass:           string(podStatus.QOSClass),
 	}
 

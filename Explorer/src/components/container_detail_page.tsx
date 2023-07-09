@@ -4,6 +4,7 @@ import { Table } from "flowbite-react";
 import { H1 } from "@/components/style_elements";
 import { HealthIndicatorBadge } from "@/components/health_indicators";
 import { Container } from "@/lib/types/Container";
+import Link from "next/link";
 
 export default function ContainerDetailPage({
   container_details,
@@ -170,7 +171,17 @@ function ContainerDetailsWidget({
                   {name.toUpperCase()}
                 </Table.Cell>
                 <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-30 dark:bg-gray-600">
-                  {value}
+                  {name === "pod_id" ? (
+                    <Link
+                      href={`/pods/${encodeURIComponent(value)}`}
+                      className="text-decoration-none text-blue-800"
+                      id="list"
+                    >
+                      {value}
+                    </Link>
+                  ) : (
+                    value
+                  )}
                 </Table.Cell>
               </Table.Row>
             );
