@@ -5,28 +5,17 @@ CREATE TABLE clusters(
   "name" text
 );
 
--- https://kubernetes.io/docs/concepts/architecture/nodes/
-CREATE TABLE nodes(
+-- https://kubernetes.io/docs/concepts/services-networking/service/
+CREATE TABLE services(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
-  "name" text,
-  "node_id" uuid,
-  "creation_time" timestamp,
-  "ip_address_internal" text ARRAY,
-  "ip_address_external" text ARRAY,
-  "hostname" text,
-  "status_capacity_cpu" text,
-  "status_capacity_memory" text,
-  "status_capacity_pods" text,
-  "status_allocatable_cpu" text,
-  "status_allocatable_memory" text,
-  "status_allocatable_pods" text,
-  "kubelet_version" text,
-  "node_conditions_ready" text,
-  "node_conditions_disk_pressure" text,
-  "node_conditions_memory_pressure" text,
-  "node_conditions_pid_Pressure" text,
-  "node_conditions_network_unavailable" text,
+  "name" text NOT NULL,
+  "namespace" text NOT NULL,
+  "labels" text ARRAY NOT NULL,
+  "creation_timestamp" timestamp NOT NULL,
+  "ports" text ARRAY NOT NULL,
+  "external_ips" text ARRAY,
+  "cluster_ip" text NOT NULL,
   "data" json NOT NULL
 );
 
@@ -57,6 +46,40 @@ CREATE TABLE pod_status_conditions(
   "last_transition_time" timestamp,
   "reason" text,
   "message" text
+);
+
+CREATE TABLE pod_volumes(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "pod_id" int REFERENCES pods(id) ON DELETE CASCADE,
+  "type" text,
+  "name" text,
+  "persistent_claim_name" text,
+  "read_only" bool
+);
+
+-- https://kubernetes.io/docs/concepts/architecture/nodes/
+CREATE TABLE nodes(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "timestamp" timestamp NOT NULL,
+  "name" text,
+  "node_id" uuid,
+  "creation_time" timestamp,
+  "ip_address_internal" text ARRAY,
+  "ip_address_external" text ARRAY,
+  "hostname" text,
+  "status_capacity_cpu" text,
+  "status_capacity_memory" text,
+  "status_capacity_pods" text,
+  "status_allocatable_cpu" text,
+  "status_allocatable_memory" text,
+  "status_allocatable_pods" text,
+  "kubelet_version" text,
+  "node_conditions_ready" text,
+  "node_conditions_disk_pressure" text,
+  "node_conditions_memory_pressure" text,
+  "node_conditions_pid_Pressure" text,
+  "node_conditions_network_unavailable" text,
+  "data" json NOT NULL
 );
 
 CREATE TABLE "container_states"(
@@ -117,16 +140,51 @@ CREATE TABLE "container_ports"(
   "protocol" text
 );
 
--- https://kubernetes.io/docs/concepts/services-networking/service/
-CREATE TABLE services(
+-- https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+CREATE TABLE persistent_volumes(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "timestamp" timestamp NOT NULL,
+  "labels" text ARRAY,
   "name" text NOT NULL,
   "namespace" text NOT NULL,
-  "labels" text ARRAY NOT NULL,
+  "uid" text NOT NULL,
   "creation_timestamp" timestamp NOT NULL,
-  "ports" text ARRAY NOT NULL,
-  "external_ips" text ARRAY,
-  "cluster_ip" text NOT NULL,
-  "data" json NOT NULL
+  "deletion_timestamp" timestamp,
+  "access_modes" text ARRAY,
+  "capacity" text,
+  "mount_options" text ARRAY,
+  "storage_class_name" text,
+  "volume_mode" text,
+  "message" text,
+  "phase" text,
+  "reason" text
+);
+
+CREATE TABLE persistent_volume_claims(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "timestamp" timestamp NOT NULL,
+  "labels" text ARRAY,
+  "name" text NOT NULL,
+  "namespace" text NOT NULL,
+  "uid" uuid,
+  "creation_timestamp" timestamp NOT NULL,
+  "deletion_timestamp" timestamp,
+  "access_modes" text ARRAY,
+  "storage_class_name" text,
+  "volume_mode" text,
+  "volume_name" text,
+  "capacity" text,
+  "phase" text,
+  "resize_status" text
+);
+
+CREATE TABLE persistent_volume_claims_conditions(
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "persistent_volume_claim_id" int REFERENCES "persistent_volume_claims" ("id") NOT NULL,
+  "last_probe_time" timestamp,
+  "last_transition_time" timestamp,
+  "message" text,
+  "reason" text,
+  "status" text,
+  "type" text
 );

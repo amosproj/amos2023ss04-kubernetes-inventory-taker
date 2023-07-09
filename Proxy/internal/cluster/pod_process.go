@@ -51,7 +51,7 @@ func insertPod(podNew *corev1.Pod, bunDB *bun.DB, eventTimestamp time.Time) {
 		HostIP:             podStatus.HostIP,
 		PodIP:              podStatus.PodIP,
 		PodIPs:             podIPs,
-		StartTime:          podStatus.StartTime.Time,
+		StartTime:          packTimestamp(podStatus.StartTime),
 		QOSClass:           string(podStatus.QOSClass),
 	}
 
@@ -61,6 +61,7 @@ func insertPod(podNew *corev1.Pod, bunDB *bun.DB, eventTimestamp time.Time) {
 	}
 
 	insertPodStatusConditions(podStatus, podDB.ID, bunDB)
+	insertPodVolumes(podNew.Spec.Volumes, podDB.ID, bunDB)
 }
 
 func insertPodStatusConditions(podStatus corev1.PodStatus, podID int, bunDB *bun.DB) {
@@ -76,6 +77,28 @@ func insertPodStatusConditions(podStatus corev1.PodStatus, podID int, bunDB *bun
 		}
 
 		_, err := bunDB.NewInsert().Model(podStatusConditionDB).Exec(context.Background())
+		if err != nil {
+			klog.Error(err)
+		}
+	}
+}
+
+func insertPodVolumes(podVolumes []corev1.Volume, podID int, bunDB *bun.DB) {
+	for _, volume := range podVolumes {
+		podVolumeDB := &model.PodVolume{
+			PodID: podID,
+			Name:  volume.Name,
+		}
+
+		if volume.VolumeSource.PersistentVolumeClaim == nil {
+			podVolumeDB.Type = "other"
+		} else {
+			podVolumeDB.Type = "pvc"
+			podVolumeDB.ClaimName = volume.VolumeSource.PersistentVolumeClaim.ClaimName
+			podVolumeDB.ReadOnly = volume.VolumeSource.PersistentVolumeClaim.ReadOnly
+		}
+
+		_, err := bunDB.NewInsert().Model(podVolumeDB).Exec(context.Background())
 		if err != nil {
 			klog.Error(err)
 		}
