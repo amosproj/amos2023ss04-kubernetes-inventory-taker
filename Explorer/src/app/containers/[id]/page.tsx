@@ -15,8 +15,10 @@ export default async function Index({
     throw "Unkown ID";
   }
   return (
-    <div className="p-6">
-      <ContainerDetailPage container_details={data} />
+    <div>
+      <div className="p-6">
+        <ContainerDetailPage container_details={data} />
+      </div>
     </div>
   );
 }

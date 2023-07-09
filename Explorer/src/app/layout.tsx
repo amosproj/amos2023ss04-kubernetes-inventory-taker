@@ -5,6 +5,7 @@ import { Header } from "@/components/header";
 import { SidebarProvider } from "@/context/sidebar_context";
 import { ActualSidebar } from "@/components/sidebar";
 import { Flowbite } from "flowbite-react";
+import PeriodicRefresh from "@/components/period_refresh";
 
 export default function RootLayout({
   children,
@@ -14,6 +15,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <PeriodicRefresh delay_ms={1000} />
+
         <Flowbite>
           <SidebarProvider>
             <div className="flex dark:bg-gray-900 h-screen">
