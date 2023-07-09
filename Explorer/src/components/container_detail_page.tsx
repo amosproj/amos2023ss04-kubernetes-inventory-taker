@@ -3,22 +3,24 @@
 import { Table } from "flowbite-react";
 import { H1 } from "@/components/style_elements";
 import { HealthIndicatorBadge } from "@/components/health_indicators";
-import { ContainerDetails } from "@/lib/types/Container";
+import { Container, ContainerDetails } from "@/lib/types/Container";
+import { ReactNode } from "react";
 
 export default function ContainerDetailPage({
   container_details,
 }: {
   container_details: ContainerDetails;
 }): JSX.Element {
+  const container = container_details.container;
   return (
     <div>
       <div className="flex">
-        <H1 content={"Container ID " + container_details.id} />
-        <HealthIndicatorBadge status={container_details.status} />
+        <H1 content={"Container ID " + container.id} />
+        <HealthIndicatorBadge status={container.status} />
       </div>
       <div className="flex">
         <div className="w-1/4 w-max">
-          <ContainerDetailsWidget container_data={container_details} />
+          <ContainerDetailsWidget container_data={container} />
         </div>
         {/* <div className="w-1/2 w-max px-8">
           <ContainerWorkLoad />
@@ -140,7 +142,7 @@ function _ContainerChangelogWidget({
 function ContainerDetailsWidget({
   container_data,
 }: {
-  container_data: ContainerDetails;
+  container_data: Container;
 }): JSX.Element {
   return (
     <div className="p-0 w-max">
@@ -158,7 +160,7 @@ function ContainerDetailsWidget({
           {Object.entries(container_data).map(([name, value], index) => {
             if (value instanceof Date) {
               value = value.toUTCString();
-            } else if (typeof value === "boolean") {
+            } else if (value instanceof Boolean) {
               value = value ? "true" : "false";
             }
             return (
