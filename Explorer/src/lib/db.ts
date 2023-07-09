@@ -1,5 +1,5 @@
 import "server-only";
-import { Container, ContainerList } from "./types/Container";
+import { ContainerDetails, Container, ContainerList } from "./types/Container";
 import { Pool } from "pg";
 import { PodList } from "./types/Pod";
 
@@ -13,13 +13,35 @@ const pool = new Pool({
 
 export async function getContainerDetails(
   container_id: string
-): Promise<Container | undefined> {
-  return (
+): Promise<ContainerDetails | undefined> {
+  const res1 = (
     await pool.query(
-      "SELECT * FROM containers c WHERE container_id = $1 order by timestamp DESC limit 1",
+      "SELECT * FROM containers c WHERE c.container_id = $1 order by timestamp DESC limit 1",
       [container_id]
     )
   ).rows[0];
+  if (!res1) {
+    // No container found
+    return undefined;
+  }
+  const container: Container = {
+    id: res1.id,
+    timestamp: res1.timestamp,
+    container_id: res1.container_id,
+    pod_id: res1.container_id,
+    name: res1.name,
+    image: res1.image,
+    status: res1.status,
+    // ports: 0,
+    image_id: res1.image_id,
+    ready: res1.ready,
+    restart_count: res1.restart_count,
+    started: res1.started,
+    // state_id: 0,
+    // last_state_id: 0,
+  };
+
+  return { container, status: {} };
 }
 
 export async function getContainerList(): Promise<ContainerList> {
