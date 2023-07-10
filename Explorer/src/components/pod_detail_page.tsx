@@ -37,9 +37,9 @@ function PodDetailsWidget({ pod_data }: { pod_data: Pod }): JSX.Element {
   return (
     <div className="p-0 w-max">
       <h2 className="mt-2 mb-3 text-2xl font-bold">Details</h2>
-      <Table>
+      <Table className="details-table">
         <Table.Head>
-          <Table.HeadCell className="!py-2 bg-gray-50 dark:bg-gray-800">
+          <Table.HeadCell className="!py-2 details-table bg-gray-50 dark:bg-gray-800">
             Field
           </Table.HeadCell>
           <Table.HeadCell className="!py-2 bg-gray-30 dark:bg-gray-600">

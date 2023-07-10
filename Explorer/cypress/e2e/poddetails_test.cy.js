@@ -30,15 +30,11 @@ describe("ContainerTable", () => {
       { field: "HOST_IP" },
       { field: "POD_IP" },
       { field: "POD_IPS" },
-      { field: "START_TIME" },
       { field: "QOS_CLASS" },
-      { field: "CONTAINER_ID" },
-      { field: "IMAGE" },
-      { field: "CONTAINER_STATUS" },
-      { field: "PORTS" },
-      { field: "IMAGE_ID" },
+      { field: "START_TIME" },
+      { field: "DATA" },
     ];
 
-    cy.get("table tr").should("have.length", expectedRows.length);
+    cy.get(".details-table tr").should("have.length", expectedRows.length);
   });
 });
