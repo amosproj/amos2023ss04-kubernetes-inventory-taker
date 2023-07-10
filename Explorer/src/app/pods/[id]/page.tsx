@@ -16,7 +16,7 @@ export default async function Index({
   }
   return (
     <div className="p-6">
-      <PodDetailPage pod_details={data} />
+      <PodDetailPage pod_details={data.pod_data} containers={data.containers} />
     </div>
   );
 }
