@@ -11,40 +11,33 @@ export default function ContainerTable({
 }: {
   list: ContainerList;
 }): JSX.Element {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredContainers, setFilteredContainers] =
-    useState<ContainerList>(list);
-
-  const handleSearch = () => {
-    const filtered = list.filter(
-      (container) =>
-        container.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        container.image.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredContainers(filtered);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | "none">(
+    "none"
+  );
+  const [searchActive, setSearchActive] = useState<boolean>(false);
+  const sortFn = (a: Container, b: Container) => {
+    if (sortDirection === "none") {
+      // don't change anything, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#description
+      return 0;
     }
+    if (sortDirection === "asc") {
+      return a.status.localeCompare(b.status);
+    }
+    // must be desc
+    return b.status.localeCompare(a.status);
   };
-
-  const handleSortAsc = () => {
-    const sorted = [...filteredContainers];
-    sorted.sort((a, b) => a.status.localeCompare(b.status));
-    setFilteredContainers(sorted);
-  };
-
-  const handleSortDsc = () => {
-    const sorted = [...filteredContainers];
-    sorted.sort((a, b) => b.status.localeCompare(a.status));
-    setFilteredContainers(sorted);
-  };
+  const displayList = list
+    .filter((container) => {
+      if (searchTerm === "" || !searchActive) {
+        return true;
+      }
+      return (
+        container.image.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        container.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    })
+    .sort(sortFn);
   return (
     <div>
       <div className="mb-4 text-right">
@@ -52,13 +45,20 @@ export default function ContainerTable({
           type="text"
           placeholder="Search..."
           value={searchTerm}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setSearchActive(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setSearchActive(true);
+            }
+          }}
           className="border border-gray-300 px-4 py-2 rounded-md"
         />
         <button
           type="button"
-          onClick={handleSearch}
+          onClick={() => setSearchActive(true)}
           className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
         >
           Search
@@ -85,10 +85,10 @@ export default function ContainerTable({
           >
             <span>
               <Dropdown inline label="STATUS">
-                <Dropdown.Item onClick={() => handleSortAsc()}>
+                <Dropdown.Item onClick={() => setSortDirection("asc")}>
                   Ascending
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => handleSortDsc()}>
+                <Dropdown.Item onClick={() => setSortDirection("desc")}>
                   Descending
                 </Dropdown.Item>
               </Dropdown>
@@ -96,7 +96,7 @@ export default function ContainerTable({
           </Table.HeadCell>
         </Table.Head>
         <Table.Body>
-          {filteredContainers.map((container: Container, index: number) => (
+          {displayList.map((container: Container, index: number) => (
             <Table.Row key={index}>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
                 <Link
