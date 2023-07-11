@@ -4,7 +4,8 @@ describe("ContainerTable", () => {
   });
 
   it("should sort the list in ascending order", () => {
-    cy.get("li.flex").contains("Ascending").click({ force: true });
+    cy.contains("button", "STATUS").click({ force: true });
+    cy.contains("button", "Ascending").click({ force: true });
     cy.get("td:nth-child(3)") // Assuming the status column is the third column
       .invoke("text")
       .then((statuses) => {
@@ -17,8 +18,8 @@ describe("ContainerTable", () => {
   });
 
   it("should sort the list in descending order", () => {
-    cy.get("li.flex").contains("Descending").click({ force: true });
-
+    cy.contains("button", "STATUS").click({ force: true });
+    cy.contains("button", "Descending").click({ force: true });
     cy.get("td:nth-child(3)") // Assuming the status column is the third column
       .invoke("text")
       .then((statuses) => {
