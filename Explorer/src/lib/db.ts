@@ -1,7 +1,7 @@
 import "server-only";
 import { Container, ContainerList } from "./types/Container";
 import { Pool } from "pg";
-import { PodList } from "./types/Pod";
+import { Pod, PodList } from "./types/Pod";
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -57,4 +57,34 @@ export async function getPodsList(): Promise<PodList> {
   );
   const pods: PodList = res.rows;
   return pods;
+}
+
+export async function getPodDetails(
+  pod_id: string
+): Promise<{ pod_data: Pod; containers: ContainerList }> {
+  const res = await pool.query(
+    "SELECT * FROM pods WHERE pod_id = $1 ORDER BY timestamp DESC LIMIT 1",
+    [pod_id]
+  );
+  const pod_data: Pod = res.rows[0];
+
+  const cont = await pool.query(
+    `SELECT
+        *
+    FROM (
+        SELECT
+            *,
+            ROW_NUMBER() OVER (PARTITION BY name, pod_id ORDER BY timestamp DESC) AS row_number
+        FROM
+            containers) t
+    WHERE
+        t.row_number = 1
+    AND
+        pod_id = $1
+    ORDER BY name ASC`,
+    [pod_id]
+  );
+  const containers: ContainerList = cont.rows;
+
+  return { pod_data, containers };
 }

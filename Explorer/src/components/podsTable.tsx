@@ -95,7 +95,7 @@ export default function PodTable({ list }: { list: PodList }): JSX.Element {
             <Table.Row key={index}>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
                 <Link
-                  href={`/pods/${encodeURIComponent(pod.id)}`}
+                  href={`/pods/${encodeURIComponent(pod.pod_id)}`}
                   className="text-decoration-none text-blue-800"
                   id="list"
                 >
