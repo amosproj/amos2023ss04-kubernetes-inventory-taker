@@ -6,39 +6,33 @@ import React, { useState } from "react";
 import { HealthIndicatorBadge } from "./health_indicators";
 
 export default function PodTable({ list }: { list: PodList }): JSX.Element {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredPods, setFilteredPods] = useState<PodList>(list);
-
-  const handleSearch = () => {
-    const filtered = list.filter(
-      (pod) =>
-        pod.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        pod.namespace.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredPods(filtered);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | "none">(
+    "none"
+  );
+  const [searchActive, setSearchActive] = useState<boolean>(false);
+  const sortFn = (a: Pod, b: Pod) => {
+    if (sortDirection === "none") {
+      // don't change anything, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#description
+      return 0;
     }
+    if (sortDirection === "asc") {
+      return a.status_phase.localeCompare(b.status_phase);
+    }
+    // must be desc
+    return b.status_phase.localeCompare(a.status_phase);
   };
-
-  //   const handleSortAsc = () => {
-  //     const sorted = [...filteredPods];
-  //     sorted.sort((a, b) => a.status.localeCompare(b.status));
-  //     setFilteredPods(sorted);
-  //   };
-
-  //   const handleSortDsc = () => {
-  //     const sorted = [...filteredPods];
-  //     sorted.sort((a, b) => b.status.localeCompare(a.status));
-  //     setFilteredPods(sorted);
-  //   };
+  const displayList = list
+    .filter((pod) => {
+      if (searchTerm === "" || !searchActive) {
+        return true;
+      }
+      return (
+        pod.namespace.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        pod.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    })
+    .sort(sortFn);
 
   return (
     <div>
@@ -47,13 +41,20 @@ export default function PodTable({ list }: { list: PodList }): JSX.Element {
           type="text"
           placeholder="Search..."
           value={searchTerm}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setSearchActive(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setSearchActive(true);
+            }
+          }}
           className="border border-gray-300 px-4 py-2 rounded-md"
         />
         <button
           type="button"
-          onClick={handleSearch}
+          onClick={() => setSearchActive(true)}
           className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
         >
           Search
@@ -79,19 +80,19 @@ export default function PodTable({ list }: { list: PodList }): JSX.Element {
             scope="col"
           >
             <span>
-              <Dropdown inline label="STATUS" dismissOnClick={true}>
-                {/* <Dropdown.Item>
-                  <button onClick={() => handleSortAsc()}>Ascending</button>
+              <Dropdown inline label="STATUS">
+                <Dropdown.Item onClick={() => setSortDirection("asc")}>
+                  Ascending
                 </Dropdown.Item>
-                <Dropdown.Item>
-                  <button onClick={() => handleSortDsc()}>Descending</button>
-                </Dropdown.Item> */}
-              </Dropdown>
+                <Dropdown.Item onClick={() => setSortDirection("desc")}>
+                  Descending
+                </Dropdown.Item>
+              </Dropdown>{" "}
             </span>
           </Table.HeadCell>
         </Table.Head>
         <Table.Body>
-          {filteredPods.map((pod: Pod, index: number) => (
+          {displayList.map((pod: Pod, index: number) => (
             <Table.Row key={index}>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white !py-2">
                 <Link
