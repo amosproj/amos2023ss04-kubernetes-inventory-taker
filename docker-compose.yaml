@@ -22,7 +22,7 @@ services:
       # Uncomment this to inject test data
       #- ./DB/testdata_init.sql:/docker-entrypoint-initdb.d/testdata_init.sql
 
-  # starts the app in development mode
+      # starts the app in development mode
   explorer:
     build:
       context: ./Explorer
