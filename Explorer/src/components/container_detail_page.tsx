@@ -1,7 +1,7 @@
 "use client";
 
 import { Table } from "flowbite-react";
-import { H1 } from "@/components/style_elements";
+import { H1, H2 } from "@/components/style_elements";
 import { HealthIndicatorBadge } from "@/components/health_indicators";
 import { Container } from "@/lib/types/Container";
 import Link from "next/link";
@@ -88,7 +88,7 @@ function _ContainerChangelogWidget({
     <div className="p-0">
       <section>
         <header>
-          <h2 className="mt-2 mb-3 text-2xl font-bold">Changelog</h2>
+          <H2 className="mt-2 mb-3 text-2xl font-bold" content="Changelog" />
         </header>
         <div className="">
           <Table>
@@ -145,7 +145,7 @@ function ContainerDetailsWidget({
 }): JSX.Element {
   return (
     <div className="p-0 w-max">
-      <h2 className="mt-2 mb-3 text-2xl font-bold">Details</h2>
+      <H2 content={"Details"} />
       <Table>
         <Table.Head>
           <Table.HeadCell className="!py-2 bg-gray-50 dark:bg-gray-800">
