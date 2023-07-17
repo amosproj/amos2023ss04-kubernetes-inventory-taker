@@ -85,10 +85,10 @@ CREATE TABLE nodes(
 CREATE TABLE "container_states"(
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   "kind" text,
-  "started_at" time,
+  "started_at" timestamp,
   "container_id" text,
   "exit_code" int,
-  "finished_at" time,
+  "finished_at" timestamp,
   "message" text,
   "reason" text,
   "signal" int

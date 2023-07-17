@@ -205,6 +205,9 @@ function computeValue(
         </Link>
       );
     }
+    case "ready":
+    case "started":
+      return container_data[key] ? "true" : "false";
     default:
       return container_data[key];
   }
@@ -218,6 +221,7 @@ function ContainerStatesWidget({
   if (state === undefined) {
     return <div></div>;
   }
+  console.log(state);
   let elem: JSX.Element;
   switch (state.kind) {
     case "running":

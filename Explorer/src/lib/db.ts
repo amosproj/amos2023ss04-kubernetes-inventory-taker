@@ -29,12 +29,12 @@ export async function getContainerDetails(
     return undefined;
   }
   const last_fail_state = await getContainerState(container_row.last_state_id);
-
+  console.log(container_row);
   const container: Container = {
     id: container_row.id,
     timestamp: container_row.timestamp,
     container_id: container_row.container_id,
-    pod_id: container_row.container_id,
+    pod_id: container_row.pod_id,
     name: container_row.name,
     image: container_row.image,
     status: container_row.status,
@@ -55,13 +55,15 @@ async function getContainerState(
   state_id: number
 ): Promise<ContainerStates | undefined> {
   const row = (
-    await pool.query("SELECT * FROM container_states cs WHERE c.id = $1", [
+    await pool.query("SELECT * FROM container_states cs WHERE cs.id = $1", [
       state_id,
     ])
   ).rows[0];
   if (!row) {
     return undefined;
   }
+  console.log(row);
+
   switch (row.kind) {
     case "Waiting":
       return { kind: "waiting", message: row.message, reason: row.reason };
