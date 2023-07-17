@@ -14,7 +14,7 @@ export default function ContainerDetailPage({
   return (
     <div>
       <div className="flex">
-        <H1 content={"Container ID " + container_details.id} />
+        <H1 content={"Container " + container_details.name} />
         <HealthIndicatorBadge status={container_details.status} />
       </div>
       <div className="flex">

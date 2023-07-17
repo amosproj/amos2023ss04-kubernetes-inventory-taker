@@ -16,7 +16,7 @@ export default function PodDetailPage({
   return (
     <div>
       <div className="flex">
-        <H1 content={"Pod ID " + pod_details.id} />
+        <H1 content={"Pod " + pod_details.name} />
         <HealthIndicatorBadge status={pod_details.status_phase} />
       </div>
       <div className="flex">
