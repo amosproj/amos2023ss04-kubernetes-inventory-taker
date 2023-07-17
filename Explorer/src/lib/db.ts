@@ -29,7 +29,6 @@ export async function getContainerDetails(
     return undefined;
   }
   const last_fail_state = await getContainerState(container_row.last_state_id);
-  console.log(container_row);
   const container: Container = {
     id: container_row.id,
     timestamp: container_row.timestamp,
@@ -62,7 +61,6 @@ async function getContainerState(
   if (!row) {
     return undefined;
   }
-  console.log(row);
 
   switch (row.kind) {
     case "Waiting":

@@ -221,7 +221,6 @@ function ContainerStatesWidget({
   if (state === undefined) {
     return <div></div>;
   }
-  console.log(state);
   let elem: JSX.Element;
   switch (state.kind) {
     case "running":
