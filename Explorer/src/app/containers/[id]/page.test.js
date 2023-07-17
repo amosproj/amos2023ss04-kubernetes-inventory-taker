@@ -11,7 +11,7 @@ jest.mock("../../../lib/db", () => ({
     return Promise.resolve({
       container_event_id: 1,
       container_id: 1,
-      timestamp: "2021-08-01 00:00:00",
+      timestamp: new Date("2021-08-01 00:00:00"),
       pod_id: 1,
       name: "Container 1",
       image: "Image 1",

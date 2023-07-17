@@ -103,10 +103,10 @@ type Container struct {
 type ContainerState struct {
 	ID          int       `bun:"id,autoincrement,pk"`
 	Kind        string    `bun:"kind,type:text"`
-	StartedAt   time.Time `bun:"started_at,type:time"`
+	StartedAt   time.Time `bun:"started_at,type:timestamp"`
 	ContainerID string    `bun:"container_id,type:text"`
 	ExitCode    int       `bun:"exit_code,type:int"`
-	FinishedAt  time.Time `bun:"finished_at,type:time"`
+	FinishedAt  time.Time `bun:"finished_at,type:timestamp"`
 	Message     string    `bun:"message,type:text"`
 	Reason      string    `bun:"reason,type:text"`
 	Signal      int       `bun:"signal,type:int"`
