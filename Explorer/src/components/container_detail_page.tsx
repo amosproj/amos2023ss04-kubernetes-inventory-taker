@@ -1,25 +1,26 @@
 "use client";
 
 import { Table } from "flowbite-react";
-import { H1 } from "@/components/style_elements";
+import { H1, H2 } from "@/components/style_elements";
 import { HealthIndicatorBadge } from "@/components/health_indicators";
-import { Container } from "@/lib/types/Container";
 import Link from "next/link";
+import { Container, ContainerStates } from "@/lib/types/Container";
+import { ReactNode } from "react";
 
 export default function ContainerDetailPage({
-  container_details,
+  container_details: container,
 }: {
   container_details: Container;
 }): JSX.Element {
   return (
     <div>
       <div className="flex">
-        <H1 content={"Container " + container_details.name} />
-        <HealthIndicatorBadge status={container_details.status} />
+        <H1 content={"Container " + container.name} />
+        <HealthIndicatorBadge status={container.status} />
       </div>
       <div className="flex">
         <div className="w-1/4 w-max">
-          <ContainerDetailsWidget container_data={container_details} />
+          <ContainerDetailsWidget container_data={container} />
         </div>
         {/* <div className="w-1/2 w-max px-8">
           <ContainerWorkLoad />
@@ -88,7 +89,7 @@ function _ContainerChangelogWidget({
     <div className="p-0">
       <section>
         <header>
-          <h2 className="mt-2 mb-3 text-2xl font-bold">Changelog</h2>
+          <H2 className="mt-2 mb-3 text-2xl font-bold" content="Changelog" />
         </header>
         <div className="">
           <Table>
@@ -145,7 +146,7 @@ function ContainerDetailsWidget({
 }): JSX.Element {
   return (
     <div className="p-0 w-max">
-      <h2 className="mt-2 mb-3 text-2xl font-bold">Details</h2>
+      <H2 content={"Details"} />
       <Table>
         <Table.Head>
           <Table.HeadCell className="!py-2 bg-gray-50 dark:bg-gray-800">
@@ -156,12 +157,8 @@ function ContainerDetailsWidget({
           </Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {Object.entries(container_data).map(([name, value], index) => {
-            if (value instanceof Date) {
-              value = value.toUTCString();
-            } else if (typeof value === "boolean") {
-              value = value ? "true" : "false";
-            }
+          {Object.keys(container_data).map((key, index) => {
+            const name = key as keyof Container;
             return (
               <Table.Row
                 key={index}
@@ -171,23 +168,103 @@ function ContainerDetailsWidget({
                   {name.toUpperCase()}
                 </Table.Cell>
                 <Table.Cell className="!py-1 whitespace-nowrap font-medium bg-gray-30 dark:bg-gray-600">
-                  {name === "pod_id" ? (
-                    <Link
-                      href={`/pods/${encodeURIComponent(value)}`}
-                      className="text-decoration-none text-blue-800"
-                      id="list"
-                    >
-                      {value}
-                    </Link>
-                  ) : (
-                    value
-                  )}
+                  {computeValue(name, container_data)}
                 </Table.Cell>
               </Table.Row>
             );
           })}
         </Table.Body>
       </Table>
+    </div>
+  );
+}
+
+function computeValue(
+  key: keyof Container,
+  container_data: Container
+): ReactNode {
+  switch (key) {
+    case "current_state":
+    case "last_fail_state":
+      return (
+        <ContainerStatesWidget
+          state={container_data[key]}
+        ></ContainerStatesWidget>
+      );
+    case "timestamp":
+      return container_data[key].toUTCString();
+    case "pod_id": {
+      const value = container_data[key];
+      return (
+        <Link
+          href={`/pods/${encodeURIComponent(value)}`}
+          className="text-decoration-none text-blue-800"
+          id="list"
+        >
+          {value}
+        </Link>
+      );
+    }
+    case "ready":
+    case "started":
+      return container_data[key] ? "true" : "false";
+    default:
+      return container_data[key];
+  }
+}
+
+function ContainerStatesWidget({
+  state,
+}: {
+  state: ContainerStates | undefined;
+}): JSX.Element {
+  if (state === undefined) {
+    return <div></div>;
+  }
+  let elem: JSX.Element;
+  switch (state.kind) {
+    case "running":
+      elem = (
+        <div>
+          <p>Started at: {state.started_at.toUTCString()}</p>
+        </div>
+      );
+      break;
+    case "waiting":
+      elem = (
+        <div>
+          <p>Reason: {state.reason}</p>
+          <p>Message: {state.message}</p>
+        </div>
+      );
+      break;
+    case "terminated":
+      elem = (
+        <div>
+          <p>
+            Container ID:
+            <Link
+              href={`/containers/${encodeURIComponent(state.container_id)}`}
+              className="text-decoration-none text-blue-800"
+              id="list"
+            >
+              {state.container_id}
+            </Link>
+          </p>
+          <p>Exit code: {state.exit_code}</p>
+          <p>Signal: {state.signal}</p>
+          <p>Reason: {state.reason}</p>
+          <p>Started at: {state.started_at.toUTCString()}</p>
+          <p>Finished at: {state.finished_at.toUTCString()}</p>
+          <p>Finished at: {state.finished_at.toUTCString()}</p>
+          <p>Message: {state.message}</p>
+        </div>
+      );
+  }
+  return (
+    <div>
+      <p>State: {state.kind}</p>
+      {elem}
     </div>
   );
 }
